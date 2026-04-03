@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Training">
+<title>Downhill Training</title>
+<style>
+/* ── Reset & Base ── */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --ph1:#1D9E75;--ph2:#534AB7;--ph3:#BA7517;
+  --bg:#ffffff;--bg2:#F7F7F5;--bg3:#F1EFE8;
+  --text:#2C2C2A;--text2:#5F5E5A;--text3:#888780;
+  --border:#D3D1C7;--border2:#B4B2A9;
+  --radius:12px;--radius-sm:8px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#1a1a18;--bg2:#242422;--bg3:#2C2C2A;
+  --text:#E8E6DF;--text2:#9c9a92;--text3:#73726c;
+  --border:#3d3d3a;--border2:#5F5E5A;
+}}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:80px;font-size:15px}
+
+/* ── Setup Screen ── */
+#setup-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center}
+#setup-screen h1{font-size:24px;font-weight:600;margin-bottom:8px}
+#setup-screen p{color:var(--text2);font-size:14px;line-height:1.6;margin-bottom:24px;max-width:340px}
+.setup-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;width:100%;max-width:400px;margin-bottom:16px;text-align:left}
+.setup-card h3{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text)}
+.setup-card ol{padding-left:20px;color:var(--text2);font-size:13px;line-height:1.9}
+.setup-card ol li{margin-bottom:4px}
+.setup-card code{background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:12px;color:var(--ph2);font-family:monospace}
+input[type=text]{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;background:var(--bg);color:var(--text);margin-top:10px;outline:none}
+input[type=text]:focus{border-color:var(--ph2)}
+.btn-primary{width:100%;padding:14px;background:var(--ph2);color:#fff;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;margin-top:12px}
+.btn-secondary{width:100%;padding:12px;background:var(--bg2);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-weight:500;cursor:pointer;margin-top:8px}
+.error-msg{color:#E24B4A;font-size:13px;margin-top:8px;text-align:center;display:none}
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Main App ── */
+#app{display:none}
+
+/* ── Tab Bar ── */
+.tab-bar{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+.tab-btn{flex:1;padding:10px 4px 8px;border:none;background:transparent;color:var(--text3);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:500;transition:color .15s}
+.tab-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tab-btn.active{color:var(--ph2)}
+
+/* ── Pages ── */
+.page{display:none;padding:0 16px;padding-top:16px}
+.page.active{display:block}
+
+/* ── TODAY ── */
+.hero{border-radius:var(--radius);padding:20px;margin-bottom:16px;color:#fff;position:relative;overflow:hidden}
+.hero-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;opacity:.8;margin-bottom:6px}
+.hero-title{font-size:22px;font-weight:700;line-height:1.2;margin-bottom:4px}
+.hero-sub{font-size:14px;opacity:.85;margin-bottom:12px}
+.hero-meta{display:flex;gap:8px;flex-wrap:wrap}
+.badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(255,255,255,.2)}
+.countdown-days{font-size:42px;font-weight:700;line-height:1;margin:8px 0 4px}
+.countdown-label{font-size:12px;opacity:.75}
+
+/* ── Session Card ── */
+.session-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
+.sc-header{padding:14px 16px 12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.sc-header-left{}
+.sc-day{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:3px}
+.sc-title{font-size:16px;font-weight:600;color:var(--text);line-height:1.3}
+.sc-sub{font-size:13px;color:var(--text2);margin-top:2px}
+.sc-status{width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.status-done{background:#1D9E75}
+.status-partial{background:#BA7517}
+.status-none{background:var(--border)}
+
+.sc-body{padding:14px 16px}
+.block-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin:12px 0 6px}
+.block-label:first-child{margin-top:0}
+.ex-item{padding:8px 0;border-bottom:1px solid var(--border);line-height:1.5}
+.ex-item:last-child{border-bottom:none}
+.ex-name{font-size:14px;font-weight:600;color:var(--text)}
+.ex-detail{font-size:13px;color:var(--text2);margin-top:2px;white-space:pre-line}
+.ex-alt{font-size:12px;color:var(--text3);margin-top:3px;font-style:italic}
+.ex-kit{font-size:11px;color:var(--ph2);margin-top:2px;font-weight:500}
+.ex-note{background:var(--bg3);border-left:3px solid var(--border2);border-radius:0 6px 6px 0;padding:8px 10px;margin:8px 0;font-size:13px;color:var(--text2);line-height:1.5}
+
+/* ── Log Form ── */
+.log-form{background:var(--bg2);border-radius:var(--radius);padding:16px;margin-top:12px}
+.log-form-title{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text)}
+.feeling-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.feel-btn{padding:10px 8px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;background:var(--bg);color:var(--text);text-align:center;transition:all .15s}
+.feel-btn.active{border-color:transparent;color:#fff}
+.feel-btn[data-f="1"].active{background:#E24B4A}
+.feel-btn[data-f="2"].active{background:#BA7517}
+.feel-btn[data-f="3"].active{background:#1D9E75}
+.feel-btn[data-f="4"].active{background:#534AB7}
+.note-area{width:100%;padding:12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-family:inherit;resize:vertical;min-height:80px;background:var(--bg);color:var(--text);margin-bottom:12px;line-height:1.5}
+.note-area:focus{outline:none;border-color:var(--ph2)}
+.log-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn-done{padding:13px;background:var(--ph1);color:#fff;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer}
+.btn-partial{padding:13px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer}
+.btn-saving{opacity:.6;cursor:not-allowed}
+
+.logged-summary{background:var(--bg2);border-radius:var(--radius-sm);padding:12px 14px;margin-top:12px}
+.logged-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.logged-status{font-size:14px;font-weight:600}
+.logged-feeling{font-size:13px;color:var(--text2)}
+.logged-note{font-size:13px;color:var(--text2);line-height:1.5;margin-top:4px}
+.edit-link{font-size:12px;color:var(--ph2);cursor:pointer;text-decoration:underline;margin-top:8px;display:inline-block}
+
+/* ── PLAN ── */
+.phase-pills{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px}
+.phase-pills::-webkit-scrollbar{display:none}
+.phase-pill{padding:8px 16px;border-radius:20px;border:1px solid var(--border);font-size:13px;font-weight:500;cursor:pointer;background:transparent;color:var(--text2);white-space:nowrap;flex-shrink:0;transition:all .15s}
+.phase-pill.active{color:#fff;border-color:transparent}
+.week-pills{display:flex;gap:8px;margin-bottom:14px}
+.week-pill{padding:6px 14px;border-radius:20px;border:1px solid var(--border);font-size:12px;font-weight:500;cursor:pointer;background:transparent;color:var(--text2);transition:all .15s}
+.week-pill.active{color:#fff;border-color:transparent}
+.ph-desc{font-size:13px;color:var(--text2);line-height:1.6;background:var(--bg2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px;border:1px solid var(--border)}
+
+/* ── LOG HISTORY ── */
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}
+.stat-card{background:var(--bg2);border-radius:var(--radius-sm);padding:12px;text-align:center;border:1px solid var(--border)}
+.stat-num{font-size:26px;font-weight:700;line-height:1}
+.stat-label{font-size:11px;color:var(--text3);margin-top:4px}
+.log-entry{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px}
+.le-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:12px}
+.le-title{font-size:14px;font-weight:600;color:var(--text);line-height:1.3}
+.le-date{font-size:11px;color:var(--text3);white-space:nowrap;margin-top:2px}
+.le-meta{display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+.le-status{font-size:13px;font-weight:600}
+.le-feeling{font-size:13px;color:var(--text2)}
+.le-week{font-size:11px;color:var(--text3);background:var(--bg2);padding:2px 8px;border-radius:10px}
+.le-note{font-size:13px;color:var(--text2);line-height:1.5;margin-top:6px;padding-top:6px;border-top:1px solid var(--border)}
+.empty-state{text-align:center;padding:48px 24px;color:var(--text3)}
+.empty-state .icon{font-size:40px;margin-bottom:12px}
+.empty-state p{font-size:14px;line-height:1.6}
+
+/* ── GLOSSARY ── */
+.gterm{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px}
+.gterm-name{font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px}
+.gterm-def{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* ── Settings ── */
+.settings-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.settings-card h3{font-size:15px;font-weight:600;margin-bottom:4px}
+.settings-card p{font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.5}
+.url-display{font-size:11px;color:var(--text3);background:var(--bg2);padding:8px 10px;border-radius:6px;font-family:monospace;word-break:break-all;margin-bottom:10px}
+.btn-danger{padding:11px;background:#E24B4A;color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:500;cursor:pointer;width:100%}
+
+.section-title{font-size:18px;font-weight:700;margin-bottom:4px}
+.section-sub{font-size:13px;color:var(--text2);margin-bottom:16px}
+
+.sync-indicator{position:fixed;top:12px;right:12px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:500;z-index:200;transition:opacity .3s;display:flex;align-items:center;gap:6px}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--ph1)}
+.sync-dot.syncing{background:#BA7517;animation:pulse .8s ease-in-out infinite}
+.sync-dot.error{background:#E24B4A}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+</style>
+</head>
+<body>
+
+<!-- ══════════ SETUP SCREEN ══════════ -->
+<div id="setup-screen">
+  <div style="font-size:48px;margin-bottom:16px">🛹</div>
+  <h1>Downhill Training</h1>
+  <p>One-time setup: connect your Google Sheet so your logs sync across all your devices.</p>
+
+  <div class="setup-card">
+    <h3>Step 1 — Create your Google Sheet</h3>
+    <ol>
+      <li>Go to <strong>sheets.google.com</strong> and create a new blank spreadsheet</li>
+      <li>Name it anything — e.g. <em>"Downhill Training Logs"</em></li>
+      <li>Leave it open, you'll need it for Step 2</li>
+    </ol>
+  </div>
+
+  <div class="setup-card">
+    <h3>Step 2 — Add the script</h3>
+    <ol>
+      <li>In your Sheet, click <strong>Extensions → Apps Script</strong></li>
+      <li>Delete any existing code in the editor</li>
+      <li>Paste the entire contents of <code>TrainingApp.gs</code> (the other file you downloaded)</li>
+      <li>Click <strong>Save</strong> (disk icon), then click <strong>Deploy → New deployment</strong></li>
+      <li>Set type to <strong>Web app</strong>, set "Who has access" to <strong>Anyone</strong>, click <strong>Deploy</strong></li>
+      <li>Authorise when prompted, then copy the <strong>Web app URL</strong> you're given</li>
+    </ol>
+  </div>
+
+  <div class="setup-card">
+    <h3>Step 3 — Paste your URL below</h3>
+    <input type="text" id="script-url-input" placeholder="https://script.google.com/macros/s/..." />
+    <div class="error-msg" id="url-error">Please enter a valid Apps Script URL</div>
+    <button class="btn-primary" onclick="connectSheet()">
+      <span id="connect-spinner" class="spinner" style="display:none"></span>
+      Connect and start
+    </button>
+  </div>
+
+  <div class="setup-card" style="border-color:#BA7517">
+    <h3>⚠ Having trouble with setup?</h3>
+    <p style="font-size:13px;color:var(--text2);margin:0">You can use the app without syncing — your logs will be saved on this device only. You can connect a Sheet later in Settings.</p>
+    <button class="btn-secondary" onclick="skipSetup()">Use offline (this device only)</button>
+  </div>
+</div>
+
+<!-- ══════════ SYNC INDICATOR ══════════ -->
+<div class="sync-indicator" id="sync-indicator" style="display:none">
+  <div class="sync-dot" id="sync-dot"></div>
+  <span id="sync-label">Synced</span>
+</div>
+
+<!-- ══════════ MAIN APP ══════════ -->
+<div id="app">
+
+  <!-- TODAY -->
+  <div class="page active" id="page-today">
+    <div id="today-content"></div>
+  </div>
+
+  <!-- PLAN -->
+  <div class="page" id="page-plan">
+    <div class="section-title">Full plan</div>
+    <div class="section-sub">Tap any session to expand</div>
+    <div class="phase-pills" id="phase-pills"></div>
+    <div class="ph-desc" id="phase-desc"></div>
+    <div class="week-pills" id="week-pills"></div>
+    <div id="plan-sessions"></div>
+  </div>
+
+  <!-- LOG -->
+  <div class="page" id="page-log">
+    <div class="section-title">My log</div>
+    <div class="section-sub">All completed sessions</div>
+    <div id="log-content"></div>
+  </div>
+
+  <!-- GLOSSARY -->
+  <div class="page" id="page-glossary">
+    <div class="section-title">Glossary</div>
+    <div class="section-sub">Every exercise term explained</div>
+    <div id="glossary-content"></div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="page" id="page-settings">
+    <div class="section-title">Settings</div>
+    <div class="section-sub">App configuration</div>
+
+    <div class="settings-card">
+      <h3>Google Sheet connection</h3>
+      <p id="settings-sync-status"></p>
+      <div class="url-display" id="settings-url-display"></div>
+      <input type="text" id="settings-url-input" placeholder="Paste new Apps Script URL..." style="margin-bottom:10px" />
+      <button class="btn-primary" onclick="updateScriptUrl()" style="margin-bottom:8px">Update URL</button>
+      <button class="btn-secondary" onclick="testConnection()">Test connection</button>
+    </div>
+
+    <div class="settings-card">
+      <h3>Export logs</h3>
+      <p>Download all your session logs as a JSON file — backup or transfer to another device.</p>
+      <button class="btn-secondary" onclick="exportLogs()">Download logs JSON</button>
+    </div>
+
+    <div class="settings-card" style="border-color:#E24B4A">
+      <h3>Reset app</h3>
+      <p>Clears all local settings and logs. Your Google Sheet data is not affected.</p>
+      <button class="btn-danger" onclick="resetApp()">Reset everything</button>
+    </div>
+  </div>
+
+  <!-- TAB BAR -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="showPage('today')" id="tab-today">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Today
+    </button>
+    <button class="tab-btn" onclick="showPage('plan')" id="tab-plan">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Plan
+    </button>
+    <button class="tab-btn" onclick="showPage('log')" id="tab-log">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      My log
+    </button>
+    <button class="tab-btn" onclick="showPage('glossary')" id="tab-glossary">
+      <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+      Glossary
+    </button>
+    <button class="tab-btn" onclick="showPage('settings')" id="tab-settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      Settings
+    </button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════════
+const SESSIONS = [
+  {id:'w1a',week:1,phase:1,day:'Monday',date:'2025-04-07',title:'Session A — Lower body activation',sub:'~50 min · Home or gym',
+   blocks:[
+    {label:'Joint prep · 5 min',exercises:[
+      {name:'Ankle circles + heel raises',detail:'2×12 off a step. Test heel — mild ache fine, sharp pain stop.'},
+      {name:'Hip 90/90',detail:'60 sec per side. Both legs at 90°, lean over front shin.'},
+      {name:'Shallow wall sit',detail:'2×20 sec at ~60° only.'},
+    ]},
+    {label:'Primary strength · 20 min',exercises:[
+      {name:'Terminal knee extensions (TKE)',detail:'3×15 each side. Band around back of knee anchored at knee height. Micro-straighten against resistance. VMO isolation.',alt:'Home: band around power tower upright · Gym: cable machine low pulley',kit:'Light resistance band'},
+      {name:'Leg press — shallow range',detail:'3×12. Lower to ~100° only. Light weight — technique first.',alt:'Home swap: wall sit 3×30 sec + slow bodyweight squat 3×10 to 90°'},
+      {name:'Side-lying hip abduction',detail:'3×15 each. Band above knees, raise top leg to ~45°. Slow up, controlled down.',kit:'Medium resistance band'},
+    ]},
+    {label:'Secondary · 15 min',exercises:[
+      {name:'Single-leg glute bridge',detail:'3×12 each. One heel on floor, raise hips. Note if left knee tracks inward.'},
+      {name:'Dead bug',detail:'3×8 each side. Arms and legs up, lower opposite arm + leg slowly, exhale. Lower back stays on floor.'},
+      {name:'Pallof press',detail:'3×10 each side. Side-on to anchor at chest height, press straight out, hold 2 sec.',alt:'Home: band around power tower upright · Gym: cable machine',kit:'Medium resistance band'},
+    ]},
+    {label:'Balance board · 5 min',exercises:[
+      {name:'Roller board introduction',detail:'3×60 sec. Street deck on roller, near a wall. Find balance point. Purely exploratory.'},
+    ]},
+    {label:'Finish · 5 min',exercises:[
+      {name:'Quad stretch',detail:'45 sec each side, wall-assisted.'},
+      {name:'Kneeling hip flexor stretch',detail:'45 sec each side.'},
+    ]},
+   ],notes:['⚠ Left knee: TKEs should feel like a gentle burn at inner kneecap — not a sharp pinch. Halve band resistance if sharp anterior pain.']},
+
+  {id:'w1b',week:1,phase:1,day:'Thursday',date:'2025-04-10',title:'Session B — Upper body + core',sub:'~50 min · Gym (swim anchor) — home if needed',
+   blocks:[
+    {label:'Joint prep · 5 min',exercises:[
+      {name:'Shoulder circles + arm swings',detail:'30 sec each direction.'},
+      {name:'Thoracic rotation seated',detail:'8 each side. Arms crossed, rotate upper back only.'},
+      {name:'Cat-cow',detail:'10 slow reps.'},
+    ]},
+    {label:'Primary · 20 min',exercises:[
+      {name:'Pull-ups',detail:'3×6. Power tower pull-up bar. 3-sec lowering.',alt:'Gym: lat pulldown if pull-ups not yet possible'},
+      {name:'Single-arm dumbbell row',detail:'3×10 each. Back flat, pull elbow to hip. Brace free hand on power tower upright.',alt:'Home/Gym: 8kg DB',kit:'8kg dumbbell'},
+      {name:'Push-up with rotation',detail:'3×8. Push up, rotate to full side plank at top. From knees if needed.'},
+    ]},
+    {label:'Secondary · 15 min',exercises:[
+      {name:"Captain's chair knee raise",detail:'3×10. Arms on padded rests, knees to hip height, controlled lower. No grip fatigue — core focus only.',alt:'Superior to hanging bar for sustained core work — use this whenever at home'},
+      {name:'Plank with hip tap',detail:'3×12 taps. Forearm plank, alternate tapping each hip to floor.'},
+      {name:'Dumbbell halo',detail:'3×8 each direction. Hold DB at one end, slow circles around head.',alt:'Home/Gym: 6–8kg DB',kit:'6–8kg dumbbell'},
+    ]},
+    {label:'Cardio · 15 min',exercises:[
+      {name:'Swimming',detail:'15 min easy.',alt:'If not at gym: 15 min easy cycling or gentle jog (test heel first).'},
+    ]},
+    {label:'Finish · 5 min',exercises:[
+      {name:'Passive hang from pull-up bar',detail:'20 sec ×2. Relax shoulders fully — decompresses spine.'},
+      {name:'Seated spinal rotation',detail:'30 sec each side.'},
+    ]},
+   ],notes:['Swim anchor day — gym preferred. If not possible: power tower + DBs + bands at home. Replace swim with 15–20 min easy jog or cycle.']},
+
+  {id:'w2a',week:2,phase:1,day:'Monday',date:'2025-04-14',title:'Session A — Lower body: add range',sub:'~50 min · Home or gym',
+   blocks:[
+    {label:'Joint prep · 5 min',exercises:[
+      {name:'Dynamic squat hold with reach',detail:'10 reps. Squat, reach arms forward, hold 2 sec, stand.'},
+      {name:'TKE warm-up',detail:'2×10 each — lighter band than working set.'},
+    ]},
+    {label:'Primary · 22 min',exercises:[
+      {name:'TKE',detail:'3×15 each. Increase band resistance from W1 if manageable.',kit:'Medium band'},
+      {name:'Goblet squat',detail:'3×10 at 90–100°. DB at chest. 3-sec lowering.',alt:'Gym: leg press to ~110–115°',kit:'8kg dumbbell'},
+      {name:'Reverse lunge',detail:'3×10 each. Step back, not forward. Bodyweight first, add DB if comfortable.',kit:'8kg dumbbells optional'},
+    ]},
+    {label:'Secondary · 15 min',exercises:[
+      {name:'Single-leg glute bridge — feet elevated',detail:'3×12 each. Feet on sofa or bench.'},
+      {name:'Copenhagen plank',detail:'3×20 sec each. Side plank, top leg on sofa. Inner thigh + lateral core.',alt:'Home: sofa or low step'},
+      {name:'Pallof press + rotation',detail:'3×10 each. After pressing out, rotate 30° toward anchor, return.',kit:'Medium resistance band'},
+    ]},
+    {label:'Balance board · 6 min',exercises:[
+      {name:'Toe/heel shifts',detail:'4×60 sec. Deliberate small shifts, one direction at a time.'},
+    ]},
+    {label:'Finish · 7 min',exercises:[
+      {name:'First tuck hold',detail:'2×15 sec. Actual skating tuck. Note when quad burn starts — baseline only.'},
+      {name:'Hip flexor + quad stretch',detail:'60 sec each side.'},
+    ]},
+   ],notes:[]},
+
+  {id:'w2b',week:2,phase:1,day:'Thursday',date:'2025-04-17',title:'Session B — Upper + rotational core',sub:'~50 min · Gym (swim anchor) — home if needed',
+   blocks:[
+    {label:'Joint prep · 5 min',exercises:[
+      {name:"World's greatest stretch",detail:'5 each side. Lunge, same-side hand to floor, rotate top arm to sky, hold 2 sec.'},
+      {name:'Thoracic open books',detail:'8 each side. Lie on side, open top arm behind you, hips stay still.'},
+    ]},
+    {label:'Primary · 20 min',exercises:[
+      {name:'Pull-up — slow negative',detail:'3×6. Pull up, lower over 3–4 sec.',alt:'Gym: lat pulldown same tempo'},
+      {name:'Woodchop — high to low',detail:'3×10 each. Band anchored high on power tower, pull diagonally to opposite hip.',alt:'Gym: cable high pulley',kit:'Resistance band on power tower'},
+      {name:'Single-arm DB press — standing',detail:'3×8 each. Press shoulder to overhead. Other arm free — core resists side lean.',alt:'Start seated if shoulder uncertain',kit:'8kg dumbbell'},
+    ]},
+    {label:'Secondary · 15 min',exercises:[
+      {name:"Captain's chair leg raise — knees tucked",detail:'3×10. Arms on padded rests, knees to hip height. Controlled lower, no swinging.'},
+      {name:'Side plank with reach-through',detail:'3×8 each. Top arm threads under body toward floor, opens back up.'},
+      {name:'KB swing — introduction',detail:'3×10. Hip hinge — hips back, snap forward, KB floats from hip power. Learn the pattern.',alt:'16kg KB or 10–12kg DB two-handed if KB too heavy',kit:'16kg KB'},
+    ]},
+    {label:'Cardio · 15 min',exercises:[
+      {name:'Swimming',detail:'15 min easy.',alt:'If not at gym: 15 min cycling or jog.'},
+    ]},
+    {label:'Finish · 5 min',exercises:[
+      {name:'Stretch',detail:'Quad, hip flexor, thoracic rotation — 45 sec each.'},
+    ]},
+   ],notes:['Swim anchor day. Gym if possible. Home alternative: power tower + DBs + bands. Swap swim for jog or cycle.']},
+
+  {id:'w3a',week:3,phase:2,day:'Monday',date:'2025-04-21',title:'Session A — Squat strength + VMO',sub:'~55 min · Home or gym',
+   blocks:[
+    {label:'Joint prep · 5 min',exercises:[
+      {name:'Full bodyweight squat hold',detail:'2×30 sec. Assess left knee at depth. If anterior pain, cap at 100°.'},
+      {name:'Banded march',detail:'2×12 each. Band above knees, drive knee to hip height, hold 1 sec.',kit:'Medium band'},
+    ]},
+    {label:'Primary · 25 min',exercises:[
+      {name:'Goblet squat',detail:'4×8. DB at chest, full depth, thighs parallel or below. 3-sec lower.',alt:'Home: 16kg DB · Gym: 16–18kg DB or barbell',kit:'16kg dumbbell'},
+      {name:'Bulgarian split squat',detail:'3×10 each. Rear foot on sofa/bench. Front foot forward. Lower rear knee to floor. Most important exercise in plan.',alt:'Bodyweight first, add 8–10kg DBs at sides when form solid',kit:'8–10kg dumbbells optional'},
+      {name:'Dips — chest variation',detail:'3×8. Power tower dip bars, lean slightly forward. Full range.',alt:'Bend knees to reduce bodyweight load if needed'},
+    ]},
+    {label:'Secondary · 13 min',exercises:[
+      {name:'Tuck hold',detail:'3×20 sec. Actual skating tuck. Rest 90 sec. Target: 20 sec without struggle.'},
+      {name:'Nordic hamstring curl',detail:'3×6. Kneel, feet hooked under power tower base. Lower as slowly as possible (4–5 sec), push up from floor.',alt:'Gym: hamstring curl machine 3-sec eccentric'},
+      {name:'Single-leg calf raise',detail:'3×15 each. Off step edge, full range.'},
+    ]},
+    {label:'Balance board · 6 min',exercises:[
+      {name:'Timed stance holds',detail:'4×60 sec. Actual speedboard riding stance. Find neutral, try slow toe-to-heel shifts.'},
+    ]},
+    {label:'Finish · 6 min',exercises:[
+      {name:'Hip flexor + quad',detail:'60 sec each side.'},
+      {name:'Pigeon pose or figure-4',detail:'60 sec each side.'},
+    ]},
+   ],notes:['Nordic curl: hook feet under bottom crossbar of power tower base — check it is stable first.']},
+
+  {id:'w3b',week:3,phase:2,day:'Wednesday',date:'2025-04-23',title:'Session B — Power + rotation',sub:'~50 min · Home or gym',
+   blocks:[
+    {label:'Joint prep · 5 min',exercises:[
+      {name:'Thoracic rotation',detail:'10 each. Cross-legged, hands behind head, rotate upper back.'},
+      {name:'Hip CARs',detail:'5 slow reps each. Draw biggest circle possible with raised knee.'},
+    ]},
+    {label:'Primary · 22 min',exercises:[
+      {name:'KB swing — power',detail:'4×10. Explosive hip snap. Full 90 sec rest — power not cardio.',kit:'16kg KB'},
+      {name:'Woodchop — low to high',detail:'3×10 each. Band low on power tower, pull diagonally up and across. Toeside rotation.',alt:'Gym: cable low pulley',kit:'Resistance band'},
+      {name:'Single-leg RDL',detail:'3×8 each. One leg, DB opposite hand, hinge at hip, lower DB to floor, squeeze glute to return.',alt:'8–10kg DB · Progress to 14–16kg in W4',kit:'8–10kg dumbbell'},
+    ]},
+    {label:'Secondary · 13 min',exercises:[
+      {name:'Pull-up + hold at top',detail:'3×5. Pull to chin, pause 2 sec, slow lower.'},
+      {name:'Lateral band walk',detail:'3×15 each direction. Band above knees, shallow squat.',kit:'Medium band'},
+      {name:"Captain's chair knee raise — slow lower",detail:'3×10. 3-sec lowering phase, no swinging.'},
+    ]},
+    {label:'Finish · 10 min',exercises:[
+      {name:'Full stretch',detail:'Quads, hip flexors, thoracic.'},
+    ]},
+   ],notes:[]},
+
+  {id:'w3c',week:3,phase:2,day:'Friday',date:'2025-04-25',title:'Session C — Conditioning circuit',sub:'~50 min · Gym (swim anchor) · Freeletics-friendly',
+   blocks:[
+    {label:'Tuck practice · 8 min — do FIRST',exercises:[
+      {name:'Tuck holds',detail:'3×20 sec, 90 sec rest. Fresh legs — better position quality.'},
+    ]},
+    {label:'Main circuit · 28 min',exercises:[
+      {name:'3 rounds · 40 sec on / 20 sec rest · 2 min rest between rounds',detail:'A — Goblet squat (16kg DB)\nB — Push-up with rotation\nC — Reverse lunge alternating\nD — Plank shoulder tap\nE — Lateral squat step with band\nF — KB swing (16kg)\nG — Dead bug alternating',alt:'Log in Freeletics — custom interval 40 on / 20 rest'},
+    ]},
+    {label:'Balance board · 5 min',exercises:[
+      {name:'Lateral shift rhythm',detail:'3×60 sec. Rhythmic toe-to-heel shift — sustain for full minute.'},
+    ]},
+    {label:'Cardio · 15 min',exercises:[
+      {name:'Swimming',detail:'15 min easy.',alt:'If not at gym: 20 min jog or cycling.'},
+    ]},
+    {label:'Finish · 7 min',exercises:[
+      {name:'Full stretch + steam room',detail:'Steam room if at gym — great for quad recovery.'},
+    ]},
+   ],notes:[]},
+
+  {id:'w4a',week:4,phase:2,day:'Monday',date:'2025-04-28',title:'Session A — Squat strength: increase load',sub:'~55 min · Home or gym',
+   blocks:[
+    {label:'Primary · 28 min',exercises:[
+      {name:'Goblet squat — heavier',detail:'4×6. Reps 5–6 genuinely effortful. Form stays clean.',alt:'Home: double-pause goblet — 2-sec pause at bottom, 2-sec halfway up',kit:'18–20kg dumbbell'},
+      {name:'Bulgarian split squat — add load',detail:'3×10 each. 10–12kg DBs at sides. 3-sec lower, explosive up.',kit:'10–12kg dumbbells'},
+      {name:'Dips — more reps',detail:'3×12. Full range. Add weight (DB between knees) if bodyweight easy.'},
+    ]},
+    {label:'Secondary · 15 min',exercises:[
+      {name:'Tuck hold',detail:'3×25 sec. +5 sec from W3. Rest 90 sec.'},
+      {name:'Nordic hamstring curl',detail:'3×8. +2 reps from W3, same 4-sec lowering.'},
+      {name:'Step-up with knee drive',detail:'3×10 each. Power tower base step or solid step, drive opposite knee to hip height at top. Explosive up, controlled lower.'},
+    ]},
+    {label:'Balance board · 6 min',exercises:[
+      {name:'Riding stance + soft gaze',detail:'4×60 sec. Exact speedboard foot placement. Eyes soft-focused 2m ahead — actual downhill gaze.'},
+    ]},
+    {label:'Finish · 6 min',exercises:[
+      {name:'Full stretch',detail:'Hip flexors, quads, thoracic.'},
+    ]},
+   ],notes:[]},
+
+  {id:'w4b',week:4,phase:2,day:'Wednesday',date:'2025-04-30',title:'Session B — Explosive power',sub:'~50 min · Home or gym',
+   blocks:[
+    {label:'Primary · 25 min',exercises:[
+      {name:'KB swing — max power',detail:'4×10. Maximum explosive hip snap. If 16kg fully controlled, increase at gym.',kit:'16kg KB'},
+      {name:'Squat jump',detail:'3×8. First plyometric. Squat ~90°, jump, land softly forefoot-to-heel. Heel pain-free only.',alt:'Replace with fast step-up ×10 each if heel uncertain'},
+      {name:'DB around-the-world',detail:'3×10 each direction. DB vertical, swing horizontally around body. Rotational power.',kit:'12–14kg dumbbell'},
+    ]},
+    {label:'Secondary · 15 min',exercises:[
+      {name:'Pull-up max reps × 3 sets',detail:'Rest 2 min between. Record total — baseline for re-test in W6.'},
+      {name:'Copenhagen plank',detail:'3×25 sec each. +5 sec from W2.'},
+      {name:"Captain's chair windshield wiper — knees bent",detail:'3×8. Knees at 90°, rotate both legs side to side. Core rotation endurance.'},
+    ]},
+    {label:'Finish · 10 min',exercises:[
+      {name:'Full stretch',detail:''},
+    ]},
+   ],notes:[]},
+
+  {id:'w4c',week:4,phase:2,day:'Friday',date:'2025-05-02',title:'Session C — Circuit: higher intensity',sub:'~50 min · Gym (swim anchor) · Freeletics-friendly',
+   blocks:[
+    {label:'Tuck practice · 8 min — do FIRST',exercises:[
+      {name:'Tuck holds — fresh',detail:'3×25 sec, 90 sec rest.'},
+    ]},
+    {label:'Main circuit · 28 min',exercises:[
+      {name:'4 rounds · 40 sec on / 20 sec rest · 90 sec rest between rounds',detail:'A — Goblet squat (18kg DB)\nB — Burpee (or squat thrust if heel uncertain)\nC — Single-leg RDL alternating\nD — Push-up to side plank\nE — Lateral squat step with band\nF — KB swing (16kg)\nG — Dead bug',alt:'Log in Freeletics.'},
+    ]},
+    {label:'Balance board · 5 min',exercises:[
+      {name:'Eyes half-closed',detail:'3×60 sec. Soft focus, gaze 2m ahead. Trains spatial awareness.'},
+    ]},
+    {label:'Cardio · 15 min',exercises:[
+      {name:'Swimming',detail:'15 min easy.',alt:'If not at gym: 20 min jog or cycling.'},
+    ]},
+    {label:'Finish · 7 min',exercises:[
+      {name:'Full stretch + steam room',detail:'Steam room if at gym.'},
+    ]},
+   ],notes:[]},
+
+  {id:'w5a',week:5,phase:3,day:'Monday',date:'2025-05-05',title:'Session A — Strength maintenance + tuck peak',sub:'~55 min · Home or gym',
+   blocks:[
+    {label:'Primary · 22 min',exercises:[
+      {name:'Goblet squat',detail:'3×6. Same weight as W4. Maintain, not PR. Explosive up, controlled down.',kit:'18–20kg dumbbell'},
+      {name:'Bulgarian split squat',detail:'3×8 each. Explosive concentric, 4-sec lowering.',kit:'10–12kg dumbbells'},
+      {name:'Single-leg press or assisted pistol',detail:'3×10 each.',alt:'Gym: single-leg on leg press · Home: assisted pistol holding power tower upright'},
+    ]},
+    {label:'Tuck protocol · 12 min',exercises:[
+      {name:'Tuck hold series',detail:'4×25–30 sec, 90 sec rest. Peak tuck week. Exhale through pursed lips — do not hold breath.'},
+      {name:'Tuck → explosive stand × 8 reps',detail:'From tuck, drive up explosively as if exiting a hairpin. 15–20 times per run in events.'},
+    ]},
+    {label:'Secondary · 10 min',exercises:[
+      {name:'Nordic curl',detail:'2×8.'},
+      {name:'Single-leg calf raise',detail:'2×15 each.'},
+    ]},
+    {label:'Balance board · 6 min',exercises:[
+      {name:'Eyes closed intervals',detail:'4×60 sec. First 45 sec eyes open, final 15 sec eyes closed.'},
+    ]},
+    {label:'Finish · 5 min',exercises:[
+      {name:'Thorough stretch',detail:'Recovery quality = training quality now. Steam room if gym.'},
+    ]},
+   ],notes:[]},
+
+  {id:'w5b',week:5,phase:3,day:'Wednesday',date:'2025-05-07',title:'Session B — Run quality simulation',sub:'~50 min · Home or gym',
+   blocks:[
+    {label:'Run simulation · 30 min',exercises:[
+      {name:'5 blocks × 5 min effort, 3 min rest between',detail:'Each block:\n· Tuck 10 sec → explosive stand\n· 3× lateral squat step L + 3× R\n· Rotational KB swing L + R\n· Tuck 10 sec\n· Repeat until 5 min up',alt:'3 min rest intentionally shorter than event (20–40 min). Hold quality here = luxury at event.',kit:'16kg KB'},
+    ]},
+    {label:'Cardio + finish · 20 min',exercises:[
+      {name:'Swimming',detail:'20 min easy — flush after this session.',alt:'If not at gym: 20 min jog or cycling + full stretch.'},
+    ]},
+   ],notes:['Each 5-min block = one run. Full commitment, full stop between blocks.']},
+
+  {id:'w5c',week:5,phase:3,day:'Friday',date:'2025-05-09',title:'Session C — Power + sharpness',sub:'~50 min · Gym (swim anchor) — home if needed',
+   blocks:[
+    {label:'Primary · 20 min',exercises:[
+      {name:'KB swing — max power',detail:'4×6. Pure explosiveness. 90 sec full rest. Should feel more powerful than W1.',kit:'16kg KB'},
+      {name:'Jump squat',detail:'3×6. Land softly, full absorption. Heel certain only.',alt:'Fast step-up ×10 if any heel doubt'},
+      {name:'Woodchop — both directions',detail:'3×8 each. Explosive, full commitment.',kit:'Resistance band'},
+    ]},
+    {label:'Secondary · 15 min',exercises:[
+      {name:'Pull-up max × 3 sets',detail:'Re-test from W4. Should see 1–3 extra reps per set. Record.'},
+      {name:"Captain's chair wiper — legs straighter",detail:'3×6. Progress from bent-knee W4.'},
+      {name:'Copenhagen plank',detail:'3×30 sec each.'},
+    ]},
+    {label:'Balance board · 5 min',exercises:[
+      {name:'Eyes closed, full minute',detail:'3×60 sec. Target: 30–40 sec eyes closed.'},
+    ]},
+    {label:'Cardio + finish · 15 min',exercises:[
+      {name:'Swimming',detail:'15 min.',alt:'If not at gym: 20 min jog or cycling.'},
+      {name:'Long stretch',detail:'Last hard week — take your time.'},
+    ]},
+   ],notes:[]},
+
+  {id:'w6a',week:6,phase:3,day:'Monday',date:'2025-05-12',title:'Session A — Taper: sharp and light',sub:'~40 min · Home or gym',
+   blocks:[
+    {label:'Primary · 18 min',exercises:[
+      {name:'Goblet squat',detail:'2×5. Light. Sharp and explosive up.',kit:'16kg dumbbell'},
+      {name:'Bulgarian split squat',detail:'2×6 each. Controlled lower, explosive drive up.'},
+      {name:'Step-up with knee drive',detail:'2×8 each. Snappy.'},
+    ]},
+    {label:'Tuck · 8 min',exercises:[
+      {name:'Tuck holds',detail:'3×25 sec. Consolidate, do not push further. 90 sec rest.'},
+    ]},
+    {label:'Balance board + finish · 15 min',exercises:[
+      {name:'Balance board',detail:'3×60 sec casual. Keeping pattern fresh — not a workout.'},
+      {name:'Long stretch',detail:'Hip flexors, quads, thoracic. Steam room if available.'},
+    ]},
+   ],notes:['Taper week. Volume −40%. Fitness is banked — banking freshness now. Resist urge to do more.']},
+
+  {id:'w6b',week:6,phase:3,day:'Wednesday',date:'2025-05-14',title:'Session B — Activation only',sub:'~35 min · Home or gym',
+   blocks:[
+    {label:'Activation · 25 min',exercises:[
+      {name:'KB swing',detail:'3×6. Explosive, light, perfect form.',kit:'16kg KB'},
+      {name:'Pull-up',detail:'2×5. Clean, no grinding.'},
+      {name:'Woodchop or band rotation',detail:'2×8 each.',kit:'Resistance band'},
+      {name:'Single-leg glute bridge',detail:'2×10 each.'},
+      {name:'TKE',detail:'2×10 each. Light band. Final left knee care.',kit:'Light band'},
+    ]},
+    {label:'Finish · 10 min',exercises:[
+      {name:'Full stretch + balance board',detail:'3 min casual balance board. Leave feeling better than you started.'},
+    ]},
+   ],notes:['No circuits, no max efforts, no tuck intervals. Keeping everything switched on only.']},
+];
+
+const PHASES = [
+  {id:1,label:'Phase 1 · Wks 1–2',color:'#1D9E75',
+   desc:'Heel recovering — no impact loading, no jumping. Two sessions/week. VMO activation, hip stability, movement patterns before loading. DBs start at 8kg. Swim days are gym anchor days — home alternatives always available.'},
+  {id:2,label:'Phase 2 · Wks 3–4',color:'#534AB7',
+   desc:'Three sessions/week. Full squat depth. Bulgarian split squats and unilateral work take centre stage. DBs increase to 12–16kg. Tuck builds to 25 sec. Power tower used heavily for core. Swim anchor moves to Friday.'},
+  {id:3,label:'Phase 3 · Wks 5–6',color:'#BA7517',
+   desc:'Stop building, start sharpening. Training mirrors event structure: explosive efforts with genuine recovery. Tuck target 25–30 sec. Week 6 tapers — volume −40%, intensity maintained. Arrive at 22 May fresh and sharp.'},
+];
+
+const GLOSSARY = [
+  {term:'VMO (Vastus Medialis Oblique)',def:'The teardrop-shaped muscle on the inner lower part of your quad, just above and inside the kneecap. Fires hardest in the last 30° of knee straightening. Weak VMO = kneecap tracks laterally = anterior knee pain. Strengthening it is the primary fix for your left knee throughout this plan.'},
+  {term:'TKE — Terminal Knee Extension',def:'Band looped around back of your knee, anchored at knee height behind you. Micro-straighten the knee against resistance. Directly trains the VMO through its peak range. Gentle burn at inner kneecap — never a sharp pinch.'},
+  {term:'Bulgarian split squat',def:'Single-leg squat with rear foot elevated on a bench or sofa. Front foot well forward. Lower your rear knee toward the floor. Most important exercise in this plan — mirrors the asymmetric leg loading of every slide you do on a hill.'},
+  {term:'Nordic hamstring curl',def:'Kneel on a mat, hook feet under power tower base or sofa. Lower your whole body forward as slowly as possible (4–5 sec) using hamstrings to resist. Push up from floor with hands to return. Eccentric hamstring strength — one of the best exercises for knee resilience.'},
+  {term:'Dead bug',def:'Lie on back, arms to ceiling, knees at 90°. Slowly lower opposite arm and leg toward floor while exhaling. Lower back stays pressed to floor. Core anti-extension — trains the bracing pattern that protects your lower back in tuck.'},
+  {term:'Pallof press',def:'Side-on to band or cable at chest height. Press straight out, hold 2 sec, return. The band tries to rotate you — you resist. Anti-rotation core that directly replicates the bracing in a slide.'},
+  {term:'Copenhagen plank',def:'Side plank with top leg elevated on a bench or sofa. Inner thigh (adductor) of top leg does significant work. Builds lateral hip stability for edge control in turns.'},
+  {term:'Single-leg RDL',def:'Stand on one leg, DB in opposite hand. Hinge at hip — body and free leg go back like a lever. DB lowers toward floor. Return by squeezing standing glute. Hip hinge balance and hamstring under load.'},
+  {term:'KB swing',def:'Push hips back, snap hips forward aggressively — KB floats from hip power, not arms. At top: body straight, glutes squeezed. Most important power exercise. Directly mimics hip extension of exiting a slide at speed.'},
+  {term:'Woodchop',def:'Diagonal pull from one corner of body to the opposite. High-to-low = heelside slide rotation. Low-to-high = toeside. Power from rotating hips and torso. Pivot back foot to allow full rotation.'},
+  {term:"World's greatest stretch",def:'Lunge forward, plant same-side hand inside front foot, rotate top arm to sky and follow with eyes. Hold 2 sec. Hip flexor stretch + thoracic rotation + hamstring length in one move.'},
+  {term:'Thoracic open books',def:'Lie on side, knees stacked. Open top arm behind you as far as comfortable, upper back rotates. Hips stay still. Upper back mobility for slide rotations.'},
+  {term:'Hip CARs',def:'Stand on one leg. Draw the biggest, slowest circle possible with raised knee — forward, out, back, around. About 10 sec per circle. Every part of the hip joint under full control.'},
+  {term:"Captain's chair windshield wiper",def:'Arms on padded rests of power tower, lower body hanging. Knees at 90°, rotate both legs side to side. Core rotation endurance — the oblique demand of a long slide sequence. More controlled than hanging bar version.'},
+  {term:'Step-up with knee drive',def:'Step onto box or step. At the top, drive opposite knee to hip height explosively. Controlled lower. Push-off power and single-leg explosiveness for exiting slides.'},
+  {term:'Eccentric',def:'The lowering (lengthening) phase. Slow lowering in a squat or Nordic curl = eccentric training. Controls deceleration — exactly what joints need to absorb repeated impacts on a steep hill.'},
+  {term:'Proprioception',def:"Your body's ability to sense its own position without looking. Ankle and hip sensors that tell you where your board is mid-slide at 60km/h. What balance board training directly improves."},
+  {term:'Dips — chest variation',def:'Power tower dip bars, lean torso slightly forward (10–15°). Lower until upper arms roughly parallel to floor, push up. Forward lean shifts work toward chest and shoulders. Builds push strength and shoulder stability.'},
+];
+
+// ══════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════
+let scriptUrl = '';
+let logs = {};
+let isOnline = false;
+let selectedFeeling = null;
+let currentPhase = 1;
+let currentWeek = 1;
+let expandedSessions = new Set();
+
+// ══════════════════════════════════════════════════════════
+// STORAGE
+// ══════════════════════════════════════════════════════════
+function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+
+function loadLocal(){
+  scriptUrl = lsGet('scriptUrl') || '';
+  try{ logs = JSON.parse(lsGet('logs') || '{}'); }catch(e){ logs = {}; }
+}
+
+function saveLocal(){
+  lsSet('logs', JSON.stringify(logs));
+}
+
+// ══════════════════════════════════════════════════════════
+// GOOGLE SHEETS SYNC
+// ══════════════════════════════════════════════════════════
+function setSyncStatus(state, label){
+  const ind = document.getElementById('sync-indicator');
+  const dot = document.getElementById('sync-dot');
+  const lbl = document.getElementById('sync-label');
+  if(!ind) return;
+  ind.style.display = 'flex';
+  dot.className = 'sync-dot' + (state === 'syncing' ? ' syncing' : state === 'error' ? ' error' : '');
+  lbl.textContent = label;
+  if(state === 'synced') setTimeout(()=>{ ind.style.opacity='0'; setTimeout(()=>{ ind.style.display='none'; ind.style.opacity='1'; },400); }, 2000);
+}
+
+function gsUrl(params){
+  const qs = Object.entries(params).map(([k,v])=>
+    encodeURIComponent(k)+'='+encodeURIComponent(v??'')).join('&');
+  return scriptUrl + '?' + qs;
+}
+
+async function fetchFromSheet(){
+  if(!scriptUrl) return;
+  setSyncStatus('syncing','Syncing…');
+  try{
+    const r = await fetch(gsUrl({action:'getLogs'}));
+    const data = await r.json();
+    if(data.logs){
+      logs = {...logs, ...data.logs};
+      saveLocal();
+      setSyncStatus('synced','Synced');
+    }
+  }catch(e){
+    setSyncStatus('error','Offline');
+  }
+}
+
+async function pushToSheet(sessionId, entry){
+  if(!scriptUrl) return;
+  setSyncStatus('syncing','Saving…');
+  try{
+    const params = {
+      action:'saveLog',
+      sessionId,
+      status: entry.status||'',
+      feeling: entry.feeling||'',
+      note: encodeURIComponent(entry.note||''),
+    };
+    await fetch(gsUrl(params));
+    setSyncStatus('synced','Saved');
+  }catch(e){
+    setSyncStatus('error','Save failed — stored locally');
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// SETUP
+// ══════════════════════════════════════════════════════════
+async function connectSheet(){
+  const url = document.getElementById('script-url-input').value.trim();
+  if(!url.includes('script.google.com')){
+    document.getElementById('url-error').style.display = 'block';
+    return;
+  }
+  document.getElementById('url-error').style.display = 'none';
+  const btn = document.querySelector('#setup-screen .btn-primary');
+  btn.innerHTML = '<span class="spinner"></span> Connecting…';
+  btn.disabled = true;
+  try{
+    const r = await fetch(url + '?action=getLogs', {mode:'cors'});
+    const data = await r.json();
+    if(data.logs !== undefined){
+      scriptUrl = url;
+      lsSet('scriptUrl', url);
+      lsSet('setupDone','1');
+      logs = {...logs, ...data.logs};
+      saveLocal();
+      isOnline = true;
+      launchApp();
+    } else {
+      throw new Error('Unexpected response');
+    }
+  }catch(e){
+    btn.innerHTML = 'Connect and start';
+    btn.disabled = false;
+    document.getElementById('url-error').textContent = 'Could not connect. Check the URL and try again.';
+    document.getElementById('url-error').style.display = 'block';
+  }
+}
+
+function skipSetup(){
+  lsSet('setupDone','1');
+  launchApp();
+}
+
+function launchApp(){
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  renderAll();
+  if(scriptUrl) fetchFromSheet();
+}
+
+// ══════════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════════
+function todayStr(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function daysBetween(a,b){
+  return Math.round((new Date(b)-new Date(a))/86400000);
+}
+
+function formatDateLong(ds){
+  return new Date(ds+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+}
+
+function formatDateShort(ds){
+  return new Date(ds+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+}
+
+function phaseColor(p){ return ['','#1D9E75','#534AB7','#BA7517'][p]||'#444441'; }
+
+function feelingLabel(f){ return ['','😰 Tough','😤 Hard','💪 Good','🚀 Great'][f]||''; }
+
+function statusColor(s){ return s==='done'?'#1D9E75':s==='partial'?'#BA7517':'var(--border)'; }
+
+function getNext(fromDate){
+  return SESSIONS.filter(s=>s.date>=fromDate).sort((a,b)=>a.date.localeCompare(b.date))[0]||null;
+}
+
+// ══════════════════════════════════════════════════════════
+// RENDER SESSION
+// ══════════════════════════════════════════════════════════
+function renderSession(s, inToday){
+  const log = logs[s.id];
+  const status = log ? log.status : 'none';
+  const isExpanded = inToday || expandedSessions.has(s.id);
+
+  const blocksHTML = s.blocks.map(b=>`
+    <div class="block-label">${b.label}</div>
+    ${b.exercises.map(e=>`
+      <div class="ex-item">
+        <div class="ex-name">${e.name}</div>
+        ${e.detail ? `<div class="ex-detail">${e.detail.replace(/\n/g,'<br>')}</div>` : ''}
+        ${e.alt ? `<div class="ex-alt">${e.alt}</div>` : ''}
+        ${e.kit ? `<div class="ex-kit">🎒 ${e.kit}</div>` : ''}
+      </div>`).join('')}
+  `).join('');
+
+  const notesHTML = s.notes.map(n=>`<div class="ex-note">${n}</div>`).join('');
+
+  let logArea = '';
+  if(inToday){
+    if(log){
+      logArea = `
+        <div class="logged-summary">
+          <div class="logged-row">
+            <span class="logged-status" style="color:${statusColor(status)}">${status==='done'?'✓ Completed':'◐ Partial'}</span>
+            ${log.feeling ? `<span class="logged-feeling">${feelingLabel(log.feeling)}</span>` : ''}
+          </div>
+          ${log.note ? `<div class="logged-note">${log.note}</div>` : ''}
+          <span class="edit-link" onclick="editLog('${s.id}')">Edit log entry</span>
+        </div>`;
+    } else {
+      logArea = `
+        <div class="log-form" id="log-form-${s.id}">
+          <div class="log-form-title">Log this session</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:8px">How did it feel?</div>
+          <div class="feeling-grid">
+            ${[1,2,3,4].map(f=>`<button class="feel-btn" data-f="${f}" onclick="selectFeeling('${s.id}',${f})">${feelingLabel(f)}</button>`).join('')}
+          </div>
+          <textarea class="note-area" id="note-${s.id}" placeholder="Notes — left knee, which exercises you modified, what to tell Claude..."></textarea>
+          <div class="log-actions">
+            <button class="btn-done" id="btn-done-${s.id}" onclick="logSession('${s.id}','done')">✓ Done</button>
+            <button class="btn-partial" id="btn-partial-${s.id}" onclick="logSession('${s.id}','partial')">◐ Partial</button>
+          </div>
+        </div>`;
+    }
+  }
+
+  if(!isExpanded){
+    return `
+      <div class="session-card" onclick="toggleSession('${s.id}')">
+        <div class="sc-header">
+          <div class="sc-header-left">
+            <div class="sc-day">${s.day} · ${formatDateShort(s.date)}</div>
+            <div class="sc-title">${s.title}</div>
+            <div class="sc-sub">${s.sub}</div>
+          </div>
+          <div class="sc-status ${status==='done'?'status-done':status==='partial'?'status-partial':'status-none'}"></div>
+        </div>
+      </div>`;
+  }
+
+  return `
+    <div class="session-card">
+      <div class="sc-header" onclick="${!inToday?`toggleSession('${s.id}')`:''}" style="${!inToday?'cursor:pointer':''}">
+        <div class="sc-header-left">
+          <div class="sc-day">${s.day} · ${formatDateShort(s.date)}</div>
+          <div class="sc-title">${s.title}</div>
+          <div class="sc-sub">${s.sub}</div>
+        </div>
+        <div class="sc-status ${status==='done'?'status-done':status==='partial'?'status-partial':'status-none'}"></div>
+      </div>
+      <div class="sc-body">
+        ${blocksHTML}
+        ${notesHTML}
+        ${logArea}
+      </div>
+    </div>`;
+}
+
+function toggleSession(id){
+  if(expandedSessions.has(id)) expandedSessions.delete(id);
+  else expandedSessions.add(id);
+  renderPlan();
+}
+
+// ══════════════════════════════════════════════════════════
+// TODAY
+// ══════════════════════════════════════════════════════════
+function renderToday(){
+  const td = todayStr();
+  const daysToEvent = daysBetween(td,'2025-05-22');
+  const todaySession = SESSIONS.find(s=>s.date===td);
+  const started = td >= '2025-04-07';
+  const over = td > '2025-05-16';
+  const el = document.getElementById('today-content');
+
+  if(!started){
+    const daysTo = daysBetween(td,'2025-04-07');
+    el.innerHTML = `
+      <div class="hero" style="background:linear-gradient(135deg,#1D9E75,#0F6E56)">
+        <div class="hero-label">Programme starts Monday 7 April</div>
+        <div class="hero-title">Rest and prepare</div>
+        <div class="countdown-days">${daysTo}</div>
+        <div class="countdown-label">days until first session</div>
+        <div class="hero-meta" style="margin-top:12px"><span class="badge">Event: ${daysToEvent} days away</span></div>
+      </div>
+      <div class="session-card" style="padding:16px;text-align:center;color:var(--text2);font-size:14px">
+        Use this time to sort your equipment, complete the Google Sheet setup, and review Phase 1 in the Plan tab.
+      </div>`;
+    return;
+  }
+
+  if(over){
+    el.innerHTML = `
+      <div class="hero" style="background:linear-gradient(135deg,#BA7517,#633806)">
+        <div class="hero-label">Programme complete</div>
+        <div class="hero-title">Event time 🏁</div>
+        <div class="countdown-days">${Math.abs(daysToEvent)}</div>
+        <div class="countdown-label">${daysToEvent>0?'days to 22 May':daysToEvent===0?'Event day!':'days since event'}</div>
+      </div>`;
+    return;
+  }
+
+  if(todaySession){
+    const pc = todaySession.phase;
+    const colors = ['','#1D9E75,#085041','#534AB7,#26215C','#BA7517,#412402'];
+    el.innerHTML = `
+      <div class="hero" style="background:linear-gradient(135deg,${colors[pc]})">
+        <div class="hero-label">${formatDateLong(td)}</div>
+        <div class="hero-title">${todaySession.title}</div>
+        <div class="hero-sub">${todaySession.sub}</div>
+        <div class="hero-meta">
+          <span class="badge">Week ${todaySession.week} · Phase ${pc}</span>
+          <span class="badge">Event in ${daysToEvent} days</span>
+        </div>
+      </div>
+      ${renderSession(todaySession, true)}`;
+  } else {
+    const next = getNext(td);
+    const daysToNext = next ? daysBetween(td, next.date) : null;
+    el.innerHTML = `
+      <div class="hero" style="background:linear-gradient(135deg,#444441,#2C2C2A)">
+        <div class="hero-label">${formatDateLong(td)}</div>
+        <div class="hero-title">Rest day</div>
+        <div class="hero-sub">${next?`Next: ${next.day} — ${next.title}`:'Programme complete'}</div>
+        ${daysToNext!==null?`<div class="countdown-days">${daysToNext}</div><div class="countdown-label">day${daysToNext!==1?'s':''} until next session</div>`:''}
+        <div class="hero-meta" style="margin-top:12px"><span class="badge">Event in ${daysToEvent} days</span></div>
+      </div>
+      ${next ? `<div style="font-size:12px;color:var(--text3);margin:0 0 8px;font-weight:600;text-transform:uppercase;letter-spacing:.05em">Coming up</div>${renderSession(next,false)}` : ''}`;
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// LOG
+// ══════════════════════════════════════════════════════════
+function selectFeeling(sessionId, f){
+  selectedFeeling = f;
+  document.querySelectorAll(`#log-form-${sessionId} .feel-btn`).forEach(b=>{
+    b.classList.toggle('active', parseInt(b.dataset.f)===f);
+  });
+}
+
+async function logSession(id, status){
+  const note = document.getElementById(`note-${id}`)?.value?.trim() || '';
+  const entry = {status, feeling: selectedFeeling, note, loggedAt: new Date().toISOString()};
+  logs[id] = entry;
+  selectedFeeling = null;
+  saveLocal();
+  await pushToSheet(id, entry);
+  renderAll();
+}
+
+function editLog(id){
+  delete logs[id];
+  saveLocal();
+  renderAll();
+}
+
+// ══════════════════════════════════════════════════════════
+// PLAN
+// ══════════════════════════════════════════════════════════
+function renderPlan(){
+  // Phase pills
+  const pp = document.getElementById('phase-pills');
+  pp.innerHTML = PHASES.map(p=>`
+    <button class="phase-pill ${p.id===currentPhase?'active':''}"
+      style="${p.id===currentPhase?`background:${p.color};border-color:${p.color}`:''}"
+      onclick="switchPhase(${p.id})">${p.label}</button>`).join('');
+
+  // Phase desc
+  const ph = PHASES.find(p=>p.id===currentPhase);
+  document.getElementById('phase-desc').textContent = ph.desc;
+
+  // Week pills
+  const weeks = [...new Set(SESSIONS.filter(s=>s.phase===currentPhase).map(s=>s.week))];
+  if(!weeks.includes(currentWeek)) currentWeek = weeks[0];
+  const wp = document.getElementById('week-pills');
+  wp.innerHTML = weeks.map(w=>`
+    <button class="week-pill ${w===currentWeek?'active':''}"
+      style="${w===currentWeek?`background:${ph.color};border-color:${ph.color};color:#fff`:''}"
+      onclick="switchWeek(${w})">Week ${w}</button>`).join('');
+
+  // Sessions
+  const sessions = SESSIONS.filter(s=>s.week===currentWeek);
+  document.getElementById('plan-sessions').innerHTML = sessions.map(s=>renderSession(s,false)).join('');
+}
+
+function switchPhase(p){
+  currentPhase = p;
+  const weeks = [...new Set(SESSIONS.filter(s=>s.phase===p).map(s=>s.week))];
+  currentWeek = weeks[0];
+  renderPlan();
+}
+
+function switchWeek(w){
+  currentWeek = w;
+  renderPlan();
+}
+
+// ══════════════════════════════════════════════════════════
+// LOG HISTORY
+// ══════════════════════════════════════════════════════════
+function renderLog(){
+  const el = document.getElementById('log-content');
+  const entries = Object.entries(logs).sort((a,b)=>{
+    const sa = SESSIONS.find(s=>s.id===a[0]);
+    const sb = SESSIONS.find(s=>s.id===b[0]);
+    return (sb?.date||'').localeCompare(sa?.date||'');
+  });
+
+  const done = entries.filter(([,v])=>v.status==='done').length;
+  const partial = entries.filter(([,v])=>v.status==='partial').length;
+  const remaining = SESSIONS.length - entries.length;
+
+  if(!entries.length){
+    el.innerHTML = `
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num" style="color:#1D9E75">0</div><div class="stat-label">Completed</div></div>
+        <div class="stat-card"><div class="stat-num">0</div><div class="stat-label">Logged</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--text2)">${SESSIONS.length}</div><div class="stat-label">Remaining</div></div>
+      </div>
+      <div class="empty-state">
+        <div class="icon">📋</div>
+        <p>No sessions logged yet.<br>Complete your first session on Monday to see your history here.</p>
+      </div>`;
+    return;
+  }
+
+  el.innerHTML = `
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num" style="color:#1D9E75">${done}</div><div class="stat-label">Done</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:#BA7517">${partial}</div><div class="stat-label">Partial</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--text2)">${remaining}</div><div class="stat-label">Left</div></div>
+    </div>
+    ${entries.map(([id,entry])=>{
+      const s = SESSIONS.find(s=>s.id===id);
+      if(!s) return '';
+      return `<div class="log-entry">
+        <div class="le-header">
+          <div>
+            <div class="le-title">${s.title}</div>
+            <div class="le-date">${formatDateLong(s.date)}</div>
+          </div>
+          <span class="le-week" style="flex-shrink:0">Wk ${s.week}</span>
+        </div>
+        <div class="le-meta">
+          <span class="le-status" style="color:${statusColor(entry.status)}">${entry.status==='done'?'✓ Completed':'◐ Partial'}</span>
+          ${entry.feeling?`<span class="le-feeling">${feelingLabel(entry.feeling)}</span>`:''}
+        </div>
+        ${entry.note?`<div class="le-note">${entry.note}</div>`:''}
+      </div>`;
+    }).join('')}`;
+}
+
+// ══════════════════════════════════════════════════════════
+// GLOSSARY
+// ══════════════════════════════════════════════════════════
+function renderGlossary(){
+  document.getElementById('glossary-content').innerHTML = GLOSSARY.map(g=>`
+    <div class="gterm">
+      <div class="gterm-name">${g.term}</div>
+      <div class="gterm-def">${g.def}</div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════════════
+// SETTINGS
+// ══════════════════════════════════════════════════════════
+function renderSettings(){
+  document.getElementById('settings-sync-status').textContent =
+    scriptUrl ? 'Connected to Google Sheets — logs sync across all devices.' : 'Not connected — logs saved on this device only.';
+  document.getElementById('settings-url-display').textContent = scriptUrl || 'No URL configured';
+}
+
+async function updateScriptUrl(){
+  const url = document.getElementById('settings-url-input').value.trim();
+  if(!url) return;
+  scriptUrl = url;
+  lsSet('scriptUrl', url);
+  renderSettings();
+  await fetchFromSheet();
+  renderAll();
+}
+
+async function testConnection(){
+  if(!scriptUrl){ alert('No URL configured.'); return; }
+  try{
+    const r = await fetch(scriptUrl+'?action=getLogs', {mode:'cors'});
+    const d = await r.json();
+    alert(d.logs !== undefined ? '✓ Connection successful!' : '⚠ Connected but unexpected response.');
+  }catch(e){
+    alert('✗ Connection failed. Check the URL.');
+  }
+}
+
+function exportLogs(){
+  const blob = new Blob([JSON.stringify(logs,null,2)],{type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'training-logs.json';
+  a.click();
+}
+
+function resetApp(){
+  if(!confirm('Reset everything? This clears local settings and logs. Your Google Sheet is not affected.')) return;
+  localStorage.clear();
+  location.reload();
+}
+
+// ══════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+// ══════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════
+function renderAll(){
+  renderToday();
+  renderPlan();
+  renderLog();
+  renderGlossary();
+  renderSettings();
+}
+
+loadLocal();
+if(lsGet('setupDone')){
+  document.getElementById('setup-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  renderAll();
+  if(scriptUrl) fetchFromSheet();
+}
+</script>
+</body>
+</html>
