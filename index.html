@@ -302,7 +302,7 @@ input[type=text]:focus{border-color:var(--ph2)}
 // DATA
 // ══════════════════════════════════════════════════════════
 const SESSIONS = [
-  {id:'w1a',week:1,phase:1,day:'Monday',date:'2025-04-07',title:'Session A — Lower body activation',sub:'~50 min · Home or gym',
+  {id:'w1a',week:1,phase:1,session:1,date:'2026-04-07',title:'Week 1 · Session 1 — Lower body activation',sub:'~50 min · Home or gym',
    blocks:[
     {label:'Joint prep · 5 min',exercises:[
       {name:'Ankle circles + heel raises',detail:'2×12 off a step. Test heel — mild ache fine, sharp pain stop.'},
@@ -328,7 +328,7 @@ const SESSIONS = [
     ]},
    ],notes:['⚠ Left knee: TKEs should feel like a gentle burn at inner kneecap — not a sharp pinch. Halve band resistance if sharp anterior pain.']},
 
-  {id:'w1b',week:1,phase:1,day:'Thursday',date:'2025-04-10',title:'Session B — Upper body + core',sub:'~50 min · Gym (swim anchor) — home if needed',
+  {id:'w1b',week:1,phase:1,session:2,date:'2026-04-10',title:'Week 1 · Session 2 — Upper body + core',sub:'~50 min · Gym (swim anchor) — home if needed',
    blocks:[
     {label:'Joint prep · 5 min',exercises:[
       {name:'Shoulder circles + arm swings',detail:'30 sec each direction.'},
@@ -354,7 +354,7 @@ const SESSIONS = [
     ]},
    ],notes:['Swim anchor day — gym preferred. If not possible: power tower + DBs + bands at home. Replace swim with 15–20 min easy jog or cycle.']},
 
-  {id:'w2a',week:2,phase:1,day:'Monday',date:'2025-04-14',title:'Session A — Lower body: add range',sub:'~50 min · Home or gym',
+  {id:'w2a',week:2,phase:1,session:1,date:'2026-04-14',title:'Week 2 · Session 1 — Lower body: add range',sub:'~50 min · Home or gym',
    blocks:[
     {label:'Joint prep · 5 min',exercises:[
       {name:'Dynamic squat hold with reach',detail:'10 reps. Squat, reach arms forward, hold 2 sec, stand.'},
@@ -379,7 +379,7 @@ const SESSIONS = [
     ]},
    ],notes:[]},
 
-  {id:'w2b',week:2,phase:1,day:'Thursday',date:'2025-04-17',title:'Session B — Upper + rotational core',sub:'~50 min · Gym (swim anchor) — home if needed',
+  {id:'w2b',week:2,phase:1,session:2,date:'2026-04-17',title:'Week 2 · Session 2 — Upper + rotational core',sub:'~50 min · Gym (swim anchor) — home if needed',
    blocks:[
     {label:'Joint prep · 5 min',exercises:[
       {name:"World's greatest stretch",detail:'5 each side. Lunge, same-side hand to floor, rotate top arm to sky, hold 2 sec.'},
@@ -403,7 +403,7 @@ const SESSIONS = [
     ]},
    ],notes:['Swim anchor day. Gym if possible. Home alternative: power tower + DBs + bands. Swap swim for jog or cycle.']},
 
-  {id:'w3a',week:3,phase:2,day:'Monday',date:'2025-04-21',title:'Session A — Squat strength + VMO',sub:'~55 min · Home or gym',
+  {id:'w3a',week:3,phase:2,session:1,date:'2026-04-21',title:'Week 3 · Session 1 — Squat strength + VMO',sub:'~55 min · Home or gym',
    blocks:[
     {label:'Joint prep · 5 min',exercises:[
       {name:'Full bodyweight squat hold',detail:'2×30 sec. Assess left knee at depth. If anterior pain, cap at 100°.'},
@@ -428,7 +428,7 @@ const SESSIONS = [
     ]},
    ],notes:['Nordic curl: hook feet under bottom crossbar of power tower base — check it is stable first.']},
 
-  {id:'w3b',week:3,phase:2,day:'Wednesday',date:'2025-04-23',title:'Session B — Power + rotation',sub:'~50 min · Home or gym',
+  {id:'w3b',week:3,phase:2,session:2,date:'2026-04-23',title:'Week 3 · Session 2 — Power + rotation',sub:'~50 min · Home or gym',
    blocks:[
     {label:'Joint prep · 5 min',exercises:[
       {name:'Thoracic rotation',detail:'10 each. Cross-legged, hands behind head, rotate upper back.'},
@@ -449,7 +449,7 @@ const SESSIONS = [
     ]},
    ],notes:[]},
 
-  {id:'w3c',week:3,phase:2,day:'Friday',date:'2025-04-25',title:'Session C — Conditioning circuit',sub:'~50 min · Gym (swim anchor) · Freeletics-friendly',
+  {id:'w3c',week:3,phase:2,session:3,date:'2026-04-25',title:'Week 3 · Session 3 — Conditioning circuit',sub:'~50 min · Gym (swim anchor) · Freeletics-friendly',
    blocks:[
     {label:'Tuck practice · 8 min — do FIRST',exercises:[
       {name:'Tuck holds',detail:'3×20 sec, 90 sec rest. Fresh legs — better position quality.'},
@@ -468,7 +468,7 @@ const SESSIONS = [
     ]},
    ],notes:[]},
 
-  {id:'w4a',week:4,phase:2,day:'Monday',date:'2025-04-28',title:'Session A — Squat strength: increase load',sub:'~55 min · Home or gym',
+  {id:'w4a',week:4,phase:2,session:1,date:'2026-04-28',title:'Week 4 · Session 1 — Squat strength: increase load',sub:'~55 min · Home or gym',
    blocks:[
     {label:'Primary · 28 min',exercises:[
       {name:'Goblet squat — heavier',detail:'4×6. Reps 5–6 genuinely effortful. Form stays clean.',alt:'Home: double-pause goblet — 2-sec pause at bottom, 2-sec halfway up',kit:'18–20kg dumbbell'},
@@ -488,7 +488,7 @@ const SESSIONS = [
     ]},
    ],notes:[]},
 
-  {id:'w4b',week:4,phase:2,day:'Wednesday',date:'2025-04-30',title:'Session B — Explosive power',sub:'~50 min · Home or gym',
+  {id:'w4b',week:4,phase:2,session:2,date:'2026-04-30',title:'Week 4 · Session 2 — Explosive power',sub:'~50 min · Home or gym',
    blocks:[
     {label:'Primary · 25 min',exercises:[
       {name:'KB swing — max power',detail:'4×10. Maximum explosive hip snap. If 16kg fully controlled, increase at gym.',kit:'16kg KB'},
@@ -505,7 +505,7 @@ const SESSIONS = [
     ]},
    ],notes:[]},
 
-  {id:'w4c',week:4,phase:2,day:'Friday',date:'2025-05-02',title:'Session C — Circuit: higher intensity',sub:'~50 min · Gym (swim anchor) · Freeletics-friendly',
+  {id:'w4c',week:4,phase:2,session:3,date:'2026-05-02',title:'Week 4 · Session 3 — Circuit: higher intensity',sub:'~50 min · Gym (swim anchor) · Freeletics-friendly',
    blocks:[
     {label:'Tuck practice · 8 min — do FIRST',exercises:[
       {name:'Tuck holds — fresh',detail:'3×25 sec, 90 sec rest.'},
@@ -524,7 +524,7 @@ const SESSIONS = [
     ]},
    ],notes:[]},
 
-  {id:'w5a',week:5,phase:3,day:'Monday',date:'2025-05-05',title:'Session A — Strength maintenance + tuck peak',sub:'~55 min · Home or gym',
+  {id:'w5a',week:5,phase:3,session:1,date:'2026-05-05',title:'Week 5 · Session 1 — Strength maintenance + tuck peak',sub:'~55 min · Home or gym',
    blocks:[
     {label:'Primary · 22 min',exercises:[
       {name:'Goblet squat',detail:'3×6. Same weight as W4. Maintain, not PR. Explosive up, controlled down.',kit:'18–20kg dumbbell'},
@@ -547,7 +547,7 @@ const SESSIONS = [
     ]},
    ],notes:[]},
 
-  {id:'w5b',week:5,phase:3,day:'Wednesday',date:'2025-05-07',title:'Session B — Run quality simulation',sub:'~50 min · Home or gym',
+  {id:'w5b',week:5,phase:3,session:2,date:'2026-05-07',title:'Week 5 · Session 2 — Run quality simulation',sub:'~50 min · Home or gym',
    blocks:[
     {label:'Run simulation · 30 min',exercises:[
       {name:'5 blocks × 5 min effort, 3 min rest between',detail:'Each block:\n· Tuck 10 sec → explosive stand\n· 3× lateral squat step L + 3× R\n· Rotational KB swing L + R\n· Tuck 10 sec\n· Repeat until 5 min up',alt:'3 min rest intentionally shorter than event (20–40 min). Hold quality here = luxury at event.',kit:'16kg KB'},
@@ -557,7 +557,7 @@ const SESSIONS = [
     ]},
    ],notes:['Each 5-min block = one run. Full commitment, full stop between blocks.']},
 
-  {id:'w5c',week:5,phase:3,day:'Friday',date:'2025-05-09',title:'Session C — Power + sharpness',sub:'~50 min · Gym (swim anchor) — home if needed',
+  {id:'w5c',week:5,phase:3,session:3,date:'2026-05-09',title:'Week 5 · Session 3 — Power + sharpness',sub:'~50 min · Gym (swim anchor) — home if needed',
    blocks:[
     {label:'Primary · 20 min',exercises:[
       {name:'KB swing — max power',detail:'4×6. Pure explosiveness. 90 sec full rest. Should feel more powerful than W1.',kit:'16kg KB'},
@@ -578,7 +578,7 @@ const SESSIONS = [
     ]},
    ],notes:[]},
 
-  {id:'w6a',week:6,phase:3,day:'Monday',date:'2025-05-12',title:'Session A — Taper: sharp and light',sub:'~40 min · Home or gym',
+  {id:'w6a',week:6,phase:3,session:1,date:'2026-05-12',title:'Week 6 · Session 1 — Taper: sharp and light',sub:'~40 min · Home or gym',
    blocks:[
     {label:'Primary · 18 min',exercises:[
       {name:'Goblet squat',detail:'2×5. Light. Sharp and explosive up.',kit:'16kg dumbbell'},
@@ -594,7 +594,7 @@ const SESSIONS = [
     ]},
    ],notes:['Taper week. Volume −40%. Fitness is banked — banking freshness now. Resist urge to do more.']},
 
-  {id:'w6b',week:6,phase:3,day:'Wednesday',date:'2025-05-14',title:'Session B — Activation only',sub:'~35 min · Home or gym',
+  {id:'w6b',week:6,phase:3,session:2,date:'2026-05-14',title:'Week 6 · Session 2 — Activation only',sub:'~35 min · Home or gym',
    blocks:[
     {label:'Activation · 25 min',exercises:[
       {name:'KB swing',detail:'3×6. Explosive, light, perfect form.',kit:'16kg KB'},
@@ -642,7 +642,7 @@ const GLOSSARY = [
 // ══════════════════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════════════════
-let scriptUrl = '';
+let scriptUrl = 'https://script.google.com/macros/s/AKfycbwfuNw1fWq_VTNvU0BxjZmTCnM-Yg0hPgbUz4C6EQ7r6UPSVIf9RC5Ohfdog-YxeeMd/exec';
 let logs = {};
 let isOnline = false;
 let selectedFeeling = null;
@@ -657,7 +657,7 @@ function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 
 function loadLocal(){
-  scriptUrl = lsGet('scriptUrl') || '';
+  scriptUrl = lsGet('scriptUrl') || 'https://script.google.com/macros/s/AKfycbwfuNw1fWq_VTNvU0BxjZmTCnM-Yg0hPgbUz4C6EQ7r6UPSVIf9RC5Ohfdog-YxeeMd/exec';
   try{ logs = JSON.parse(lsGet('logs') || '{}'); }catch(e){ logs = {}; }
 }
 
@@ -851,8 +851,8 @@ function renderSession(s, inToday){
       <div class="session-card" onclick="toggleSession('${s.id}')">
         <div class="sc-header">
           <div class="sc-header-left">
-            <div class="sc-day">${s.day} · ${formatDateShort(s.date)}</div>
-            <div class="sc-title">${s.title}</div>
+            <div class="sc-day">${s.title.split(' — ')[0]}</div>
+            <div class="sc-title">${s.title.includes(' — ') ? s.title.split(' — ').slice(1).join(' — ') : s.title}</div>
             <div class="sc-sub">${s.sub}</div>
           </div>
           <div class="sc-status ${status==='done'?'status-done':status==='partial'?'status-partial':'status-none'}"></div>
@@ -864,8 +864,8 @@ function renderSession(s, inToday){
     <div class="session-card">
       <div class="sc-header" onclick="${!inToday?`toggleSession('${s.id}')`:''}" style="${!inToday?'cursor:pointer':''}">
         <div class="sc-header-left">
-          <div class="sc-day">${s.day} · ${formatDateShort(s.date)}</div>
-          <div class="sc-title">${s.title}</div>
+          <div class="sc-day">${s.title.split(' — ')[0]}</div>
+          <div class="sc-title">${s.title.includes(' — ') ? s.title.split(' — ').slice(1).join(' — ') : s.title}</div>
           <div class="sc-sub">${s.sub}</div>
         </div>
         <div class="sc-status ${status==='done'?'status-done':status==='partial'?'status-partial':'status-none'}"></div>
@@ -889,21 +889,23 @@ function toggleSession(id){
 // ══════════════════════════════════════════════════════════
 function renderToday(){
   const td = todayStr();
-  const daysToEvent = daysBetween(td,'2025-05-22');
+  const daysToEvent = daysBetween(td,'2026-05-22');
+  const daysToEnd = daysBetween(td,'2026-05-22');
+  const sessionsLeft = SESSIONS.filter(s => !logs[s.id]).length;
   const todaySession = SESSIONS.find(s=>s.date===td);
-  const started = td >= '2025-04-07';
-  const over = td > '2025-05-16';
+  const started = td >= '2026-04-07';
+  const over = td > '2026-05-22';
   const el = document.getElementById('today-content');
 
   if(!started){
-    const daysTo = daysBetween(td,'2025-04-07');
+    const daysTo = daysBetween(td,'2026-04-06');
     el.innerHTML = `
       <div class="hero" style="background:linear-gradient(135deg,#1D9E75,#0F6E56)">
         <div class="hero-label">Programme starts Monday 7 April</div>
         <div class="hero-title">Rest and prepare</div>
         <div class="countdown-days">${daysTo}</div>
         <div class="countdown-label">days until first session</div>
-        <div class="hero-meta" style="margin-top:12px"><span class="badge">Event: ${daysToEvent} days away</span></div>
+        <div class="hero-meta" style="margin-top:12px"><span class="badge">${daysToEnd} days to end of training</span></div>
       </div>
       <div class="session-card" style="padding:16px;text-align:center;color:var(--text2);font-size:14px">
         Use this time to sort your equipment, complete the Google Sheet setup, and review Phase 1 in the Plan tab.
@@ -928,11 +930,12 @@ function renderToday(){
     el.innerHTML = `
       <div class="hero" style="background:linear-gradient(135deg,${colors[pc]})">
         <div class="hero-label">${formatDateLong(td)}</div>
-        <div class="hero-title">${todaySession.title}</div>
+        <div class="hero-label-small" style="font-size:13px;opacity:.8;margin-bottom:4px">${todaySession.title.split(' — ')[0]}</div><div class="hero-title">${todaySession.title.includes(' — ') ? todaySession.title.split(' — ').slice(1).join(' — ') : todaySession.title}</div>
         <div class="hero-sub">${todaySession.sub}</div>
         <div class="hero-meta">
           <span class="badge">Week ${todaySession.week} · Phase ${pc}</span>
-          <span class="badge">Event in ${daysToEvent} days</span>
+          <span class="badge">${daysToEnd} days to end of training</span>
+          <span class="badge">${sessionsLeft} sessions left</span>
         </div>
       </div>
       ${renderSession(todaySession, true)}`;
@@ -943,9 +946,12 @@ function renderToday(){
       <div class="hero" style="background:linear-gradient(135deg,#444441,#2C2C2A)">
         <div class="hero-label">${formatDateLong(td)}</div>
         <div class="hero-title">Rest day</div>
-        <div class="hero-sub">${next?`Next: ${next.day} — ${next.title}`:'Programme complete'}</div>
+        <div class="hero-sub">${next?`Next up: ${next.title}`:'Programme complete'}</div>
         ${daysToNext!==null?`<div class="countdown-days">${daysToNext}</div><div class="countdown-label">day${daysToNext!==1?'s':''} until next session</div>`:''}
-        <div class="hero-meta" style="margin-top:12px"><span class="badge">Event in ${daysToEvent} days</span></div>
+        <div class="hero-meta" style="margin-top:12px">
+          <span class="badge">${daysToEnd} days to end of training</span>
+          <span class="badge">${sessionsLeft} sessions left</span>
+        </div>
       </div>
       ${next ? `<div style="font-size:12px;color:var(--text3);margin:0 0 8px;font-weight:600;text-transform:uppercase;letter-spacing:.05em">Coming up</div>${renderSession(next,false)}` : ''}`;
   }
