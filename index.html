@@ -889,8 +889,8 @@ function toggleSession(id){
 // ══════════════════════════════════════════════════════════
 function renderToday(){
   const td = todayStr();
-  const daysToEvent = daysBetween(td,'2026-05-22');
-  const daysToEnd = daysBetween(td,'2026-05-22');
+  const daysToEvent = daysBetween(td,'2026-05-20');
+  const daysToEnd = daysBetween(td,'2026-05-20');
   const sessionsLeft = SESSIONS.filter(s => !logs[s.id]).length;
   const todaySession = SESSIONS.find(s=>s.date===td);
   const started = td >= '2026-04-07';
@@ -905,7 +905,7 @@ function renderToday(){
         <div class="hero-title">Rest and prepare</div>
         <div class="countdown-days">${daysTo}</div>
         <div class="countdown-label">days until first session</div>
-        <div class="hero-meta" style="margin-top:12px"><span class="badge">${daysToEnd} days to end of training</span></div>
+        <div class="hero-meta" style="margin-top:12px"><span class="badge">${daysToEnd} days to last session</span></div>
       </div>
       <div class="session-card" style="padding:16px;text-align:center;color:var(--text2);font-size:14px">
         Use this time to sort your equipment, complete the Google Sheet setup, and review Phase 1 in the Plan tab.
@@ -934,7 +934,7 @@ function renderToday(){
         <div class="hero-sub">${todaySession.sub}</div>
         <div class="hero-meta">
           <span class="badge">Week ${todaySession.week} · Phase ${pc}</span>
-          <span class="badge">${daysToEnd} days to end of training</span>
+          <span class="badge">${daysToEnd} days to last session</span>
           <span class="badge">${sessionsLeft} sessions left</span>
         </div>
       </div>
@@ -949,7 +949,7 @@ function renderToday(){
         <div class="hero-sub">${next?`Next up: ${next.title}`:'Programme complete'}</div>
         ${daysToNext!==null?`<div class="countdown-days">${daysToNext}</div><div class="countdown-label">day${daysToNext!==1?'s':''} until next session</div>`:''}
         <div class="hero-meta" style="margin-top:12px">
-          <span class="badge">${daysToEnd} days to end of training</span>
+          <span class="badge">${daysToEnd} days to last session</span>
           <span class="badge">${sessionsLeft} sessions left</span>
         </div>
       </div>
