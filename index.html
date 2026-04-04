@@ -932,9 +932,10 @@ function renderToday(){
         <div class="hero-label">${formatDateLong(td)}</div>
         <div class="hero-label-small" style="font-size:13px;opacity:.8;margin-bottom:4px">${todaySession.title.split(' — ')[0]}</div><div class="hero-title">${todaySession.title.includes(' — ') ? todaySession.title.split(' — ').slice(1).join(' — ') : todaySession.title}</div>
         <div class="hero-sub">${todaySession.sub}</div>
-        <div class="hero-meta">
+        <div class="countdown-days">${daysToEnd}</div>
+        <div class="countdown-label">days to last session</div>
+        <div class="hero-meta" style="margin-top:8px">
           <span class="badge">Week ${todaySession.week} · Phase ${pc}</span>
-          <span class="badge">${daysToEnd} days to last session</span>
           <span class="badge">${sessionsLeft} sessions left</span>
         </div>
       </div>
@@ -947,9 +948,9 @@ function renderToday(){
         <div class="hero-label">${formatDateLong(td)}</div>
         <div class="hero-title">Rest day</div>
         <div class="hero-sub">${next?`Next up: ${next.title}`:'Programme complete'}</div>
-        ${daysToNext!==null?`<div class="countdown-days">${daysToNext}</div><div class="countdown-label">day${daysToNext!==1?'s':''} until next session</div>`:''}
+        <div class="countdown-days">${daysToEnd}</div>
+        <div class="countdown-label">days to last session</div>
         <div class="hero-meta" style="margin-top:12px">
-          <span class="badge">${daysToEnd} days to last session</span>
           <span class="badge">${sessionsLeft} sessions left</span>
         </div>
       </div>
