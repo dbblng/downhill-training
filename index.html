@@ -87,6 +87,26 @@ input[type=text]:focus{border-color:var(--ph2)}
 .ex-kit{font-size:11px;color:var(--ph2);margin-top:2px;font-weight:500}
 .ex-note{background:var(--bg3);border-left:3px solid var(--border2);border-radius:0 6px 6px 0;padding:8px 10px;margin:8px 0;font-size:13px;color:var(--text2);line-height:1.5}
 
+/* ── Exercise Checkboxes ── */
+.ex-item{padding:8px 0;border-bottom:1px solid var(--border);line-height:1.5;display:flex;align-items:flex-start;gap:10px}
+.ex-item:last-child{border-bottom:none}
+.ex-check{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border2);background:var(--bg);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .15s}
+.ex-check.checked{background:#1D9E75;border-color:#1D9E75}
+.ex-check.checked::after{content:'';display:block;width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translate(-1px,-1px)}
+.ex-content{flex:1}
+.ex-name{font-size:14px;font-weight:600;color:var(--text)}
+.ex-name.done{color:var(--text3);text-decoration:line-through}
+.ex-detail{font-size:13px;color:var(--text2);margin-top:2px;white-space:pre-line}
+.ex-alt{font-size:12px;color:var(--text3);margin-top:3px;font-style:italic}
+.ex-kit{font-size:11px;color:var(--ph2);margin-top:2px;font-weight:500}
+.block-progress{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.block-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin:12px 0 6px;flex:1}
+.block-label:first-child{margin-top:0}
+.block-tick{font-size:11px;color:#1D9E75;font-weight:600}
+.session-progress-bar{height:4px;background:var(--border);border-radius:2px;margin:10px 0;overflow:hidden}
+.session-progress-fill{height:100%;background:#1D9E75;border-radius:2px;transition:width .3s}
+.progress-label{font-size:12px;color:var(--text3);margin-bottom:8px}
+
 /* ── Log Form ── */
 .log-form{background:var(--bg2);border-radius:var(--radius);padding:16px;margin-top:12px}
 .log-form-title{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text)}
@@ -711,6 +731,7 @@ async function pushToSheet(sessionId, entry){
       status: entry.status||'',
       feeling: entry.feeling||'',
       note: encodeURIComponent(entry.note||''),
+      ticked: encodeURIComponent(JSON.stringify(entry.ticked||{})),
     };
     await fetch(gsUrl(params));
     setSyncStatus('synced','Saved');
@@ -799,51 +820,102 @@ function getNext(fromDate){
 // ══════════════════════════════════════════════════════════
 // RENDER SESSION
 // ══════════════════════════════════════════════════════════
+
+// Generate stable exercise ID from session id + block index + exercise index
+function exId(sid, bi, ei){ return sid+'_b'+bi+'_e'+ei; }
+
+// Get ticked exercises for a session from logs
+function getTicked(sid){ return (logs[sid] && logs[sid].ticked) ? logs[sid].ticked : {}; }
+
+// Count total exercises in a session
+function countExercises(s){ return s.blocks.reduce((t,b)=>t+b.exercises.length,0); }
+
+// Count ticked exercises
+function countTicked(sid, s){ const t=getTicked(sid); return s.blocks.reduce((tot,b,bi)=>tot+b.exercises.filter((_,ei)=>t[exId(sid,bi,ei)]).length,0); }
+
+// Auto-calculate status from ticks
+function calcStatus(sid, s){
+  const total = countExercises(s);
+  const ticked = countTicked(sid, s);
+  if(ticked===0) return 'none';
+  if(ticked===total) return 'done';
+  return 'partial';
+}
+
+// Toggle a single exercise tick
+async function toggleEx(sid, bi, ei){
+  const s = SESSIONS.find(x=>x.id===sid);
+  if(!logs[sid]) logs[sid] = {ticked:{}, feeling:null, note:'', loggedAt:null};
+  if(!logs[sid].ticked) logs[sid].ticked = {};
+  const key = exId(sid,bi,ei);
+  if(logs[sid].ticked[key]) delete logs[sid].ticked[key];
+  else logs[sid].ticked[key] = 1;
+  // Auto-set status
+  const newStatus = calcStatus(sid, s);
+  logs[sid].status = newStatus;
+  if(newStatus !== 'none' && !logs[sid].loggedAt) logs[sid].loggedAt = new Date().toISOString();
+  saveLocal();
+  await pushToSheet(sid, logs[sid]);
+  renderAll();
+}
+
 function renderSession(s, inToday){
   const log = logs[s.id];
-  const status = log ? log.status : 'none';
+  const ticked = getTicked(s.id);
+  const status = log ? (log.status||'none') : 'none';
   const isExpanded = inToday || expandedSessions.has(s.id);
+  const totalEx = countExercises(s);
+  const tickedCount = log ? countTicked(s.id, s) : 0;
 
-  const blocksHTML = s.blocks.map(b=>`
-    <div class="block-label">${b.label}</div>
-    ${b.exercises.map(e=>`
-      <div class="ex-item">
-        <div class="ex-name">${e.name}</div>
-        ${e.detail ? `<div class="ex-detail">${e.detail.replace(/\n/g,'<br>')}</div>` : ''}
-        ${e.alt ? `<div class="ex-alt">${e.alt}</div>` : ''}
-        ${e.kit ? `<div class="ex-kit">🎒 ${e.kit}</div>` : ''}
-      </div>`).join('')}
-  `).join('');
+  // Blocks with checkboxes
+  const blocksHTML = s.blocks.map((b,bi)=>{
+    const blockTotal = b.exercises.length;
+    const blockTicked = b.exercises.filter((_,ei)=>ticked[exId(s.id,bi,ei)]).length;
+    const blockDone = blockTotal>0 && blockTicked===blockTotal;
+    return `
+      <div class="block-progress">
+        <div class="block-label" style="margin:0">${b.label}</div>
+        ${blockDone ? '<span class="block-tick">✓</span>' : blockTicked>0 ? `<span style="font-size:11px;color:var(--ph3)">${blockTicked}/${blockTotal}</span>` : ''}
+      </div>
+      ${b.exercises.map((e,ei)=>{
+        const key = exId(s.id,bi,ei);
+        const done = !!ticked[key];
+        return `
+          <div class="ex-item">
+            <div class="ex-check ${done?'checked':''}" onclick="toggleEx('${s.id}',${bi},${ei})"></div>
+            <div class="ex-content">
+              <div class="ex-name ${done?'done':''}">${e.name}</div>
+              ${e.detail ? `<div class="ex-detail">${e.detail.replace(/\n/g,'<br>')}</div>` : ''}
+              ${e.alt ? `<div class="ex-alt">${e.alt}</div>` : ''}
+              ${e.kit ? `<div class="ex-kit">🎒 ${e.kit}</div>` : ''}
+            </div>
+          </div>`;
+      }).join('')}`;
+  }).join('');
 
   const notesHTML = s.notes.map(n=>`<div class="ex-note">${n}</div>`).join('');
 
+  // Progress bar (only when in today and has some ticks)
+  const progressHTML = (inToday && totalEx>0) ? `
+    <div class="session-progress-bar"><div class="session-progress-fill" style="width:${Math.round(tickedCount/totalEx*100)}%"></div></div>
+    <div class="progress-label">${tickedCount} of ${totalEx} exercises · ${status==='done'?'<span style="color:#1D9E75;font-weight:600">Session complete ✓</span>':status==='partial'?'<span style="color:#BA7517">Partial</span>':'Not started'}</div>` : '';
+
+  // Log form — feeling + notes + export (shown when session has been started)
   let logArea = '';
   if(inToday){
-    if(log){
-      logArea = `
-        <div class="logged-summary">
-          <div class="logged-row">
-            <span class="logged-status" style="color:${statusColor(status)}">${status==='done'?'✓ Completed':'◐ Partial'}</span>
-            ${log.feeling ? `<span class="logged-feeling">${feelingLabel(log.feeling)}</span>` : ''}
-          </div>
-          ${log.note ? `<div class="logged-note">${log.note}</div>` : ''}
-          <span class="edit-link" onclick="editLog('${s.id}')">Edit log entry</span>
-        </div>`;
-    } else {
-      logArea = `
-        <div class="log-form" id="log-form-${s.id}">
-          <div class="log-form-title">Log this session</div>
-          <div style="font-size:12px;color:var(--text3);margin-bottom:8px">How did it feel?</div>
-          <div class="feeling-grid">
-            ${[1,2,3,4].map(f=>`<button class="feel-btn" data-f="${f}" onclick="selectFeeling('${s.id}',${f})">${feelingLabel(f)}</button>`).join('')}
-          </div>
-          <textarea class="note-area" id="note-${s.id}" placeholder="Notes — left knee, which exercises you modified, what to tell Claude..."></textarea>
-          <div class="log-actions">
-            <button class="btn-done" id="btn-done-${s.id}" onclick="logSession('${s.id}','done')">✓ Done</button>
-            <button class="btn-partial" id="btn-partial-${s.id}" onclick="logSession('${s.id}','partial')">◐ Partial</button>
-          </div>
-        </div>`;
-    }
+    const hasStarted = tickedCount > 0;
+    const feeling = log ? log.feeling : null;
+    const note = log ? (log.note||'') : '';
+    logArea = `
+      <div class="log-form" id="log-form-${s.id}" style="${hasStarted?'':'opacity:.5;pointer-events:none'}">
+        <div class="log-form-title">${hasStarted?'Session log':'Tick exercises above to begin logging'}</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:8px">How did it feel?</div>
+        <div class="feeling-grid">
+          ${[1,2,3,4].map(f=>`<button class="feel-btn ${feeling===f?'active':''}" data-f="${f}" onclick="selectFeeling('${s.id}',${f})">${feelingLabel(f)}</button>`).join('')}
+        </div>
+        <textarea class="note-area" id="note-${s.id}" placeholder="Notes — left knee, what to tell Claude, anything you skipped..." onblur="saveNote('${s.id}')">${note}</textarea>
+        <button onclick="exportSession('${s.id}')" style="width:100%;padding:11px;background:var(--bg2);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;margin-top:8px">📋 Export session summary</button>
+      </div>`;
   }
 
   if(!isExpanded){
@@ -871,6 +943,7 @@ function renderSession(s, inToday){
         <div class="sc-status ${status==='done'?'status-done':status==='partial'?'status-partial':'status-none'}"></div>
       </div>
       <div class="sc-body">
+        ${progressHTML}
         ${blocksHTML}
         ${notesHTML}
         ${logArea}
@@ -935,27 +1008,48 @@ function renderToday(){
 // ══════════════════════════════════════════════════════════
 // LOG
 // ══════════════════════════════════════════════════════════
-function selectFeeling(sessionId, f){
-  selectedFeeling = f;
-  document.querySelectorAll(`#log-form-${sessionId} .feel-btn`).forEach(b=>{
-    b.classList.toggle('active', parseInt(b.dataset.f)===f);
+async function selectFeeling(sessionId, f){
+  if(!logs[sessionId]) logs[sessionId] = {ticked:{}, feeling:null, note:'', loggedAt:new Date().toISOString()};
+  logs[sessionId].feeling = f;
+  saveLocal();
+  await pushToSheet(sessionId, logs[sessionId]);
+  renderAll();
+}
+
+async function saveNote(sessionId){
+  const note = document.getElementById('note-'+sessionId)?.value?.trim() || '';
+  if(!logs[sessionId]) logs[sessionId] = {ticked:{}, feeling:null, note:'', loggedAt:new Date().toISOString()};
+  logs[sessionId].note = note;
+  saveLocal();
+  await pushToSheet(sessionId, logs[sessionId]);
+}
+
+function exportSession(sid){
+  const s = SESSIONS.find(x=>x.id===sid);
+  const log = logs[sid] || {};
+  const ticked = log.ticked || {};
+  const lines = [];
+  lines.push('SESSION EXPORT — ' + s.title);
+  lines.push('Status: ' + (log.status||'not started'));
+  lines.push('Feeling: ' + (log.feeling ? feelingLabel(log.feeling) : 'not rated'));
+  lines.push('');
+  s.blocks.forEach((b,bi)=>{
+    lines.push('[' + b.label + ']');
+    b.exercises.forEach((e,ei)=>{
+      const done = !!ticked[exId(sid,bi,ei)];
+      lines.push((done ? '✓ ' : '✗ ') + e.name);
+    });
+    lines.push('');
   });
-}
-
-async function logSession(id, status){
-  const note = document.getElementById(`note-${id}`)?.value?.trim() || '';
-  const entry = {status, feeling: selectedFeeling, note, loggedAt: new Date().toISOString()};
-  logs[id] = entry;
-  selectedFeeling = null;
-  saveLocal();
-  await pushToSheet(id, entry);
-  renderAll();
-}
-
-function editLog(id){
-  delete logs[id];
-  saveLocal();
-  renderAll();
+  if(log.note) lines.push('Notes: ' + log.note);
+  const text = lines.join('\n');
+  // Copy to clipboard
+  navigator.clipboard.writeText(text).then(()=>{
+    alert('Session summary copied to clipboard — paste it into Claude.');
+  }).catch(()=>{
+    // Fallback: show in alert
+    alert(text);
+  });
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1050,6 +1144,17 @@ function renderLog(){
           ${entry.feeling?`<span class="le-feeling">${feelingLabel(entry.feeling)}</span>`:''}
         </div>
         ${entry.note?`<div class="le-note">${entry.note}</div>`:''}
+        ${(()=>{
+          const s2 = SESSIONS.find(x=>x.id===id);
+          if(!s2||!entry.ticked) return '';
+          const skipped = [];
+          s2.blocks.forEach((b,bi)=>{
+            b.exercises.forEach((e,ei)=>{
+              if(!entry.ticked[exId(id,bi,ei)]) skipped.push(e.name);
+            });
+          });
+          return skipped.length ? `<div style="font-size:12px;color:#E24B4A;margin-top:6px;padding-top:6px;border-top:1px solid var(--border)">Skipped: ${skipped.join(', ')}</div>` : '';
+        })()}
       </div>`;
     }).join('')}`;
 }
