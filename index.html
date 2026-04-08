@@ -662,7 +662,7 @@ const GLOSSARY = [
 // ══════════════════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════════════════
-let scriptUrl = 'https://script.google.com/macros/s/AKfycbx-fhsW1RAXWP16IpIJ_U8tLmVPX-AZaBFv2zM1pbI5v8GTM_O9YonjbnphxKUaG9mI/exec';
+let scriptUrl = 'https://script.google.com/macros/s/AKfycbwfuNw1fWq_VTNvU0BxjZmTCnM-Yg0hPgbUz4C6EQ7r6UPSVIf9RC5Ohfdog-YxeeMd/exec';
 let logs = {};
 let isOnline = false;
 let selectedFeeling = null;
@@ -677,8 +677,13 @@ function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 
 function loadLocal(){
-  scriptUrl = lsGet('scriptUrl') || 'https://script.google.com/macros/s/AKfycbx-fhsW1RAXWP16IpIJ_U8tLmVPX-AZaBFv2zM1pbI5v8GTM_O9YonjbnphxKUaG9mI/exec'; scriptUrl = scriptUrl || 'https://script.google.com/macros/s/AKfycbx-fhsW1RAXWP16IpIJ_U8tLmVPX-AZaBFv2zM1pbI5v8GTM_O9YonjbnphxKUaG9mI/exec';
-  try{ logs = JSON.parse(lsGet('logs') || '{}'); }catch(e){ logs = {}; }
+  // URL is always hardcoded — never read from localStorage
+  scriptUrl = 'https://script.google.com/macros/s/AKfycbwfuNw1fWq_VTNvU0BxjZmTCnM-Yg0hPgbUz4C6EQ7r6UPSVIf9RC5Ohfdog-YxeeMd/exec';
+  // Always merge local logs with whatever is in localStorage — never wipe
+  try{
+    const stored = JSON.parse(lsGet('logs') || '{}');
+    logs = {...logs, ...stored};
+  }catch(e){ logs = {}; }
 }
 
 function saveLocal(){
@@ -712,7 +717,16 @@ async function fetchFromSheet(){
     const r = await fetch(gsUrl({action:'getLogs'}));
     const data = await r.json();
     if(data.logs){
-      logs = {...logs, ...data.logs};
+      // Merge: for each session in sheet, take sheet data but preserve local ticks
+      // if sheet has no ticks for that session (handles migration)
+      Object.entries(data.logs).forEach(([sid, sheetEntry]) => {
+        const localEntry = logs[sid] || {};
+        // Sheet ticked wins if it has data, otherwise keep local ticks
+        const ticked = (sheetEntry.ticked && Object.keys(sheetEntry.ticked).length > 0)
+          ? sheetEntry.ticked
+          : (localEntry.ticked || {});
+        logs[sid] = {...localEntry, ...sheetEntry, ticked};
+      });
       saveLocal();
       setSyncStatus('synced','Synced');
     }
@@ -1245,15 +1259,11 @@ function renderAll(){
 }
 
 loadLocal();
-scriptUrl = 'https://script.google.com/macros/s/AKfycbx-fhsW1RAXWP16IpIJ_U8tLmVPX-AZaBFv2zM1pbI5v8GTM_O9YonjbnphxKUaG9mI/exec'; // hardcoded - never ask for URL
-lsSet('setupDone','1');
-lsSet('scriptUrl','https://script.google.com/macros/s/AKfycbx-fhsW1RAXWP16IpIJ_U8tLmVPX-AZaBFv2zM1pbI5v8GTM_O9YonjbnphxKUaG9mI/exec');
-if(true){
-  document.getElementById('setup-screen').style.display='none';
-  document.getElementById('app').style.display='block';
-  renderAll();
-  if(scriptUrl) fetchFromSheet();
-}
+// Always skip setup — URL is hardcoded, no config needed
+document.getElementById('setup-screen').style.display='none';
+document.getElementById('app').style.display='block';
+renderAll();
+fetchFromSheet(); // always sync from sheet on load
 </script>
 </body>
 </html>
