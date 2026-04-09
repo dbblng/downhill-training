@@ -745,15 +745,15 @@ async function pushToSheet(sessionId, entry){
   if(!scriptUrl) return;
   setSyncStatus('syncing','Saving…');
   try{
-    // Send ticked as comma-separated keys to keep URL short
+    // gsUrl handles encoding — do NOT pre-encode values here
     const tickedKeys = Object.keys(entry.ticked||{}).join(',');
     const params = {
       action:'saveLog',
       sessionId,
-      status: entry.status||'',
+      status:  entry.status||'',
       feeling: entry.feeling||'',
-      note: encodeURIComponent(entry.note||''),
-      ticked: encodeURIComponent(tickedKeys),
+      note:    entry.note||'',
+      ticked:  tickedKeys,
     };
     await fetch(gsUrl(params));
     setSyncStatus('synced','Saved');
