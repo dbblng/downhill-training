@@ -662,7 +662,7 @@ const GLOSSARY = [
 // ══════════════════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════════════════
-let scriptUrl = 'https://script.google.com/macros/s/AKfycbwfuNw1fWq_VTNvU0BxjZmTCnM-Yg0hPgbUz4C6EQ7r6UPSVIf9RC5Ohfdog-YxeeMd/exec';
+let scriptUrl = 'https://script.google.com/macros/s/AKfycbx-fhsW1RAXWP16IpIJ_U8tLmVPX-AZaBFv2zM1pbI5v8GTM_O9YonjbnphxKUaG9mI/exec';
 let logs = {};
 let isOnline = false;
 let selectedFeeling = null;
@@ -678,7 +678,7 @@ function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 
 function loadLocal(){
   // URL is always hardcoded — never read from localStorage
-  scriptUrl = 'https://script.google.com/macros/s/AKfycbwfuNw1fWq_VTNvU0BxjZmTCnM-Yg0hPgbUz4C6EQ7r6UPSVIf9RC5Ohfdog-YxeeMd/exec';
+  scriptUrl = 'https://script.google.com/macros/s/AKfycbx-fhsW1RAXWP16IpIJ_U8tLmVPX-AZaBFv2zM1pbI5v8GTM_O9YonjbnphxKUaG9mI/exec';
   // Always merge local logs with whatever is in localStorage — never wipe
   try{
     const stored = JSON.parse(lsGet('logs') || '{}');
