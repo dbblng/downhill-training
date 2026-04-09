@@ -722,8 +722,14 @@ async function fetchFromSheet(){
       Object.entries(data.logs).forEach(([sid, sheetEntry]) => {
         const localEntry = logs[sid] || {};
         // Sheet ticked wins if it has data, otherwise keep local ticks
-        const ticked = (sheetEntry.ticked && Object.keys(sheetEntry.ticked).length > 0)
-          ? sheetEntry.ticked
+        // Ticked comes back from sheet as object (parsed by GS) or as comma-separated string
+        let sheetTicked = sheetEntry.ticked || {};
+        if(typeof sheetTicked === 'string' && sheetTicked.length > 0){
+          sheetTicked = {};
+          sheetEntry.ticked.split(',').forEach(k=>{ if(k) sheetTicked[k]=1; });
+        }
+        const ticked = (Object.keys(sheetTicked).length > 0)
+          ? sheetTicked
           : (localEntry.ticked || {});
         logs[sid] = {...localEntry, ...sheetEntry, ticked};
       });
@@ -739,13 +745,15 @@ async function pushToSheet(sessionId, entry){
   if(!scriptUrl) return;
   setSyncStatus('syncing','Saving…');
   try{
+    // Send ticked as comma-separated keys to keep URL short
+    const tickedKeys = Object.keys(entry.ticked||{}).join(',');
     const params = {
       action:'saveLog',
       sessionId,
       status: entry.status||'',
       feeling: entry.feeling||'',
       note: encodeURIComponent(entry.note||''),
-      ticked: encodeURIComponent(JSON.stringify(entry.ticked||{})),
+      ticked: encodeURIComponent(tickedKeys),
     };
     await fetch(gsUrl(params));
     setSyncStatus('synced','Saved');
