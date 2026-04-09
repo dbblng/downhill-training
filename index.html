@@ -734,6 +734,7 @@ async function fetchFromSheet(){
         logs[sid] = {...localEntry, ...sheetEntry, ticked};
       });
       saveLocal();
+      renderAll();
       setSyncStatus('synced','Synced');
     }
   }catch(e){
