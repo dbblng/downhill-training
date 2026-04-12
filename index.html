@@ -356,7 +356,7 @@ const SESSIONS = [
       {name:'Cat-cow',detail:'10 slow reps.'},
     ]},
     {label:'Primary · 20 min',exercises:[
-      {name:'Pull-ups',detail:'3×6. Power tower pull-up bar. 3-sec lowering.',alt:'Gym: lat pulldown if pull-ups not yet possible'},
+      {name:'Assisted pull-up',detail:'3×6. Gym: assisted pull-up machine, set counterweight so you can complete all reps with good form. Home: loop heavy or x-heavy band over bar, kneel or place one foot in band. 3-sec lowering.',alt:'Gym alternative: lat pulldown same tempo if no assisted machine'},
       {name:'Single-arm dumbbell row',detail:'3×10 each. Back flat, pull elbow to hip. Brace free hand on power tower upright.',alt:'Home/Gym: 8kg DB',kit:'8kg dumbbell'},
       {name:'Push-up with rotation',detail:'3×8. Push up, rotate to full side plank at top. From knees if needed.'},
     ]},
@@ -381,8 +381,8 @@ const SESSIONS = [
       {name:'TKE warm-up',detail:'2×10 each — lighter band than working set.'},
     ]},
     {label:'Primary · 22 min',exercises:[
-      {name:'TKE',detail:'3×15 each. Increase band resistance from W1 if manageable.',kit:'Medium band'},
-      {name:'Goblet squat',detail:'3×10 at 90–100°. DB at chest. 3-sec lowering.',alt:'Gym: leg press to ~110–115°',kit:'8kg dumbbell'},
+      {name:'TKE',detail:'3×15 each. Face the tower. Band looped behind the knee, not the thigh. Slight forward lean. Micro-straighten the knee against resistance — feel the burn at the inner kneecap, never the glute. Increase band resistance from W1 if manageable.',kit:'Medium tube band'},
+      {name:'Goblet squat',detail:'3×10 at 90–100°. DB at chest. 3-sec lowering. Self-regulate depth — stop before any anterior knee discomfort.',kit:'8kg dumbbell'},
       {name:'Reverse lunge',detail:'3×10 each. Step back, not forward. Bodyweight first, add DB if comfortable.',kit:'8kg dumbbells optional'},
     ]},
     {label:'Secondary · 15 min',exercises:[
@@ -406,7 +406,7 @@ const SESSIONS = [
       {name:'Thoracic open books',detail:'8 each side. Lie on side, open top arm behind you, hips stay still.'},
     ]},
     {label:'Primary · 20 min',exercises:[
-      {name:'Pull-up — slow negative',detail:'3×6. Pull up, lower over 3–4 sec.',alt:'Gym: lat pulldown same tempo'},
+      {name:'Assisted pull-up — slow negative',detail:'3×6. Gym: assisted pull-up machine. Pull to chin, lower over 3–4 sec. Home: band-assisted on power tower, same tempo.',alt:'Gym alternative: lat pulldown same tempo'},
       {name:'Woodchop — high to low',detail:'3×10 each. Band anchored high on power tower, pull diagonally to opposite hip.',alt:'Gym: cable high pulley',kit:'Resistance band on power tower'},
       {name:'Single-arm DB press — standing',detail:'3×8 each. Press shoulder to overhead. Other arm free — core resists side lean.',alt:'Start seated if shoulder uncertain',kit:'8kg dumbbell'},
     ]},
@@ -460,7 +460,7 @@ const SESSIONS = [
       {name:'Single-leg RDL',detail:'3×8 each. One leg, DB opposite hand, hinge at hip, lower DB to floor, squeeze glute to return.',alt:'8–10kg DB · Progress to 14–16kg in W4',kit:'8–10kg dumbbell'},
     ]},
     {label:'Secondary · 13 min',exercises:[
-      {name:'Pull-up + hold at top',detail:'3×5. Pull to chin, pause 2 sec, slow lower.'},
+      {name:'Assisted pull-up + hold at top',detail:'3×5. Gym: assisted machine, reduce counterweight slightly from W2. Pull to chin, pause 2 sec, slow lower. Home: band-assisted, try lighter band if W2 felt manageable.'},
       {name:'Lateral band walk',detail:'3×15 each direction. Band above knees, shallow squat.',kit:'Medium band'},
       {name:"Captain's chair knee raise — slow lower",detail:'3×10. 3-sec lowering phase, no swinging.'},
     ]},
@@ -516,7 +516,7 @@ const SESSIONS = [
       {name:'DB around-the-world',detail:'3×10 each direction. DB vertical, swing horizontally around body. Rotational power.',kit:'12–14kg dumbbell'},
     ]},
     {label:'Secondary · 15 min',exercises:[
-      {name:'Pull-up max reps × 3 sets',detail:'Rest 2 min between. Record total — baseline for re-test in W6.'},
+      {name:'Pull-up max reps × 3 sets',detail:'Attempt unassisted first. If cannot complete at least 3 clean reps, use minimal assistance. Rest 2 min between sets. Record total reps — baseline for W6 re-test.'},
       {name:'Copenhagen plank',detail:'3×25 sec each. +5 sec from W2.'},
       {name:"Captain's chair windshield wiper — knees bent",detail:'3×8. Knees at 90°, rotate both legs side to side. Core rotation endurance.'},
     ]},
@@ -549,7 +549,7 @@ const SESSIONS = [
     {label:'Primary · 22 min',exercises:[
       {name:'Goblet squat',detail:'3×6. Same weight as W4. Maintain, not PR. Explosive up, controlled down.',kit:'18–20kg dumbbell'},
       {name:'Bulgarian split squat',detail:'3×8 each. Explosive concentric, 4-sec lowering.',kit:'10–12kg dumbbells'},
-      {name:'Single-leg press or assisted pistol',detail:'3×10 each.',alt:'Gym: single-leg on leg press · Home: assisted pistol holding power tower upright'},
+      {name:'Single-leg press or assisted pistol',detail:'3×10 each. Shallow range only on leg press — stop if any anterior knee discomfort. Assisted pistol is preferred if knee is reactive.',alt:'Gym: single-leg on leg press (shallow) · Home: assisted pistol holding power tower upright'},
     ]},
     {label:'Tuck protocol · 12 min',exercises:[
       {name:'Tuck hold series',detail:'4×25–30 sec, 90 sec rest. Peak tuck week. Exhale through pursed lips — do not hold breath.'},
@@ -585,7 +585,7 @@ const SESSIONS = [
       {name:'Woodchop — both directions',detail:'3×8 each. Explosive, full commitment.',kit:'Resistance band'},
     ]},
     {label:'Secondary · 15 min',exercises:[
-      {name:'Pull-up max × 3 sets',detail:'Re-test from W4. Should see 1–3 extra reps per set. Record.'},
+      {name:'Pull-up max × 3 sets',detail:'Re-test from W4. Attempt unassisted. Should see improvement — record total reps per set.'},
       {name:"Captain's chair wiper — legs straighter",detail:'3×6. Progress from bent-knee W4.'},
       {name:'Copenhagen plank',detail:'3×30 sec each.'},
     ]},
@@ -618,7 +618,7 @@ const SESSIONS = [
    blocks:[
     {label:'Activation · 25 min',exercises:[
       {name:'KB swing',detail:'3×6. Explosive, light, perfect form.',kit:'16kg KB'},
-      {name:'Pull-up',detail:'2×5. Clean, no grinding.'},
+      {name:'Pull-up',detail:'2×5. Unassisted if possible. Clean reps only — no grinding. Use minimal band assist if needed.'},
       {name:'Woodchop or band rotation',detail:'2×8 each.',kit:'Resistance band'},
       {name:'Single-leg glute bridge',detail:'2×10 each.'},
       {name:'TKE',detail:'2×10 each. Light band. Final left knee care.',kit:'Light band'},
@@ -685,7 +685,7 @@ const GLOSSARY = [
   {term:'Step-up with knee drive',def:'Stand facing a sturdy step or bench. Step up with one foot, drive through that heel to lift your body. At the top, explosively drive the opposite knee to hip height. Step back down with control. Trains the push-off explosiveness needed to exit slides and accelerate.',url:'https://www.youtube.com/results?search_query=step-up+with+knee+drive'},
   {term:'Thoracic open books',def:'Lie on your side, knees stacked and bent at 90° — they stay together throughout. Extend both arms at chest height. Keep hips completely still. Take your top arm and slowly rotate it up and over to the other side, opening your chest toward the ceiling. Go only as far as your upper back allows. Return slowly. Improves thoracic rotation for slide technique.',url:'https://www.youtube.com/results?search_query=thoracic+open+books'},
   {term:'Thoracic rotation (seated)',def:'Sit upright on a bench or chair, feet flat. Arms crossed over chest or hands on shoulders. Rotate your upper body to one side as far as you can without your hips moving or lower back twisting. Hold 2 seconds. Return and rotate the other way. Isolates mid-back rotation.',url:'https://www.youtube.com/results?search_query=thoracic+rotation+seated'},
-  {term:'TKE — Terminal Knee Extension',def:'Anchor a resistance band at knee height to the power tower. Face the tower — not away from it. Loop the band behind your knee. Stand on the banded leg with a slight knee bend. From this bent position, fully straighten the knee against the band resistance. Hold 1–2 sec fully straight, release slowly. You should feel a gentle burn at the inner kneecap. Never a sharp pinch — reduce resistance immediately if so. Directly trains the VMO through its peak range.',url:'https://www.youtube.com/results?search_query=tke+terminal+knee+extension'},
+  {term:'TKE — Terminal Knee Extension',def:'Anchor a resistance band at knee height to the power tower. Face the tower — not away from it. Loop the band behind your knee (not your thigh). Stand on the banded leg with a slight forward lean and a small knee bend. From this position, fully straighten the knee against the band resistance. Hold 1–2 sec fully straight, release slowly. You should feel a gentle burn at the inner kneecap — not in the glute. If you feel it in the glute: check you are facing the tower, check the band is behind the knee, and increase your forward lean slightly. Never a sharp anterior pinch — reduce resistance immediately if so.',url:'https://www.youtube.com/results?search_query=tke+terminal+knee+extension'},
   {term:'Tuck hold',def:'Get into your speedboard tuck — knees bent, back flat and roughly parallel to the ground, arms tucked. Hold for the prescribed duration. Keep your back flat (not rounded), weight evenly through both feet, core braced. The programme goal is 25–30 sec comfortably — a background conditioning target, not a race priority.',url:'https://www.youtube.com/results?search_query=tuck+hold'},
   {term:'VMO (Vastus Medialis Oblique)',def:'The teardrop-shaped inner quad muscle just above and inside the kneecap. Fires hardest in the last 30° of knee straightening. When weak, the kneecap is pulled laterally by the stronger outer quad, causing the anterior knee pain on your left side. Every TKE, shallow wall sit, and single-leg exercise in this plan specifically targets VMO development.',url:'https://www.youtube.com/results?search_query=vmo+vastus+medialis+oblique'},
   {term:"World's greatest stretch",def:'Step into a forward lunge. Plant your same-side hand on the floor inside your front foot. Rotate your top arm up toward the ceiling as far as you can, following with your eyes. Hold 2 seconds. Return hand to floor. Combines hip flexor length, hamstring opening, and thoracic rotation — one of the most efficient warm-up exercises you can do.',url:'https://www.youtube.com/watch?v=Qq1wCPDiyOw'},
