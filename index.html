@@ -988,16 +988,16 @@ function renderSession(s, inToday){
     logArea = `
       <div class="log-form" id="log-form-${s.id}" style="${hasStarted?'':'opacity:.5;pointer-events:none'}">
         <div class="log-form-title">${hasStarted?'Session log':'Tick exercises above to begin logging'}</div>
-        <div style="font-size:12px;color:var(--text3);margin-bottom:8px">How did it feel?</div>
+        <textarea class="note-area" id="note-${s.id}" placeholder="Notes — left knee, what to tell Claude, anything you skipped..." onblur="saveNote('${s.id}')">${note}</textarea>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+          <label style="font-size:13px;color:var(--text2);white-space:nowrap">Actual session #</label>
+          <input type="text" id="actual-session-${s.id}" value="${actualSession}" placeholder="e.g. 2 or 2-3" onblur="saveActualSession('${s.id}')" style="flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;background:var(--bg);color:var(--text)">
+        </div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:8px">How did it feel? (tap to complete session)</div>
         <div class="feeling-grid">
           ${[1,2,3,4].map(f=>`<button class="feel-btn ${feeling===f?'active':''}" data-f="${f}" onclick="selectFeeling('${s.id}',${f})">${feelingLabel(f)}</button>`).join('')}
         </div>
-        <textarea class="note-area" id="note-${s.id}" placeholder="Notes — left knee, what to tell Claude, anything you skipped..." onblur="saveNote('${s.id}')">${note}</textarea>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-          <label style="font-size:13px;color:var(--text2);white-space:nowrap">Actual session #</label>
-          <input type="text" id="actual-session-${s.id}" value="${actualSession}" placeholder="e.g. 2 or 2–3" onblur="saveActualSession('${s.id}')" style="width:80px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;background:var(--bg);color:var(--text)">
-        </div>
-        <button onclick="exportSession('${s.id}')" style="width:100%;padding:11px;background:var(--bg2);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;margin-top:4px">📋 Export session summary</button>
+        <button onclick="exportSession('${s.id}')" style="width:100%;padding:11px;background:var(--bg2);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;margin-top:8px">📋 Export session summary</button>
       </div>`;
   }
 
@@ -1248,6 +1248,7 @@ function renderLog(){
         <div class="le-meta">
           <span class="le-status" style="color:${statusColor(entry.status)}">${entry.status==='done'?'✓ Completed':'◐ Partial'}</span>
           ${entry.feeling?`<span class="le-feeling">${feelingLabel(entry.feeling)}</span>`:''}
+          ${entry.actualSession?`<span style="font-size:12px;color:var(--text3);margin-left:4px">· Actual session ${entry.actualSession}</span>`:''}
         </div>
         ${entry.note?`<div class="le-note">${entry.note}</div>`:''}
         ${(()=>{
