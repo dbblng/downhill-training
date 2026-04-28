@@ -929,7 +929,7 @@ function toggleSession(id){
 // ══════════════════════════════════════════════════════════
 function renderToday(){
   const td = todayStr();
-  const daysToEnd = daysBetween(td,'2026-05-15');
+  const daysToEnd = daysBetween(td,'2026-05-19');
   const sessionsLeft = SESSIONS.filter(s => !logs[s.id] || logs[s.id].status !== 'done').length;
   // Next session = first session that isn't fully done
   // A session with partial ticks or no ticks should still show as current
