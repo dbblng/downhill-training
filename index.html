@@ -322,398 +322,291 @@ input[type=text]:focus{border-color:var(--ph2)}
 // DATA
 // ══════════════════════════════════════════════════════════
 const SESSIONS = [
-  {id:'w1a',week:1,phase:1,session:1,date:'2026-04-07',title:'Week 1 · Session 1 — Lower body activation',sub:'~50 min · Home or gym',apple:'Functional Strength Training',
+
+  // ── WEEK 1 · LONDON · BACK REINTEGRATION ─────────────────────────────
+  {id:'s1a',week:1,phase:1,session:1,date:'2026-04-29',title:'Session 1 — Back reintegration + lower body',sub:'~55 min · Home · Power tower available',apple:'Functional Strength Training',
    blocks:[
-    {label:'Joint prep · 5 min',exercises:[
-      {name:'Ankle circles + heel raises',detail:'2×12 off a step. Test heel — mild ache fine, sharp pain stop.'},
-      {name:'Hip 90/90',detail:'60 sec per side. Both legs at 90°, lean over front shin.'},
-      {name:'Shallow wall sit',detail:'2×20 sec at ~60° only.'},
+    {label:'Physio stretches · 10 min — do FIRST every session',exercises:[
+      {name:'Deep belly breathing',detail:'2×10 breaths. Lie on back, legs elevated on sofa. Inhale 4 counts, hold 2, exhale 4. Purely relaxing — do not force it.',kit:'Yoga mat'},
+      {name:'Side-to-side knee rolls',detail:'2×10 each side. Lie on back, arms wide, knees bent. Lower both knees slowly to one side, return, other side. Only go as far as comfortable.',kit:'Yoga mat'},
+      {name:'Cat camel',detail:'2×10. On hands and knees. Round spine up (cat), hold 2 sec. Arch spine, chest forward (camel), hold 2 sec.',kit:'Yoga mat'},
+      {name:'Lying twist stretch',detail:'1×30 sec each side. Lie on back, pull one knee across body, keep opposite shoulder on floor. Breathe into it.',kit:'Yoga mat'},
     ]},
-    {label:'Primary strength · 20 min',exercises:[
-      {name:'Terminal knee extensions (TKE)',detail:'3×15 each side. Band around back of knee anchored at knee height. Micro-straighten against resistance. VMO isolation.',alt:'Home: band around power tower upright · Gym: cable machine low pulley',kit:'Light resistance band'},
-      {name:'Leg press — shallow range',detail:'3×12. Lower to ~100° only. Light weight — technique first.',alt:'Home swap: wall sit 3×30 sec + slow bodyweight squat 3×10 to 90°'},
-      {name:'Side-lying hip abduction',detail:'3×15 each. Band above knees, raise top leg to ~45°. Slow up, controlled down.',kit:'Medium resistance band'},
+    {label:'Physio strength · 15 min',exercises:[
+      {name:'Glute bridge on heels',detail:'3×8, hold 5 sec at top. Lie on back, knees bent, toes lifted — heels only on floor. Drive hips up, squeeze glutes, tuck pelvis. Hamstring focus.',kit:'Yoga mat'},
+      {name:'Dead bug — straight leg',detail:'3×8 each side. Lie on back, arms to ceiling, legs at 90°. Lower opposite arm and straight leg simultaneously without arching lower back.',kit:'Yoga mat'},
+      {name:'Box squat',detail:'3×10. Stand in front of a chair. Sit hips back and down slowly, touch chair lightly, stand back up. Chest tall throughout. Add 8kg KB in front if painless.',kit:'Chair, 8kg KB optional'},
     ]},
-    {label:'Secondary · 15 min',exercises:[
-      {name:'Single-leg glute bridge',detail:'3×12 each. One heel on floor, raise hips. Note if left knee tracks inward.'},
-      {name:'Dead bug',detail:'3×8 each side. Arms and legs up, lower opposite arm + leg slowly, exhale. Lower back stays on floor.'},
-      {name:'Pallof press',detail:'3×10 each side. Side-on to anchor at chest height, press straight out, hold 2 sec.',alt:'Home: band around power tower upright · Gym: cable machine',kit:'Medium resistance band'},
+    {label:'Lower body · 15 min',exercises:[
+      {name:'Bulgarian split squat — bodyweight',detail:'3×8 each. Rear foot on sofa. Front foot forward. Lower slowly, drive up through front heel. Zero back loading — this is all legs. Stop immediately if any lower back sensation.',kit:'Sofa'},
+      {name:'Scooter',detail:'2×5 each variation. Mini band at ankles. Stand on one leg, hinge slightly at hip, reach opposite foot out to side then behind. Glute of standing leg works hard. 3 variations: side tap, rear tap, diagonal tap.',kit:'Mini loop band'},
+      {name:'TKE',detail:'3×12 each. Band anchored at knee height to power tower. Face tower, band behind knee. Small knee bend to start. Straighten fully against resistance. Feel inner kneecap — not glute.',kit:'Tube band or light loop band'},
     ]},
-    {label:'Balance board · 5 min',exercises:[
-      {name:'Roller board introduction',detail:'3×60 sec. Street deck on roller, near a wall. Find balance point. Purely exploratory.'},
+    {label:'Upper body · 10 min',exercises:[
+      {name:'Single-arm dumbbell row',detail:'3×10 each. Hinge forward with flat back, one hand on chair. Pull elbow to hip. 2-sec lower. No spinal rotation — brace core throughout.',kit:'10–12kg dumbbell'},
+      {name:'Push-up',detail:'3×8. Standard push-up or on knees if needed. Core braced — do not let hips sag. This is your only pressing movement today — no load through spine.',kit:'Yoga mat'},
+      {name:'Pallof press',detail:'2×10 each side. Band anchored at chest height to power tower. Stand side-on, press band straight out, hold 2 sec, return. Anti-rotation core.',kit:'Tube band'},
     ]},
     {label:'Finish · 5 min',exercises:[
-      {name:'Quad stretch',detail:'45 sec each side, wall-assisted.'},
-      {name:'Kneeling hip flexor stretch',detail:'45 sec each side.'},
+      {name:'Hip flexor + quad stretch',detail:'45 sec each side. Kneeling, tuck tailbone, shift hips forward. Add quad pull if comfortable.'},
+      {name:'Pigeon pose or figure-4',detail:'60 sec each side. Lie on back, cross ankle over opposite knee, draw toward chest.'},
     ]},
-   ],notes:['⚠ Left knee: TKEs should feel like a gentle burn at inner kneecap — not a sharp pinch. Halve band resistance if sharp anterior pain.']},
+   ],notes:['Physio stretches are mandatory at the start of every session this week. If your back gives any signal during box squat or split squat — stop that exercise, do not push through.']},
 
-  {id:'w1b',week:1,phase:1,session:2,date:'2026-04-10',title:'Week 1 · Session 2 — Upper body + core',sub:'~50 min · Gym (swim anchor) — home if needed',apple:'Functional Strength Training',
+  {id:'s1b',week:1,phase:1,session:2,date:'2026-05-01',title:'Session 2 — Upper body + single leg',sub:'~50 min · Home · Power tower available',apple:'Functional Strength Training',
    blocks:[
-    {label:'Joint prep · 5 min',exercises:[
-      {name:'Shoulder circles + arm swings',detail:'30 sec each direction.'},
-      {name:'Thoracic rotation seated',detail:'8 each side. Arms crossed, rotate upper back only.'},
-      {name:'Cat-cow',detail:'10 slow reps.'},
+    {label:'Physio stretches · 10 min — do FIRST',exercises:[
+      {name:'Deep belly breathing',detail:'2×10 breaths. Legs elevated on sofa.'},
+      {name:'Side-to-side knee rolls',detail:'2×10 each side.'},
+      {name:'Cat camel',detail:'2×10.'},
+      {name:'Lying twist stretch',detail:'1×30 sec each side.'},
     ]},
-    {label:'Primary · 20 min',exercises:[
-      {name:'Assisted pull-up',detail:'3×6. Gym: assisted pull-up machine — start at 40–50kg counterweight (higher = easier). Home: purple loop band over pull-up bar, kneel in the loop. 3-sec lowering. Check glossary for full setup instructions.',alt:'Gym alternative: lat pulldown same tempo if no assisted machine'},
-      {name:'Single-arm dumbbell row',detail:'3×10 each. Back flat, pull elbow to hip. Brace free hand on power tower upright.',alt:'Home/Gym: 8kg DB',kit:'8kg dumbbell'},
-      {name:'Push-up with rotation',detail:'3×8. Push up, rotate to full side plank at top. From knees if needed.'},
+    {label:'Physio strength · 12 min',exercises:[
+      {name:'Glute bridge on heels',detail:'3×8, hold 5 sec. Progress: if easy, elevate heels on sofa edge.',kit:'Yoga mat, sofa optional'},
+      {name:'Dead bug — straight leg',detail:'3×8 each side. Focus on keeping lower back completely flat.',kit:'Yoga mat'},
+      {name:'Scooter',detail:'2×5 each variation each side. Mini band at ankles.',kit:'Mini loop band'},
     ]},
-    {label:'Secondary · 15 min',exercises:[
-      {name:"Captain's chair knee raise",detail:'3×10. Arms on padded rests, knees to hip height, controlled lower. No grip fatigue — core focus only.',alt:'Superior to hanging bar for sustained core work — use this whenever at home'},
-      {name:'Plank with hip tap',detail:'3×12 taps. Forearm plank, alternate tapping each hip to floor.'},
-      {name:'Dumbbell halo',detail:'3×8 each direction. Hold DB at one end, slow circles around head.',alt:'Home/Gym: 6–8kg DB',kit:'6–8kg dumbbell'},
+    {label:'Upper body push · 12 min',exercises:[
+      {name:'DB shoulder press — seated',detail:'3×10. Sit upright on chair, DB at shoulder height, press overhead. Seated removes spinal compression risk.',kit:'8–10kg dumbbells'},
+      {name:'Push-up with rotation',detail:'3×8. Standard push-up. At top, rotate one arm to ceiling. Core stays braced — hips do not drop.',kit:'Yoga mat'},
+      {name:'Lateral raise',detail:'3×12. Stand tall, DBs at sides, raise arms to shoulder height. Slow lower. Shoulder stability and deltoid strength.',kit:'6–8kg dumbbells'},
     ]},
-    {label:'Cardio · 15 min',exercises:[
-      {name:'Swimming',detail:'15 min easy.',alt:'If not at gym: 15 min easy cycling or gentle jog (test heel first).'},
+    {label:'Upper body pull + core · 12 min',exercises:[
+      {name:'Single-arm dumbbell row',detail:'3×10 each. Flat back, elbow to hip.',kit:'10–12kg dumbbells'},
+      {name:'Assisted pull-up',detail:'2×max reps. Purple long loop band over pull-up bar, kneel in loop. Pull eyes to bar, 3-sec lower. Record reps.',kit:'Purple long loop band'},
+      {name:'Side plank with reach-through',detail:'3×6 each. Side plank, top arm threads under body, returns to ceiling. Lateral core endurance.',kit:'Yoga mat'},
     ]},
     {label:'Finish · 5 min',exercises:[
-      {name:'Passive hang from pull-up bar',detail:'20 sec ×2. Relax shoulders fully — decompresses spine.'},
-      {name:'Seated spinal rotation',detail:'30 sec each side.'},
+      {name:'Thoracic open books',detail:'8 each side. Lie on side, knees stacked, open top arm behind you. Hips stay still.'},
+      {name:'Quad stretch',detail:'45 sec each side.'},
     ]},
-   ],notes:['Swim anchor day — gym preferred. If not possible: power tower + DBs + bands at home. Replace swim with 15–20 min easy jog or cycle.']},
+   ],notes:['Seated shoulder press only — no standing overhead pressing this week. If lower back feels any strain on push-ups, drop to knees immediately.']},
 
-  {id:'w2a',week:2,phase:1,session:1,date:'2026-04-14',title:'Week 2 · Session 1 — Lower body: add range',sub:'~50 min · Home or gym',apple:'Functional Strength Training',
+  {id:'s1c',week:1,phase:1,session:3,date:'2026-05-03',title:'Session 3 — Full body + tuck conditioning',sub:'~55 min · Home · Power tower available',apple:'Functional Strength Training',
    blocks:[
-    {label:'Joint prep · 5 min',exercises:[
-      {name:'Dynamic squat hold with reach',detail:'10 reps. Squat, reach arms forward, hold 2 sec, stand.'},
-      {name:'TKE warm-up',detail:'2×10 each — lighter band than working set.'},
+    {label:'Physio stretches · 10 min — do FIRST',exercises:[
+      {name:'Deep belly breathing',detail:'2×10 breaths.'},
+      {name:'Side-to-side knee rolls',detail:'2×10 each side.'},
+      {name:'Cat camel',detail:'2×10.'},
+      {name:'Lying twist stretch',detail:'1×30 sec each side.'},
     ]},
-    {label:'Primary · 22 min',exercises:[
-      {name:'TKE',detail:'3×15 each. Face the tower. Band looped behind the knee, not the thigh. Slight forward lean. Micro-straighten the knee against resistance — feel the burn at the inner kneecap, never the glute. Increase band resistance from W1 if manageable.',kit:'Medium tube band'},
-      {name:'Goblet squat',detail:'3×10 at 90–100°. DB at chest. 3-sec lowering. Self-regulate depth — stop before any anterior knee discomfort.',kit:'8kg dumbbell'},
-      {name:'Reverse lunge',detail:'3×10 each. Step back, not forward. Bodyweight first, add DB if comfortable.',kit:'8kg dumbbells optional'},
+    {label:'Physio strength · 12 min',exercises:[
+      {name:'Glute bridge on heels',detail:'3×8, hold 5 sec.',kit:'Yoga mat'},
+      {name:'Dead bug — straight leg',detail:'3×8 each side.',kit:'Yoga mat'},
+      {name:'Box squat',detail:'3×10. Add 8kg KB at chest if last session was pain-free.',kit:'Chair, 8kg KB'},
     ]},
-    {label:'Secondary · 15 min',exercises:[
-      {name:'Single-leg glute bridge — feet elevated',detail:'3×12 each. Feet on sofa or bench.'},
-      {name:'Copenhagen plank',detail:'3×20 sec each. Side plank, top leg on sofa. Inner thigh + lateral core.',alt:'Home: sofa or low step'},
-      {name:'Pallof press + rotation',detail:'3×10 each. After pressing out, rotate 30° toward anchor, return.',kit:'Medium resistance band'},
+    {label:'Lower body · 12 min',exercises:[
+      {name:'Bulgarian split squat — bodyweight',detail:'3×10 each. Increase reps from S1. Slow 3-sec lower, explosive up.',kit:'Sofa'},
+      {name:'Single-leg glute bridge',detail:'3×10 each. One leg extended straight, drive through planted heel. 2-sec hold at top.',kit:'Yoga mat'},
+      {name:'Lateral band walk',detail:'3×15 each direction. Mini band above knees. Shallow squat, steps wide.',kit:'Mini loop band'},
     ]},
-    {label:'Balance board · 6 min',exercises:[
-      {name:'Toe/heel shifts',detail:'4×60 sec. Deliberate small shifts, one direction at a time.'},
+    {label:'Upper body · 10 min',exercises:[
+      {name:'DB shoulder press — seated',detail:'3×10. Progress weight if S2 felt comfortable.',kit:'10kg dumbbells'},
+      {name:'Single-arm dumbbell row',detail:'3×10 each.',kit:'12–14kg dumbbells'},
+      {name:'Woodchop — high to low',detail:'3×10 each. Band anchored high on power tower. Pull diagonally to opposite hip. Rotate from hips, not arms.',kit:'Tube band'},
     ]},
-    {label:'Finish · 7 min',exercises:[
-      {name:'First tuck hold',detail:'2×15 sec. Actual skating tuck. Note when quad burn starts — baseline only.'},
-      {name:'Hip flexor + quad stretch',detail:'60 sec each side.'},
-    ]},
-   ],notes:[]},
-
-  {id:'w2b',week:2,phase:1,session:2,date:'2026-04-17',title:'Week 2 · Session 2 — Upper + rotational core',sub:'~50 min · Home or gym',apple:'Functional Strength Training',
-   blocks:[
-    {label:'Joint prep · 5 min',exercises:[
-      {name:"World's greatest stretch",detail:'5 each side. Lunge, same-side hand to floor, rotate top arm to sky, hold 2 sec.'},
-      {name:'Thoracic open books',detail:'8 each side. Lie on side, open top arm behind you, hips stay still.'},
-    ]},
-    {label:'Primary · 20 min',exercises:[
-      {name:'Assisted pull-up — slow negative',detail:'3×6. Gym: assisted pull-up machine (40–50kg counterweight). Pull to chin, lower over 3–4 sec. Home: purple loop band over pull-up bar, kneel in loop, same tempo. Check glossary for full setup.',alt:'Gym alternative: lat pulldown same tempo'},
-      {name:'Woodchop — high to low',detail:'3×10 each. Band anchored high on power tower, pull diagonally to opposite hip.',alt:'Gym: cable high pulley',kit:'Resistance band on power tower'},
-      {name:'Single-arm DB press — standing',detail:'3×8 each. Press shoulder to overhead. Other arm free — core resists side lean.',alt:'Start seated if shoulder uncertain',kit:'8kg dumbbell'},
-    ]},
-    {label:'Secondary · 15 min',exercises:[
-      {name:"Captain's chair leg raise — knees tucked",detail:'3×10. Arms on padded rests, knees to hip height. Controlled lower, no swinging.'},
-      {name:'Side plank with reach-through',detail:'3×8 each. Top arm threads under body toward floor, opens back up.'},
-      {name:'KB swing — introduction',detail:'3×10. Hip hinge — hips back, snap forward, KB floats from hip power. Learn the pattern.',alt:'16kg KB or 10–12kg DB two-handed if KB too heavy',kit:'16kg KB'},
-    ]},
-    {label:'Cardio · 15 min',exercises:[
-      {name:'Cycling or jog',detail:'15–20 min easy.',alt:'Swim 15 min if at gym.'},
+    {label:'Tuck + balance · 8 min',exercises:[
+      {name:'Tuck hold',detail:'3×20 sec. Actual speedboard stance. Back flat, core braced. Rest 90 sec. First tuck work since back injury — stop if any sensation.',kit:''},
+      {name:'Balance board',detail:'3×60 sec. Riding stance. Eyes open. Keeping the pattern alive.',kit:'Balance board + 30" deck'},
     ]},
     {label:'Finish · 5 min',exercises:[
-      {name:'Stretch',detail:'Quad, hip flexor, thoracic rotation — 45 sec each.'},
+      {name:'Hip flexor + quad stretch',detail:'45 sec each side.'},
+      {name:'Lying twist stretch',detail:'30 sec each side. End every session with this for the back.'},
     ]},
-   ],notes:['Cardio: 15–20 min cycling or jog at home, or swim if at gym.']},
+   ],notes:['First tuck work since injury. If 20 sec feels fine, great. If back gives any signal during tuck, stop and note it. This is information, not failure.']},
 
-  {id:'w3a',week:3,phase:2,session:1,date:'2026-04-21',title:'Week 3 · Session 1 — Squat strength + VMO',sub:'~55 min · Home or gym',apple:'Functional Strength Training',
+  // ── WEEK 2 · ROME · STRENGTH RETURN · DBs + BANDS ONLY ───────────────
+  {id:'s2a',week:2,phase:2,session:1,date:'2026-05-07',title:'Session 4 — Lower body strength + back loading return',sub:'~55 min · Rome · DBs and bands only',apple:'Functional Strength Training',
    blocks:[
-    {label:'Joint prep · 5 min',exercises:[
-      {name:'Full bodyweight squat hold',detail:'2×30 sec. Assess left knee at depth. If anterior pain, cap at 100°.'},
-      {name:'Banded march',detail:'2×12 each. Band above knees, drive knee to hip height, hold 1 sec.',kit:'Medium band'},
+    {label:'Physio stretches · 8 min — do FIRST',exercises:[
+      {name:'Deep belly breathing',detail:'2×10 breaths.'},
+      {name:'Side-to-side knee rolls',detail:'2×10 each side.'},
+      {name:'Cat camel',detail:'2×10.'},
+      {name:'Lying twist stretch',detail:'1×30 sec each side.'},
     ]},
-    {label:'Primary · 25 min',exercises:[
-      {name:'Goblet squat',detail:'4×8. DB at chest, full depth, thighs parallel or below. 3-sec lower.',alt:'Home: 16kg DB · Gym: 16–18kg DB or barbell',kit:'16kg dumbbell'},
-      {name:'Bulgarian split squat',detail:'3×10 each. Rear foot on sofa/bench. Front foot forward. Lower rear knee to floor. Most important exercise in plan.',alt:'Bodyweight first, add 8–10kg DBs at sides when form solid',kit:'8–10kg dumbbells optional'},
-      {name:'Dips — chest variation',detail:'3×8. Power tower dip bars, lean slightly forward. Full range.',alt:'Bend knees to reduce bodyweight load if needed'},
+    {label:'Physio strength · 10 min',exercises:[
+      {name:'Glute bridge on heels',detail:'3×8, hold 5 sec. Elevate heels on chair if easy.',kit:'Chair optional'},
+      {name:'Scooter',detail:'2×5 each variation. Mini band at ankles.',kit:'Mini loop band'},
+      {name:'Box squat',detail:'3×10. Hold 10kg DB at chest if back pain-free.',kit:'Chair, 10kg DB'},
     ]},
-    {label:'Secondary · 13 min',exercises:[
-      {name:'Tuck hold',detail:'3×20 sec. Actual skating tuck. Rest 90 sec. Target: 20 sec without struggle.'},
-      {name:'Nordic hamstring curl',detail:'3×6. Kneel, feet hooked under power tower base. Lower as slowly as possible (4–5 sec), push up from floor.',alt:'Gym: hamstring curl machine 3-sec eccentric'},
-      {name:'Single-leg calf raise',detail:'3×15 each. Off step edge, full range.'},
+    {label:'Lower body · 18 min',exercises:[
+      {name:'Bulgarian split squat — light DB',detail:'3×10 each. Add 8kg DB each hand if bodyweight felt easy in W1. 3-sec lower.',kit:'8kg dumbbells'},
+      {name:'DB Romanian deadlift',detail:'3×10. Stand tall, DBs in front of thighs. Hinge at hips — push hips back, lower DBs down shins, back stays flat throughout. Drive hips forward to stand. This is the first hip hinge since injury — light weight, perfect form.',kit:'8–10kg dumbbells'},
+      {name:'Reverse lunge — light DB',detail:'3×8 each. DB at sides, step back, lower rear knee toward floor. Front shin stays vertical. Check left knee — stop if sharp pain.',kit:'8kg dumbbells'},
     ]},
-    {label:'Balance board · 6 min',exercises:[
-      {name:'Timed stance holds',detail:'4×60 sec. Actual speedboard riding stance. Find neutral, try slow toe-to-heel shifts.'},
+    {label:'Upper body · 12 min',exercises:[
+      {name:'DB shoulder press — standing',detail:'3×10. Now standing — back should be ready. Core braced. Press overhead, slow lower.',kit:'10kg dumbbells'},
+      {name:'Single-arm dumbbell row',detail:'3×10 each. Heavier than W1 if W1 felt manageable.',kit:'12–14kg dumbbells'},
+      {name:'Lateral raise',detail:'3×12.',kit:'6–8kg dumbbells'},
     ]},
-    {label:'Finish · 6 min',exercises:[
-      {name:'Hip flexor + quad',detail:'60 sec each side.'},
+    {label:'Core · 8 min',exercises:[
+      {name:'Dead bug — straight leg',detail:'3×8 each. Harder than W1 — slower movement.',kit:'Yoga mat'},
+      {name:'Pallof press',detail:'3×10 each. Band anchored in door frame. Anti-rotation.',kit:'Tube band + door anchor'},
+    ]},
+    {label:'Finish · 5 min',exercises:[
+      {name:'Hip flexor + quad stretch',detail:'45 sec each side.'},
+      {name:'Lying twist stretch',detail:'30 sec each side.'},
+    ]},
+   ],notes:['Rome — no power tower. DB Romanian deadlift is the key new exercise: this is your first posterior chain loading since the injury. Light weight, no rounding of back at any point.']},
+
+  {id:'s2b',week:2,phase:2,session:2,date:'2026-05-09',title:'Session 5 — Upper body + rotational strength',sub:'~50 min · Rome · DBs and bands only',apple:'Functional Strength Training',
+   blocks:[
+    {label:'Physio stretches · 8 min — do FIRST',exercises:[
+      {name:'Deep belly breathing',detail:'2×10 breaths.'},
+      {name:'Side-to-side knee rolls',detail:'2×10 each side.'},
+      {name:'Cat camel',detail:'2×10.'},
+      {name:'Lying twist stretch',detail:'1×30 sec each side.'},
+    ]},
+    {label:'Upper body push · 14 min',exercises:[
+      {name:'DB shoulder press — standing',detail:'3×10. Build on S4.',kit:'10–12kg dumbbells'},
+      {name:'Push-up with rotation',detail:'3×10. Add 1 more rep than W1.',kit:'Yoga mat'},
+      {name:'DB bicep curl',detail:'3×12. Standing, DBs at sides, curl to shoulder, slow lower. Arms and grip strength.',kit:'10kg dumbbells'},
+    ]},
+    {label:'Upper body pull + back · 14 min',exercises:[
+      {name:'Single-arm dumbbell row',detail:'3×12 each. Max controllable weight.',kit:'12–14kg dumbbells'},
+      {name:'DB bent-over row',detail:'3×10. Hinge forward 45°, DBs hanging, pull both elbows back simultaneously. Back flat — core braced throughout. Upper back thickness.',kit:'10–12kg dumbbells'},
+      {name:'Lateral raise',detail:'3×12.',kit:'8kg dumbbells'},
+    ]},
+    {label:'Core + rotation · 12 min',exercises:[
+      {name:'Woodchop — high to low',detail:'3×10 each. Band in door anchor at head height. Pull diagonally to opposite hip. Hip rotation leads — not arms.',kit:'Tube band + door anchor'},
+      {name:'Woodchop — low to high',detail:'3×10 each. Band at ankle height. Pull diagonally upward.',kit:'Tube band + door anchor'},
+      {name:'Side plank with reach-through',detail:'3×6 each. Lateral core endurance.',kit:'Yoga mat'},
+    ]},
+    {label:'Finish · 5 min',exercises:[
+      {name:'Thoracic open books',detail:'8 each side.'},
+      {name:'Lying twist stretch',detail:'30 sec each side.'},
+    ]},
+   ],notes:['DB bent-over row is new — maintain flat back throughout. If you feel any lower back strain, reduce weight immediately.']},
+
+  {id:'s2c',week:2,phase:2,session:3,date:'2026-05-11',title:'Session 6 — Event conditioning + tuck peak',sub:'~55 min · Rome · DBs and bands only',apple:'High Intensity Interval Training (HIIT)',
+   blocks:[
+    {label:'Physio stretches · 8 min — do FIRST',exercises:[
+      {name:'Deep belly breathing',detail:'2×10 breaths.'},
+      {name:'Side-to-side knee rolls',detail:'2×10 each side.'},
+      {name:'Cat camel',detail:'2×10.'},
+      {name:'Lying twist stretch',detail:'1×30 sec each side.'},
+    ]},
+    {label:'Tuck protocol · 12 min — do FIRST after stretches',exercises:[
+      {name:'Tuck hold',detail:'4×25 sec, 90 sec rest. Peak tuck this session — fresh legs, best quality. Exhale steadily. Back flat.',kit:''},
+      {name:'Tuck → explosive stand',detail:'6 reps. From tuck, explode to fully upright as fast as possible. Reset completely between reps.',kit:''},
+    ]},
+    {label:'Run simulation circuit · 22 min',exercises:[
+      {name:'3 rounds · 40 sec on / 20 sec rest · 90 sec rest between rounds',detail:'A — Reverse lunge alternating (DB optional)
+B — Push-up with rotation
+C — DB Romanian deadlift
+D — Woodchop high-to-low (band)
+E — Lateral band walk
+F — Dead bug straight leg
+G — DB shoulder press',kit:'DBs, mini band, tube band'},
+    ]},
+    {label:'Finish · 8 min',exercises:[
+      {name:'Hip flexor + quad stretch',detail:'45 sec each side.'},
       {name:'Pigeon pose or figure-4',detail:'60 sec each side.'},
+      {name:'Lying twist stretch',detail:'30 sec each side.'},
     ]},
-   ],notes:['Nordic curl: hook feet under bottom crossbar of power tower base — check it is stable first.']},
+   ],notes:['Tuck first — always when fresh. Circuit is event simulation: commit fully each interval, recover fully between rounds. DB weights are optional — bodyweight is fine if back feels uncertain.']},
 
-  {id:'w3b',week:3,phase:2,session:2,date:'2026-04-23',title:'Week 3 · Session 2 — Power + rotation',sub:'~50 min · Home or gym',apple:'Functional Strength Training',
+  // ── WEEK 3 · ROME · TAPER ─────────────────────────────────────────────
+  {id:'s3a',week:3,phase:3,session:1,date:'2026-05-14',title:'Session 7 — Taper: sharp and light',sub:'~40 min · Rome · DBs and bands only',apple:'Functional Strength Training',
    blocks:[
-    {label:'Joint prep · 5 min',exercises:[
-      {name:'Thoracic rotation',detail:'10 each. Cross-legged, hands behind head, rotate upper back.'},
-      {name:'Hip CARs',detail:'5 slow reps each. Draw biggest circle possible with raised knee.'},
+    {label:'Physio stretches · 8 min — do FIRST',exercises:[
+      {name:'Deep belly breathing',detail:'2×10 breaths.'},
+      {name:'Side-to-side knee rolls',detail:'2×10 each side.'},
+      {name:'Cat camel',detail:'2×10.'},
+      {name:'Lying twist stretch',detail:'1×30 sec each side.'},
     ]},
-    {label:'Primary · 22 min',exercises:[
-      {name:'KB swing — power',detail:'4×10. Explosive hip snap. Full 90 sec rest — power not cardio.',kit:'16kg KB'},
-      {name:'Woodchop — low to high',detail:'3×10 each. Band low on power tower, pull diagonally up and across. Toeside rotation.',alt:'Gym: cable low pulley',kit:'Resistance band'},
-      {name:'Single-leg RDL',detail:'3×8 each. One leg, DB opposite hand, hinge at hip, lower DB to floor, squeeze glute to return.',alt:'8–10kg DB · Progress to 14–16kg in W4',kit:'8–10kg dumbbell'},
-    ]},
-    {label:'Secondary · 13 min',exercises:[
-      {name:'Assisted pull-up + hold at top',detail:'3×5. Purple long loop band over pull-up bar, kneel in loop. Pull up as high as you can (eyes to bar — ceiling prevents full chin-over), pause 2 sec, lower over 3 sec. If purple feels very easy, try black band. Check glossary for setup.'},
-      {name:'Lateral band walk',detail:'3×15 each direction. Band above knees, shallow squat.',kit:'Medium band'},
-      {name:"Captain's chair knee raise — slow lower",detail:'3×10. 3-sec lowering phase, no swinging.'},
-    ]},
-    {label:'Finish · 10 min',exercises:[
-      {name:'Full stretch',detail:'Quads, hip flexors, thoracic.'},
-    ]},
-   ],notes:[]},
-
-  {id:'w3c',week:3,phase:2,session:3,date:'2026-04-25',title:'Week 3 · Session 3 — Conditioning circuit',sub:'~50 min · Home or gym · Freeletics-friendly',apple:'High Intensity Interval Training (HIIT)',
-   blocks:[
-    {label:'Tuck practice · 8 min — do FIRST',exercises:[
-      {name:'Tuck holds',detail:'3×20 sec, 90 sec rest. Fresh legs — better position quality.'},
-    ]},
-    {label:'Main circuit · 28 min',exercises:[
-      {name:'3 rounds · 40 sec on / 20 sec rest · 2 min rest between rounds',detail:'A — Goblet squat (16kg DB)\nB — Push-up with rotation\nC — Reverse lunge alternating\nD — Plank shoulder tap\nE — Lateral squat step with band\nF — KB swing (16kg)\nG — Dead bug alternating',alt:'Log in Freeletics — custom interval 40 on / 20 rest'},
-    ]},
-    {label:'Balance board · 5 min',exercises:[
-      {name:'Lateral shift rhythm',detail:'3×60 sec. Rhythmic toe-to-heel shift — sustain for full minute.'},
-    ]},
-    {label:'Cardio · 15 min',exercises:[
-      {name:'Cycling or jog',detail:'20 min easy.',alt:'Swim 15 min if at gym.'},
-    ]},
-    {label:'Finish · 7 min',exercises:[
-      {name:'Full stretch + steam room',detail:'Steam room if at gym — great for quad recovery.'},
-    ]},
-   ],notes:[]},
-
-  {id:'w4a',week:4,phase:2,session:1,date:'2026-04-28',title:'Week 4 · Session 1 — Squat strength: increase load',sub:'~55 min · Home or gym',apple:'Functional Strength Training',
-   blocks:[
-    {label:'Primary · 28 min',exercises:[
-      {name:'Goblet squat — heavier',detail:'4×6. Reps 5–6 genuinely effortful. Form stays clean.',alt:'Home: double-pause goblet — 2-sec pause at bottom, 2-sec halfway up',kit:'18–20kg dumbbell'},
-      {name:'Bulgarian split squat — add load',detail:'3×10 each. 10–12kg DBs at sides. 3-sec lower, explosive up.',kit:'10–12kg dumbbells'},
-      {name:'Dips — more reps',detail:'3×12. Full range. Add weight (DB between knees) if bodyweight easy.'},
-    ]},
-    {label:'Secondary · 15 min',exercises:[
-      {name:'Tuck hold',detail:'3×25 sec. +5 sec from W3. Rest 90 sec.'},
-      {name:'Nordic hamstring curl',detail:'3×8. +2 reps from W3, same 4-sec lowering.'},
-      {name:'Step-up with knee drive',detail:'3×10 each. Power tower base step or solid step, drive opposite knee to hip height at top. Explosive up, controlled lower.'},
-    ]},
-    {label:'Balance board · 6 min',exercises:[
-      {name:'Riding stance + soft gaze',detail:'4×60 sec. Exact speedboard foot placement. Eyes soft-focused 2m ahead — actual downhill gaze.'},
-    ]},
-    {label:'Finish · 6 min',exercises:[
-      {name:'Full stretch',detail:'Hip flexors, quads, thoracic.'},
-    ]},
-   ],notes:[]},
-
-  {id:'w4b',week:4,phase:2,session:2,date:'2026-04-30',title:'Week 4 · Session 2 — Explosive power',sub:'~50 min · Home or gym',apple:'Functional Strength Training',
-   blocks:[
-    {label:'Primary · 25 min',exercises:[
-      {name:'KB swing — max power',detail:'4×10. Maximum explosive hip snap. If 16kg fully controlled, increase at gym.',kit:'16kg KB'},
-      {name:'Squat jump',detail:'3×8. First plyometric. Squat ~90°, jump, land softly forefoot-to-heel. Heel pain-free only.',alt:'Replace with fast step-up ×10 each if heel uncertain'},
-      {name:'DB around-the-world',detail:'3×10 each direction. DB vertical, swing horizontally around body. Rotational power.',kit:'12–14kg dumbbell'},
-    ]},
-    {label:'Secondary · 15 min',exercises:[
-      {name:'Assisted pull-up max reps × 3 sets',detail:'Black long loop band over pull-up bar, kneel in loop. Max reps per set, eyes to bar. Rest 2 min between sets. Record total reps across 3 sets — this is your baseline to beat in W6.'},
-      {name:'Copenhagen plank',detail:'3×25 sec each. +5 sec from W2.'},
-      {name:"Captain's chair windshield wiper — knees bent",detail:'3×8. Knees at 90°, rotate both legs side to side. Core rotation endurance.'},
-    ]},
-    {label:'Finish · 10 min',exercises:[
-      {name:'Full stretch',detail:''},
-    ]},
-   ],notes:[]},
-
-  {id:'w4c',week:4,phase:2,session:3,date:'2026-05-02',title:'Week 4 · Session 3 — Circuit: higher intensity',sub:'~50 min · Home or gym · Freeletics-friendly',apple:'High Intensity Interval Training (HIIT)',
-   blocks:[
-    {label:'Tuck practice · 8 min — do FIRST',exercises:[
-      {name:'Tuck holds — fresh',detail:'3×25 sec, 90 sec rest.'},
-    ]},
-    {label:'Main circuit · 28 min',exercises:[
-      {name:'4 rounds · 40 sec on / 20 sec rest · 90 sec rest between rounds',detail:'A — Goblet squat (18kg DB)\nB — Burpee (or squat thrust if heel uncertain)\nC — Single-leg RDL alternating\nD — Push-up to side plank\nE — Lateral squat step with band\nF — KB swing (16kg)\nG — Dead bug',alt:'Log in Freeletics.'},
-    ]},
-    {label:'Balance board · 5 min',exercises:[
-      {name:'Eyes half-closed',detail:'3×60 sec. Soft focus, gaze 2m ahead. Trains spatial awareness.'},
-    ]},
-    {label:'Cardio · 15 min',exercises:[
-      {name:'Cycling or jog',detail:'20 min easy.',alt:'Swim 15 min if at gym.'},
-    ]},
-    {label:'Finish · 7 min',exercises:[
-      {name:'Full stretch + steam room',detail:'Steam room if at gym.'},
-    ]},
-   ],notes:[]},
-
-  {id:'w5a',week:5,phase:3,session:1,date:'2026-05-05',title:'Week 5 · Session 1 — Strength maintenance + tuck peak',sub:'~55 min · Home or gym',apple:'Functional Strength Training',
-   blocks:[
-    {label:'Primary · 22 min',exercises:[
-      {name:'Goblet squat',detail:'3×6. Same weight as W4. Maintain, not PR. Explosive up, controlled down.',kit:'18–20kg dumbbell'},
-      {name:'Bulgarian split squat',detail:'3×8 each. Explosive concentric, 4-sec lowering.',kit:'10–12kg dumbbells'},
-      {name:'Single-leg press or assisted pistol',detail:'3×10 each. Shallow range only on leg press — stop if any anterior knee discomfort. Assisted pistol is preferred if knee is reactive.',alt:'Gym: single-leg on leg press (shallow) · Home: assisted pistol holding power tower upright'},
-    ]},
-    {label:'Tuck protocol · 12 min',exercises:[
-      {name:'Tuck hold series',detail:'4×25–30 sec, 90 sec rest. Peak tuck week. Exhale through pursed lips — do not hold breath.'},
-      {name:'Tuck → explosive stand × 8 reps',detail:'From tuck, drive up explosively as if exiting a hairpin. 15–20 times per run in events.'},
-    ]},
-    {label:'Secondary · 10 min',exercises:[
-      {name:'Nordic curl',detail:'2×8.'},
-      {name:'Single-leg calf raise',detail:'2×15 each.'},
-    ]},
-    {label:'Balance board · 6 min',exercises:[
-      {name:'Eyes closed intervals',detail:'4×60 sec. First 45 sec eyes open, final 15 sec eyes closed.'},
-    ]},
-    {label:'Finish · 5 min',exercises:[
-      {name:'Thorough stretch',detail:'Recovery quality = training quality now. Steam room if gym.'},
-    ]},
-   ],notes:[]},
-
-  {id:'w5b',week:5,phase:3,session:2,date:'2026-05-07',title:'Week 5 · Session 2 — Run quality simulation',sub:'~50 min · Home or gym',apple:'High Intensity Interval Training (HIIT)',
-   blocks:[
-    {label:'Run simulation · 30 min',exercises:[
-      {name:'5 blocks × 5 min effort, 3 min rest between',detail:'Each block:\n· Tuck 10 sec → explosive stand\n· 3× lateral squat step L + 3× R\n· Rotational KB swing L + R\n· Tuck 10 sec\n· Repeat until 5 min up',alt:'3 min rest intentionally shorter than event (20–40 min). Hold quality here = luxury at event.',kit:'16kg KB'},
-    ]},
-    {label:'Cardio + finish · 20 min',exercises:[
-      {name:'Cycling or jog',detail:'20 min easy — flush after this session.',alt:'Swim 20 min if at gym + full stretch.'},
-    ]},
-   ],notes:['Each 5-min block = one run. Full commitment, full stop between blocks.']},
-
-  {id:'w5c',week:5,phase:3,session:3,date:'2026-05-09',title:'Week 5 · Session 3 — Power + sharpness',sub:'~50 min · Home or gym',apple:'Functional Strength Training',
-   blocks:[
-    {label:'Primary · 20 min',exercises:[
-      {name:'KB swing — max power',detail:'4×6. Pure explosiveness. 90 sec full rest. Should feel more powerful than W1.',kit:'16kg KB'},
-      {name:'Jump squat',detail:'3×6. Land softly, full absorption. Heel certain only.',alt:'Fast step-up ×10 if any heel doubt'},
-      {name:'Woodchop — both directions',detail:'3×8 each. Explosive, full commitment.',kit:'Resistance band'},
-    ]},
-    {label:'Secondary · 15 min',exercises:[
-      {name:'Assisted pull-up max × 3 sets',detail:'Red long loop band (least assistance). Max reps per set, eyes to bar. Rest 2 min. Record total — compare to W4 baseline. If red band feels solid, try 1 set unassisted.'},
-      {name:"Captain's chair wiper — legs straighter",detail:'3×6. Progress from bent-knee W4.'},
-      {name:'Copenhagen plank',detail:'3×30 sec each.'},
-    ]},
-    {label:'Balance board · 5 min',exercises:[
-      {name:'Eyes closed, full minute',detail:'3×60 sec. Target: 30–40 sec eyes closed.'},
-    ]},
-    {label:'Cardio + finish · 15 min',exercises:[
-      {name:'Cycling or jog',detail:'20 min.',alt:'Swim 15 min if at gym.'},
-      {name:'Long stretch',detail:'Last hard week — take your time.'},
-    ]},
-   ],notes:[]},
-
-  {id:'w6a',week:6,phase:3,session:1,date:'2026-05-12',title:'Week 6 · Session 1 — Taper: sharp and light',sub:'~40 min · Home or gym',apple:'Functional Strength Training',
-   blocks:[
-    {label:'Primary · 18 min',exercises:[
-      {name:'Goblet squat',detail:'2×5. Light. Sharp and explosive up.',kit:'16kg dumbbell'},
-      {name:'Bulgarian split squat',detail:'2×6 each. Controlled lower, explosive drive up.'},
-      {name:'Step-up with knee drive',detail:'2×8 each. Snappy.'},
+    {label:'Activation · 20 min',exercises:[
+      {name:'Bulgarian split squat — bodyweight',detail:'2×6 each. Light, sharp, controlled. Not a strength session.',kit:'Chair or sofa'},
+      {name:'DB Romanian deadlift',detail:'2×8. Same weight as S4. Maintain pattern — do not push.',kit:'8–10kg dumbbells'},
+      {name:'DB shoulder press — standing',detail:'2×8. Light.',kit:'8–10kg dumbbells'},
+      {name:'Single-arm dumbbell row',detail:'2×8 each.',kit:'10–12kg dumbbells'},
+      {name:'Glute bridge on heels',detail:'2×8, hold 3 sec.',kit:'Yoga mat'},
     ]},
     {label:'Tuck · 8 min',exercises:[
-      {name:'Tuck holds',detail:'3×25 sec. Consolidate, do not push further. 90 sec rest.'},
+      {name:'Tuck hold',detail:'3×25 sec, 90 sec rest. Consolidate — do not push further. This is the last hard tuck session.',kit:''},
     ]},
-    {label:'Balance board + finish · 15 min',exercises:[
-      {name:'Balance board',detail:'3×60 sec casual. Keeping pattern fresh — not a workout.'},
-      {name:'Long stretch',detail:'Hip flexors, quads, thoracic. Steam room if available.'},
+    {label:'Finish · 8 min',exercises:[
+      {name:'Hip flexor + quad stretch',detail:'60 sec each side.'},
+      {name:'Lying twist stretch',detail:'30 sec each side.'},
     ]},
-   ],notes:['Taper week. Volume −40%. Fitness is banked — banking freshness now. Resist urge to do more.']},
+   ],notes:['Taper session. Volume -40%. Fitness is banked — banking freshness now. Resist any urge to do more.']},
 
-  {id:'w6b',week:6,phase:3,session:2,date:'2026-05-14',title:'Week 6 · Session 2 — Activation only',sub:'~35 min · Home or gym',apple:'Cooldown',
+  {id:'s3b',week:3,phase:3,session:2,date:'2026-05-17',title:'Session 8 — Activation only',sub:'~35 min · Rome · DBs and bands only',apple:'Cooldown',
    blocks:[
-    {label:'Activation · 25 min',exercises:[
-      {name:'KB swing',detail:'3×6. Explosive, light, perfect form.',kit:'16kg KB'},
-      {name:'Pull-up',detail:'2×5. Try unassisted — if cannot complete 3 clean reps, use red band. Eyes to bar. Clean reps only, no grinding.'},
-      {name:'Woodchop or band rotation',detail:'2×8 each.',kit:'Resistance band'},
-      {name:'Single-leg glute bridge',detail:'2×10 each.'},
+    {label:'Physio stretches · 8 min — do FIRST',exercises:[
+      {name:'Deep belly breathing',detail:'2×10 breaths.'},
+      {name:'Side-to-side knee rolls',detail:'2×10 each side.'},
+      {name:'Cat camel',detail:'2×10.'},
+      {name:'Lying twist stretch',detail:'1×30 sec each side.'},
+    ]},
+    {label:'Activation · 20 min',exercises:[
+      {name:'Scooter',detail:'2×5 each variation. Keep glutes switched on.',kit:'Mini loop band'},
+      {name:'Glute bridge on heels',detail:'2×8, hold 3 sec.',kit:'Yoga mat'},
+      {name:'DB Romanian deadlift',detail:'2×6. Light — pattern only.',kit:'8kg dumbbells'},
+      {name:'Woodchop — both directions',detail:'2×8 each. Band. Easy rotational movement.',kit:'Tube band'},
       {name:'TKE',detail:'2×10 each. Light band. Final left knee care.',kit:'Light band'},
+      {name:'Lateral raise',detail:'2×10. Keep shoulders active.',kit:'6kg dumbbells'},
     ]},
-    {label:'Finish · 10 min',exercises:[
-      {name:'Full stretch + balance board',detail:'3 min casual balance board. Leave feeling better than you started.'},
+    {label:'Finish · 8 min',exercises:[
+      {name:'Hip flexor + quad stretch',detail:'60 sec each side.'},
+      {name:'Pigeon pose or figure-4',detail:'60 sec each side.'},
+      {name:'Lying twist stretch',detail:'30 sec each side. Leave feeling better than you started.'},
     ]},
-   ],notes:['No circuits, no max efforts, no tuck intervals. Keeping everything switched on only.']},
+   ],notes:['No circuits. No max efforts. No tuck intervals. Everything is just switched on. Arrive at the event fresh.']},
 ];
 
 const PHASES = [
-  {id:1,label:'Phase 1 · Wks 1–2',color:'#1D9E75',
-   desc:'Heel recovering — no impact loading, no jumping. Two sessions/week. VMO activation, hip stability, movement patterns before loading. DBs start at 8kg. All sessions designed for home — gym is optional.'},
-  {id:2,label:'Phase 2 · Wks 3–4',color:'#534AB7',
-   desc:'Three sessions/week. Full squat depth. Bulgarian split squats and unilateral work take centre stage. DBs increase to 12–16kg. Tuck builds to 25 sec. Power tower used heavily for core. Cardio: cycling or jog at home.'},
-  {id:3,label:'Phase 3 · Wks 5–6',color:'#BA7517',
-   desc:'Stop building, start sharpening. Training mirrors event structure: explosive efforts with genuine recovery. Tuck target 25–30 sec. Week 6 tapers — volume −40%, intensity maintained. Arrive at 22 May fresh and sharp.'},
+  {id:1,label:'Week 1 · London · Reintegration',color:'#1D9E75',
+   desc:'Back reintegration after MSK injury. Every session opens with physio stretches — non-negotiable. Strength work is conservative: physio exercises, bodyweight split squats, single-leg work, upper body with DBs. No spinal compression loading. Power tower available.'},
+  {id:2,label:'Week 2 · Rome · Strength Return',color:'#534AB7',
+   desc:'Rome — DBs and bands only, no power tower. Back loading returns carefully with DB Romanian deadlift and DB bent-over row. Bulgarian split squats with light DB added. Event conditioning circuit in Session 6. Physio stretches open every session.'},
+  {id:3,label:'Week 3 · Rome · Taper',color:'#BA7517',
+   desc:'Two sessions only. Volume −40%. Fitness is banked — arrive at the event fresh. Physio stretches daily. Tuck holds to 25 sec maximum. No new loading, no max efforts.'},
 ];
+
 
 const GLOSSARY = [
-
-  {term:'Ankle circles + heel raises',def:'Stand on one foot or both. Roll each ankle in slow circles — 5 each direction. Then rise onto your toes, hold 1 sec, lower slowly. Warms up the ankle joint and calf. Essential prep before any single-leg work.',url:'https://www.youtube.com/results?search_query=ankle+circles+++heel+raises'},
-  {term:'Balance board',def:'Stand on your roller balance board with your 30" street deck on top. Feet closer together than you think — matching your narrow speedboard stance. Start eyes open, progress to eyes half-closed or closed. Trains the micro-adjustments that keep you stable at speed.',url:'https://www.youtube.com/results?search_query=balance+board'},
-  {term:'Banded march',def:'Loop a resistance band around both legs just above the knees. Stand tall, drive one knee up to hip height, lower, repeat other side. Keep hips level throughout — do not let them drop or twist. Activates glute med and hip flexors together.',url:'https://www.youtube.com/results?search_query=banded+march'},
-  {term:'Bulgarian split squat',def:'Rear foot elevated on a bench or sofa. Front foot well forward — at the bottom, your front shin should stay roughly vertical. Lower your rear knee toward the floor, drive straight down. Push up through your front heel. 2–3 sec down, 1 sec up. The most important exercise in this plan — mirrors the asymmetric leg loading of every turn and slide.',url:'https://www.youtube.com/results?search_query=bulgarian+split+squat'},
-  {term:"Captain's chair knee raise",def:"On the power tower, place your forearms on the padded rests with your body hanging. Bring both knees up to hip height in a controlled movement, hold 1 sec at the top, lower slowly. Do not swing or use momentum. Core focus only — the grip is just for support. A more controlled version of the hanging leg raise.",url:'https://www.youtube.com/results?search_query=captains+chair+knee+raise'},
-  {term:"Captain's chair knee raise — slow lower",def:"Same as the knee raise but with a 3-second lowering phase. Pull knees to hip height, then lower over 3 full seconds — resist gravity the whole way down. No swinging. The slow eccentric phase increases core demand significantly.",url:'https://www.youtube.com/results?search_query=captains+chair+knee+raise+slow+eccentric'},
-  {term:"Captain's chair leg raise — knees tucked",def:"On the power tower, forearms on padded rests, body hanging. Draw both knees up toward your chest — higher than the basic knee raise if possible. Controlled lower, no swinging or momentum. Knees tucked means keeping them bent throughout. Harder than the standard knee raise — more hip flexor and lower ab demand.",url:'https://www.youtube.com/results?search_query=captains+chair+leg+raise+knees+tucked'},
-  {term:"Captain's chair windshield wiper",def:'On the power tower, forearms on padded rests, lower body hanging. Bring knees to 90°. Rotate both legs together to one side as far as you can control, return through centre, rotate to the other side. Slow and controlled. Trains oblique endurance — the rotational demand of sustaining a long slide sequence.',url:'https://www.youtube.com/results?search_query=captains+chair+windshield+wiper+core'},
-  {term:'Cat-cow',def:'On hands and knees, wrists under shoulders, knees under hips. Cat: exhale and round your entire spine up toward the ceiling, tuck chin and tailbone. Cow: inhale, let your belly drop, lift your head and tailbone. Move slowly and continuously. Mobilises the whole spine and warms up the lower back.',url:'https://www.youtube.com/results?search_query=cat-cow'},
-  {term:'Copenhagen plank',def:'Lie on your side. Place your top foot on a bench or sofa at knee to hip height. Lift your hips to form a straight line from head to foot. The top inner thigh (adductor) works hard to hold the position. Builds lateral hip stability for edge control in turns.',url:'https://www.youtube.com/results?search_query=copenhagen+plank'},
-  {term:'DB around-the-world',def:'Hold a light dumbbell in both hands, arms straight in front of you. Move the DB in a large slow circle around your head, keeping arms as straight as possible. Reverse direction each set. Warms up the shoulder joint through its full range.',url:'https://www.youtube.com/results?search_query=db+around-the-world'},
-  {term:'Dead bug',def:'Lie on your back, arms pointing to the ceiling, hips and knees at 90°. Press your lower back into the floor — keep it there throughout. Slowly lower your right arm overhead and extend your left leg toward the floor simultaneously. Stop just before your back lifts. Return and switch. Core anti-extension that trains the bracing pattern protecting your lower back in tuck.',url:'https://www.youtube.com/results?search_query=dead+bug'},
-  {term:'Dips — chest variation',def:'On the power tower dip bars, lean your torso slightly forward, around 10–15°. Lower until your upper arms are roughly parallel to the floor. Push back up. The forward lean shifts emphasis toward chest and shoulders. Builds push strength and shoulder stability.',url:'https://www.youtube.com/results?search_query=dips+chest+variation'},
-  {term:'Dips — more reps',def:'Same as the chest variation dip: power tower dip bars, slight forward lean. This session focuses on volume — push for more reps than previous sessions while maintaining form. Stop before form breaks down.',url:'https://www.youtube.com/results?search_query=chest+dips+power+tower'},
-  {term:'Dumbbell halo',def:'Hold a single dumbbell vertically at chest height with both hands. Move it in a slow circle around your head — forward, around one side, behind your head, around the other, back to start. Reverse direction each rep. Mobilises the shoulder girdle and upper thoracic spine.',url:'https://www.youtube.com/results?search_query=dumbbell+halo'},
-  {term:'Dynamic squat hold with reach',def:'Lower into a deep squat and hold the bottom. From there, reach one arm up and rotate your torso to follow — eyes track the hand. Hold 2 sec, return, reach the other side. Combines ankle mobility, hip flexor length, and thoracic rotation.',url:'https://www.youtube.com/results?search_query=dynamic+squat+hold+with+reach'},
-  {term:'Eccentric (training term)',def:'The lowering or lengthening phase of any exercise. Slow lowering in a squat (3–4 sec down), or the controlled descent in a Nordic curl = eccentric training. Eccentric strength controls deceleration — what joints need to absorb repeated impacts on a steep run.',url:'https://www.youtube.com/results?search_query=eccentric+training+term'},
-  {term:'Eyes closed / half-closed balance board',def:'On the balance board, reduce your visual input to increase proprioceptive demand. Eyes half-closed: reduce vision to about 50%. Eyes closed: full reliance on ankle and hip sensors. Progress only when the previous level feels stable. If you wobble off, that is the point — your nervous system is adapting.',url:'https://www.youtube.com/results?search_query=balance+board+eyes+closed+proprioception'},
-  {term:'Full bodyweight squat hold',def:'Stand with feet hip-width, toes slightly out. Lower into a full squat — as deep as comfortable — and hold the bottom position. Breathe steadily. Used as a joint prep and mobility assessment. If you feel anterior knee pain at any depth, note it and cap your range there for the session.',url:'https://www.youtube.com/results?search_query=bodyweight+squat+hold+bottom+position'},
-  {term:'Goblet squat',def:'Hold a dumbbell or kettlebell vertically at chest height. Feet hip to shoulder-width, toes slightly out. Squat down keeping the weight close to your chest, elbows inside your knees at the bottom. Drive up through your heels, chest up throughout. A safe, self-correcting squat pattern.',url:'https://www.youtube.com/results?search_query=goblet+squat'},
-  {term:'Hip 90/90',def:'Sit on the floor. Front leg: shin roughly perpendicular to your body, 90° at hip and knee. Rear leg: out to the side, also at 90°, knee pointing out, foot behind you. Sit tall on both sit bones. Hold and breathe into the tightness. To progress: hinge forward over the front leg. Targets hip external and internal rotation — critical for powerful, pain-free slides.',url:'https://www.youtube.com/results?search_query=hip+9090'},
-  {term:'Hip CARs (Controlled Articular Rotations)',def:'Stand on one leg. Lift the other knee to hip height. Slowly draw the biggest circle possible with that knee — forward, out to the side, back and around, completing the full loop. About 8–10 seconds per circle. Moves every part of the hip joint through its end range under control.',url:'https://www.youtube.com/results?search_query=hip+cars+controlled+articular+rotations'},
-  {term:'Hip flexor + quad stretch',def:'Kneel on one knee on a mat. The kneeling leg is being stretched. Tuck your tailbone under and shift your hips gently forward until you feel a stretch at the front of the hip. To add the quad: reach back and pull your rear foot toward your glute. Hold 30–45 sec per side. Counteracts hip flexor tightness from sustained tuck position.',url:'https://www.youtube.com/results?search_query=hip+flexor+++quad+stretch'},
-  {term:'Jump squat',def:'Lower into a squat (thighs parallel), then explode upward as powerfully as possible. Land softly through toes, mid-foot, heel — absorb by going straight back into the squat. Minimal ground contact time. Builds the explosive leg power needed to snap out of a slide and accelerate.',url:'https://www.youtube.com/results?search_query=jump+squat'},
-  {term:'KB swing',def:'Hinge at the hips — not a squat — pushing your hips back with a flat back. Let the kettlebell swing back between your legs, then explosively snap your hips forward. The KB floats up from hip power, not your arms. At the top: body fully upright, glutes squeezed hard, KB at chest height. Directly mimics the hip extension of driving out of a slide at speed.',url:'https://www.youtube.com/results?search_query=kb+swing'},
-  {term:'Kneeling hip flexor stretch',def:'Kneel on one knee on a mat. Keep your torso upright, tuck your tailbone slightly, shift your hips gently forward. Feel the stretch at the front of the rear hip, not the knee. Hold 30–45 sec. Do not arch your lower back — the tailbone tuck is the key.',url:'https://www.youtube.com/results?search_query=kneeling+hip+flexor+stretch'},
-  {term:'Lateral band walk',def:'Loop a resistance band around both legs above the knees or at the ankles (ankles = harder). Stand with a slight knee bend. Step sideways — lead foot steps out, trailing foot follows, keeping band tension throughout. Do not let knees cave inward. Targets glute medius, which controls knee tracking and prevents the inward collapse behind anterior knee pain.',url:'https://www.youtube.com/results?search_query=lateral+band+walk'},
-  {term:'Lateral shift rhythm',def:'On the balance board in riding stance. Practice deliberate lateral weight shifts from heel edge to toe edge and back, finding a smooth rhythm. This directly trains the micro-adjustments used to hold a line and initiate slides.',url:'https://www.youtube.com/results?search_query=balance+board+lateral+shift+skateboard'},
-  {term:'Leg press — shallow range',def:'On the leg press machine, start with knees around 60–70° (not fully bent). Press until legs are almost straight — do not lock the knee. Lower slowly. Shallow range limits patella load while building quad strength. Home swap: goblet squat or wall sit to moderate depth, focusing on the last third of the movement.',url:'https://www.youtube.com/results?search_query=leg+press+shallow+range'},
-  {term:'Nordic hamstring curl',def:'Kneel on a mat with feet hooked under the base crossbar of your power tower — check it is stable first. Body straight from knee to head. Lower yourself toward the floor as slowly as possible — aim for 4–5 seconds. Catch with your hands, push back up. One of the best exercises for knee resilience and hamstring tendon health.',url:'https://www.youtube.com/results?search_query=nordic+hamstring+curl'},
-  {term:'Pallof press',def:'Anchor a resistance band at chest height. Stand side-on to the anchor. Hold the band at your chest with both hands. Press straight out, hold 2 seconds, return. The band constantly tries to rotate you — you resist entirely. Anti-rotation core stability that replicates bracing during a slide. Step further from the anchor to increase difficulty.',url:'https://www.youtube.com/results?search_query=pallof+press'},
-  {term:'Passive hang from pull-up bar',def:'Jump or step up to the pull-up bar and hang. Full grip, shoulders relaxed and open — let gravity decompress your spine. Do not engage your lats. Breathe slowly. Used as recovery and spinal decompression after heavy sessions.',url:'https://www.youtube.com/results?search_query=passive+hang+from+pull-up+bar'},
-  {term:'Pigeon pose / Figure-4 stretch',def:'Figure-4 (on your back): cross one ankle over the opposite thigh above the knee, flex the foot. Draw the bottom knee toward your chest to intensify. Pigeon (on floor): bring one shin forward roughly parallel to the top of your mat, extend the rear leg back, hinge forward to deepen. Hold 45–60 sec per side. Targets hip external rotators and glutes — critical for a sport that loads hips asymmetrically.',url:'https://www.youtube.com/results?search_query=pigeon+pose+figure-4+stretch'},
-  {term:'Plank with hip tap',def:'Forearm plank — elbows under shoulders, body straight, core braced. Slowly lower one hip toward the floor, return to centre, lower the other. Move from the obliques — do not twist the whole body. Hip movement should be minimal. Anti-rotation endurance with a rotational challenge.',url:'https://www.youtube.com/results?search_query=plank+with+hip+tap'},
-  {term:'Proprioception',def:"Your body's ability to sense its own position and movement without looking. The ankle and hip sensors that tell you where your board is mid-slide at 60km/h. Degrades with age and after injury. Balance board work directly trains proprioception — why it is integrated into every phase of this programme.",url:'https://www.youtube.com/results?search_query=proprioception'},
-  {term:'Pull-up',def:'Start from a full dead hang — arms straight, shoulders open. Pull by driving your elbows toward your hips, not by shrugging. Chin clears the bar at the top. Lower with control over 2–3 sec. Builds lat and upper back strength for arm stability and postural endurance during long runs.',url:'https://www.youtube.com/results?search_query=pull-up'},
-  {term:'Assisted pull-up / Assisted pull-up — slow negative',def:'Two methods depending on where you are training. GYM — Assisted pull-up machine: step on the platform, select a counterweight. The higher the counterweight number, the MORE assistance (easier). Start at around 40–50kg counterweight — this means you are effectively pulling 35–45kg of your bodyweight. If you cannot complete the reps, increase the counterweight. Slow negative: pull to chin, then lower over 3–4 sec. HOME — Long loop band on power tower: take your purple band (lightest of the three new ones) or black band (heavier assist). Loop it over the pull-up bar. Kneel in the loop with both knees, or place one foot in the loop. The band stretches as you lower and assists you back up through the hardest part of the movement. Purple band = most assistance, red = least. Grip the bar, hang fully, then pull chin to bar. Slow negative: same as gym — lower over 3–4 sec fighting gravity.',url:'https://www.youtube.com/results?search_query=assisted+pull+up+resistance+band+loop'},
-  {term:'Push-up with rotation',def:'Standard push-up position. At the top of each rep, rotate your whole torso — one arm reaches straight to the ceiling, eyes follow. Body forms a T. Return both hands to floor, lower into the next rep, rotate the other side. Combines chest and shoulder strength with thoracic rotation under load.',url:'https://www.youtube.com/results?search_query=push-up+with+rotation'},
-  {term:'Quad stretch',def:'Stand on one leg, bend the other knee and hold your foot behind you with the same-side hand. Keep knees together, stand tall, do not arch your lower back. Hold 30–45 sec. Use the power tower for balance if needed. Releases quad tension that contributes to anterior knee compression.',url:'https://www.youtube.com/results?search_query=quad+stretch'},
-  {term:'Reverse lunge',def:'Stand tall, feet together. Step one foot back and lower your rear knee toward the floor. Front shin stays vertical, front knee tracks over the second toe. Push through your front heel to return. More knee-friendly than a forward lunge — less shear force on the kneecap.',url:'https://www.youtube.com/results?search_query=reverse+lunge'},
-  {term:'Riding stance + soft gaze',def:'Stand on the balance board in your actual speedboard stance — narrow, feet roughly 32–33" apart. Soften your gaze (look forward without focusing on a fixed point). This trains the relaxed visual awareness used at speed, where fixating on one point causes tension and loss of balance.',url:'https://www.youtube.com/results?search_query=balance+board+riding+stance'},
-  {term:'Roller board introduction',def:'Your first session on the balance board. Place the roller under the centre of the deck. Stand with feet in your speedboard stance. Focus on finding the balance point before attempting any shifts. Hold the power tower or a wall for support until you find your footing. Build confidence before removing support.',url:'https://www.youtube.com/results?search_query=balance+board+beginner+introduction'},
-  {term:'Seated spinal rotation',def:'Sit upright on the floor or a chair. Place hands on your shoulders or reach arms out. Rotate your torso to one side as far as comfortable, hold 2 sec, return, rotate the other way. Move from the mid-back, not the lower back. Warms up the thoracic spine for the rotation demands of slides.',url:'https://www.youtube.com/results?search_query=seated+spinal+rotation'},
-  {term:'Shallow wall sit',def:'Back flat against a wall. Slide down until your thighs are at about 45° — not the full parallel position. Feet hip-width, toes slightly out. Hold, breathing steadily. The partial depth targets the VMO while limiting patella compression. If you feel sharp anterior knee pain, reduce the depth immediately.',url:'https://www.youtube.com/results?search_query=shallow+wall+sit'},
-  {term:'Shoulder circles + arm swings',def:'Shoulder circles: roll both shoulders forward in large slow circles 10 times, then backward 10 times. Arm swings: extend arms to the sides, swing them across your body, then up and down, increasing range each swing. Warms up the rotator cuff and shoulder girdle before upper body sessions.',url:'https://www.youtube.com/results?search_query=shoulder+circles+++arm+swings'},
-  {term:'Side plank with reach-through',def:'Side plank on your forearm, hips up, body in a straight line. Top arm extends to the ceiling. Thread that arm under your body as far as you can, then return it to the ceiling. That is one rep. Combines lateral stability with thoracic rotation.',url:'https://www.youtube.com/results?search_query=side+plank+with+reach-through'},
-  {term:'Side-lying hip abduction',def:'Lie on your side in a straight line. Top leg straight, foot flexed with toes pointing slightly down (not up — this matters). Lift the top leg toward the ceiling, hold 1 sec at the top, lower slowly. Do not let your hips roll back. Directly targets glute medius — controls knee tracking and lateral hip stability.',url:'https://www.youtube.com/results?search_query=side-lying+hip+abduction'},
-  {term:'Single-arm DB press — standing',def:'Stand tall, core braced. Hold one dumbbell at shoulder height, palm forward. Press straight overhead until arm is fully extended. Lower slowly. The single-arm version creates an imbalance your core must resist — trains anti-lateral-flexion stability alongside shoulder strength.',url:'https://www.youtube.com/results?search_query=single-arm+db+press+standing'},
-  {term:'Single-arm dumbbell row',def:'Hinge forward at the hips with a flat back, one hand on a bench or knee for support. Let the dumbbell hang from the working arm. Pull the elbow straight back and up — drive it toward your hip, not curl the weight. Lower with control. Builds lat and upper back strength for postural endurance.',url:'https://www.youtube.com/results?search_query=single-arm+dumbbell+row'},
-  {term:'Single-leg calf raise',def:'Stand on one foot near the power tower for balance. Rise onto the ball of your foot as high as possible, hold 1 sec, lower slowly over 3 seconds. Full range — all the way up, all the way down. Builds calf and Achilles resilience, important for heel protection and push-off.',url:'https://www.youtube.com/results?search_query=single-leg+calf+raise'},
-  {term:'Single-leg glute bridge',def:'Lie on your back, knees bent, feet flat. Extend one leg straight. Drive through the heel of the planted foot, squeeze your glute, and lift your hips until your body forms a straight line from shoulder to knee to extended foot. Hold 1–2 sec at the top, lower slowly. Progresses to feet-elevated for greater range.',url:'https://www.youtube.com/results?search_query=single-leg+glute+bridge'},
-  {term:'Single-leg press or assisted pistol',def:'Single-leg press: one foot on the leg press platform, press through that leg only. Assisted pistol: face the power tower, hold the uprights for support, extend one leg forward, lower on the other as deep as comfortable. Builds single-leg quad and glute strength with full control.',url:'https://www.youtube.com/results?search_query=single-leg+press+or+assisted+pistol'},
-  {term:'Single-leg RDL (Romanian Deadlift)',def:'Stand on one leg, slight bend in the standing knee. Hold a dumbbell in the opposite hand. Hinge forward at the hip — your body and free leg go back together like a seesaw. DB lowers toward the floor as your torso tips forward. Return by squeezing the standing glute and driving hips forward. Keep your back flat throughout.',url:'https://www.youtube.com/results?search_query=single-leg+rdl+romanian+deadlift'},
-  {term:'Step-up with knee drive',def:'Stand facing a sturdy step or bench. Step up with one foot, drive through that heel to lift your body. At the top, explosively drive the opposite knee to hip height. Step back down with control. Trains the push-off explosiveness needed to exit slides and accelerate.',url:'https://www.youtube.com/results?search_query=step-up+with+knee+drive'},
-  {term:'Stretch (general)',def:'A general stretch block. Cover the main areas used in the session: quad stretch, hip flexor stretch, and thoracic rotation. Hold each 45–60 sec per side. Do not rush this — it is part of the session, not optional.',url:'https://www.youtube.com/results?search_query=post+workout+stretch+lower+body'},
-  {term:'Swimming',def:'Easy-pace swim — not a workout. Aim for a pace where you could hold a conversation. Freestyle or any stroke you are comfortable with. Purpose is cardiovascular flush and active recovery, not fitness training. If not at the gym, replace with 15–20 min easy jog or cycling.',url:'https://www.youtube.com/results?search_query=easy+lap+swimming+technique'},
-  {term:'Thoracic open books',def:'Lie on your side, knees stacked and bent at 90° — they stay together throughout. Extend both arms at chest height. Keep hips completely still. Take your top arm and slowly rotate it up and over to the other side, opening your chest toward the ceiling. Go only as far as your upper back allows. Return slowly. Improves thoracic rotation for slide technique.',url:'https://www.youtube.com/results?search_query=thoracic+open+books'},
-  {term:'Thoracic rotation (seated)',def:'Sit upright on a bench or chair, feet flat. Arms crossed over chest or hands on shoulders. Rotate your upper body to one side as far as you can without your hips moving or lower back twisting. Hold 2 seconds. Return and rotate the other way. Isolates mid-back rotation.',url:'https://www.youtube.com/results?search_query=thoracic+rotation+seated'},
-  {term:'Timed stance holds',def:'On the balance board in riding stance. Simply hold your position for the prescribed time without stepping off. Progress by reducing support (hands free, eyes half-closed, eyes closed). Builds static balance endurance specific to your speedboard stance.',url:'https://www.youtube.com/results?search_query=balance+board+stance+hold'},
-  {term:'TKE warm-up',def:'Same movement as the working TKE set but with a lighter band — one level down from your working resistance. Face the tower, band behind the knee, slight forward lean. 2×10 each side. Purpose is to activate the VMO and warm up the knee joint before loading it.',url:'https://www.youtube.com/results?search_query=tke+terminal+knee+extension+warmup'},
-  {term:'TKE — Terminal Knee Extension',def:'Anchor a resistance band at knee height to the power tower. Face the tower — not away from it. Loop the band behind your knee (not your thigh). Stand on the banded leg with a slight forward lean and a small knee bend. From this position, fully straighten the knee against the band resistance. Hold 1–2 sec fully straight, release slowly. You should feel a gentle burn at the inner kneecap — not in the glute. If you feel it in the glute: check you are facing the tower, check the band is behind the knee, and increase your forward lean slightly. Never a sharp anterior pinch — reduce resistance immediately if so.',url:'https://www.youtube.com/results?search_query=tke+terminal+knee+extension'},
-  {term:'Toe/heel shifts',def:'On the balance board. Deliberately shift your weight toward your toes, then toward your heels, in a slow controlled rhythm. One direction at a time — do not let the board slam. Trains the fine ankle control used to hold edge pressure through a slide.',url:'https://www.youtube.com/results?search_query=balance+board+toe+heel+shifts'},
-  {term:'Tuck hold',def:'Get into your speedboard tuck — knees bent, back flat and roughly parallel to the ground, arms tucked. Hold for the prescribed duration. Keep your back flat (not rounded), weight evenly through both feet, core braced. The programme goal is 25–30 sec comfortably — a background conditioning target, not a race priority.',url:'https://www.youtube.com/results?search_query=tuck+hold'},
-  {term:'Tuck → explosive stand',def:'Get into your full speedboard tuck position. Hold for 1–2 sec, then explode upward to fully standing as fast as possible — as if reacting to a hazard at speed. Reset, lower back into tuck, repeat. Trains the reactive power needed to recover from unexpected situations on a run.',url:'https://www.youtube.com/results?search_query=squat+explosive+stand+reactive+power'},
-  {term:'VMO (Vastus Medialis Oblique)',def:'The teardrop-shaped inner quad muscle just above and inside the kneecap. Fires hardest in the last 30° of knee straightening. When weak, the kneecap is pulled laterally by the stronger outer quad, causing the anterior knee pain on your left side. Every TKE, shallow wall sit, and single-leg exercise in this plan specifically targets VMO development.',url:'https://www.youtube.com/results?search_query=vmo+vastus+medialis+oblique'},
-  {term:'Woodchop',def:'Anchor a band at head height (high-to-low) or ankle height (low-to-high). Stand side-on to the anchor. Pull diagonally across your body — high-to-low mimics heelside rotation, low-to-high mimics toeside. Power from rotating hips and torso together. Pivot your back foot to allow full rotation. Arms stay relatively straight — this is a rotation, not a pull.',url:'https://www.youtube.com/results?search_query=woodchop'},
-  {term:"World's greatest stretch",def:'Step into a forward lunge. Plant your same-side hand on the floor inside your front foot. Rotate your top arm up toward the ceiling as far as you can, following with your eyes. Hold 2 seconds. Return hand to floor. Combines hip flexor length, hamstring opening, and thoracic rotation — one of the most efficient warm-up exercises you can do.',url:'https://www.youtube.com/results?search_query=worlds+greatest+stretch'},
-  {term:'Full stretch / Long stretch / Thorough stretch',def:'A dedicated stretch block at the end of a session. Cover all major areas worked: quads, hip flexors, hamstrings, glutes (figure-4), thoracic rotation, and calves. Hold each 45–60 sec per side. The steam room variant means finishing in the gym steam room if available — heat accelerates tissue recovery. Do not skip this block — it is part of the session.',url:'https://www.youtube.com/results?search_query=full+body+post+workout+stretch+routine'},
+  {term:'Assisted pull-up',def:'Loop your purple long loop band over the pull-up bar. Kneel in the loop with both knees, or place one foot in the loop. Grip the bar with hands shoulder-width apart. From a full hang, pull up as high as you can — ceiling limits you to eyes at bar level, not chin-over. Lower over 3 seconds. The band stretches as you lower and assists you back up. Purple = most assistance. Black or red = less.',url:'https://www.youtube.com/results?search_query=assisted+pull+up+resistance+band'},
+  {term:'Balance board',def:'Stand on your roller balance board with your 30" street deck on top. Feet in your actual speedboard stance — narrow, roughly 32–33" apart. Find the balance point before shifting. Start eyes open, progress to eyes soft-focused. Trains the micro-adjustments that keep you stable at speed.',url:'https://www.youtube.com/results?search_query=balance+board+riding+stance'},
+  {term:'Box squat',def:'Stand in front of a sturdy chair or box, feet shoulder-width apart, toes slightly out. Sit your hips back and down slowly — arms reach forward to counterbalance. Touch the chair lightly (do not collapse onto it), then stand back up, driving through heels. Back stays straight throughout. Easier than a goblet squat — safer for the lower back during reintegration.',url:'https://www.youtube.com/results?search_query=box+squat+technique'},
+  {term:'Bulgarian split squat',def:'Rear foot elevated on a sofa or chair. Front foot well forward — test by lowering: your front shin should stay roughly vertical at the bottom. Lower your rear knee toward the floor, drive straight down. Push up through your front heel. Keep your torso upright. Bodyweight first, add DBs at sides when form is solid.',url:'https://www.youtube.com/results?search_query=bulgarian+split+squat+form'},
+  {term:'Cat camel',def:'On hands and knees, wrists under shoulders, knees under hips. Cat: exhale and round your entire spine up toward the ceiling, tuck chin and tailbone, hold 2 sec. Camel: inhale, let your belly drop, lift your head and tailbone, hold 2 sec. Move slowly between positions. Prescribed by physio — mobilises the whole spine and warms up the lower back.',url:'https://www.youtube.com/results?search_query=cat+camel+exercise+back'},
+  {term:'DB Romanian deadlift',def:'Stand tall, DBs in front of your thighs. Hinge at the hips — push your hips back, lower the DBs down the front of your shins, keeping them close to your legs. Back stays completely flat throughout — no rounding at any point. Lower until you feel a hamstring stretch (roughly shin level), then drive your hips forward to stand. This is a hip hinge, not a squat — knees stay soft but do not bend deeply.',url:'https://www.youtube.com/results?search_query=dumbbell+romanian+deadlift+form'},
+  {term:'DB bent-over row',def:'Stand with feet hip-width, hinge forward at the hips to about 45° — back flat, core braced. DBs hanging in both hands. Pull both elbows back and up simultaneously, squeezing shoulder blades together at the top. Lower slowly. Maintain the flat back throughout — if you feel lower back strain, reduce the weight immediately.',url:'https://www.youtube.com/results?search_query=dumbbell+bent+over+row+form'},
+  {term:'DB bicep curl',def:'Stand tall, DBs at your sides, palms facing forward. Curl both DBs to shoulder height — keep elbows pinned at your sides throughout. Lower slowly over 2–3 seconds. Do not swing or use momentum. Builds arm and grip strength.',url:'https://www.youtube.com/results?search_query=dumbbell+bicep+curl+form'},
+  {term:'DB shoulder press — seated',def:'Sit upright on a chair, back straight. DBs at shoulder height, palms facing forward. Press straight overhead until arms are extended. Lower slowly. Seated removes the spinal compression risk of standing press — use this during back reintegration.',url:'https://www.youtube.com/results?search_query=seated+dumbbell+shoulder+press'},
+  {term:'DB shoulder press — standing',def:'Stand tall, core braced. DBs at shoulder height, palms forward. Press straight overhead. Lower slowly. Only use standing version once lower back is pain-free.',url:'https://www.youtube.com/results?search_query=standing+dumbbell+shoulder+press'},
+  {term:'Dead bug — straight leg',def:'Lie on your back, arms pointing to the ceiling, legs at 90° tabletop. Press your lower back into the floor — keep it there throughout. Slowly lower your right arm overhead and straighten + lower your left leg toward the floor simultaneously. Go only as far as your back stays flat. Return and switch sides. The straight leg version (prescribed by physio) is harder than bent-knee — demands more core control.',url:'https://www.youtube.com/results?search_query=dead+bug+straight+leg+exercise'},
+  {term:'Deep belly breathing',def:'Prescribed by physio for back recovery. Lie on your back, legs elevated on a sofa or chair. One hand on stomach, one on chest. Inhale through your nose for 4 counts, lifting both belly and chest. Hold 2 counts. Exhale through your mouth for 4 counts. Relaxes the deep spinal muscles that go into protective spasm after a back injury.',url:'https://www.youtube.com/results?search_query=diaphragmatic+breathing+back+pain+relief'},
+  {term:'Glute bridge on heels',def:'Prescribed by physio. Lie on your back, knees bent to 90°. Lift your toes — only heels contact the floor. Drive your heels into the floor and lift your hips. At the top, tuck your pelvis slightly and hold for 5 seconds, squeezing glutes. Lower slowly. The heel position shifts emphasis to hamstrings — your primary spinal stabilisers. Progress by elevating heels on a chair or adding a DB on your hips.',url:'https://www.youtube.com/results?search_query=glute+bridge+on+heels+hamstring'},
+  {term:'Hip flexor + quad stretch',def:'Kneel on one knee on a mat. The kneeling leg is being stretched. Keep your torso upright, tuck your tailbone slightly, shift your hips gently forward until you feel a stretch at the front of the rear hip. To add the quad: reach back and pull your rear foot toward your glute with the same-side hand. Hold 45–60 sec per side. Counteracts hip flexor tightness from sustained tuck position.',url:'https://www.youtube.com/results?search_query=kneeling+hip+flexor+quad+stretch'},
+  {term:'Lateral band walk',def:'Loop a mini band above your knees (easier) or at your ankles (harder). Stand with a slight knee bend. Step sideways — lead foot steps out, trailing foot follows, keeping band tension throughout. Do not let knees cave inward. Targets glute medius — controls knee tracking and prevents the inward collapse behind anterior knee pain.',url:'https://www.youtube.com/results?search_query=lateral+band+walk+glute+med'},
+  {term:'Lateral raise',def:'Stand tall, DBs at your sides. Raise both arms out to shoulder height — a slight bend in the elbows is fine. Hold 1 sec at the top, lower slowly over 2–3 sec. Do not shrug or use momentum. Builds deltoid strength and shoulder stability.',url:'https://www.youtube.com/results?search_query=dumbbell+lateral+raise+form'},
+  {term:'Lying twist stretch',def:'Prescribed by physio. Lie on your back, legs straight, arms out to the sides. Place one hand on the outside of the opposite knee and pull that leg across your body, rotating your whole torso. Keep the back of the opposite hand in contact with the floor throughout. Hold 30 sec, breathe steadily into the stretch. Relieves tension in the lower back and improves spinal rotation mobility.',url:'https://www.youtube.com/results?search_query=lying+twist+stretch+lower+back'},
+  {term:'Pallof press',def:'Anchor a tube band at chest height in a door frame or to a fixed point. Stand side-on to the anchor. Hold the band at your chest with both hands. Press straight out in front of you, hold 2 seconds, return to chest. The band constantly tries to rotate you toward the anchor — you resist entirely. Anti-rotation core stability. Step further from the anchor to increase difficulty.',url:'https://www.youtube.com/results?search_query=pallof+press+anti+rotation+core'},
+  {term:'Pigeon pose / Figure-4 stretch',def:'Figure-4 (on your back, easier): lie on your back, cross one ankle over the opposite thigh just above the knee. Flex the foot. Draw the bottom knee toward your chest to intensify. Hold 45–60 sec per side. Targets hip external rotators and glutes.',url:'https://www.youtube.com/results?search_query=figure+4+stretch+hip+piriformis'},
+  {term:'Push-up',def:'Hands shoulder-width apart, body in a straight line from head to heel. Lower until chest is close to the floor, push back up. Core braced throughout — do not let hips sag. On knees if needed: same rules, just knees replace feet.',url:'https://www.youtube.com/results?search_query=push+up+correct+form'},
+  {term:'Push-up with rotation',def:'Standard push-up. At the top of each rep, rotate your whole torso — one arm reaches straight to the ceiling, eyes follow. Body forms a T. Return both hands to floor, lower into the next rep, rotate the other side. Combines chest and shoulder strength with thoracic rotation under load.',url:'https://www.youtube.com/results?search_query=push+up+with+rotation+t+push+up'},
+  {term:'Quad stretch',def:'Stand on one leg, bend the other knee and hold your foot behind you with the same-side hand. Keep knees together, stand tall, do not arch your lower back. Hold 45 sec. Use a wall or chair for balance if needed.',url:'https://www.youtube.com/results?search_query=standing+quad+stretch'},
+  {term:'Reverse lunge',def:'Stand tall, feet together. Step one foot back and lower your rear knee toward the floor. Front shin stays vertical, front knee tracks over the second toe. Push through your front heel to return to standing. More knee-friendly than a forward lunge — less shear force on the kneecap.',url:'https://www.youtube.com/results?search_query=reverse+lunge+form'},
+  {term:'Scooter',def:'Prescribed by physio. Mini band around your ankles. Stand with feet hip-width, slight knee bend, hips slightly back. Shift all weight onto one foot — do not let your hip sway out. With the opposite foot, reach out to the side (variation 1), behind you (variation 2), or diagonally behind (variation 3), tapping your toe. Return slowly, keeping weight in the standing leg throughout. You should feel the glute of the standing leg working hard. Also excellent for left knee VMO and lateral hip stability.',url:'https://www.youtube.com/results?search_query=scooter+exercise+single+leg+glute'},
+  {term:'Side plank with reach-through',def:'Side plank on your forearm, hips up, body in a straight line. Top arm extends to the ceiling. Thread that arm under your body as far as you can, then return it to the ceiling. That is one rep. Combines lateral core stability with thoracic rotation.',url:'https://www.youtube.com/results?search_query=side+plank+reach+through'},
+  {term:'Side-to-side knee rolls',def:'Prescribed by physio. Lie on your back, arms out to the sides, knees bent. Slowly lower both knees to one side — only go as far as comfortable. Return through centre, lower to the other side. Continuous side-to-side motion. Relieves tension in the lower back and improves rotation mobility. A gentle mobilisation — not a stretch to push through.',url:'https://www.youtube.com/results?search_query=supine+knee+rolls+lower+back+mobility'},
+  {term:'Single-arm dumbbell row',def:'Hinge forward at the hips with a flat back, one hand on a chair or knee for support. Let the dumbbell hang from the working arm. Pull the elbow straight back and up — drive it toward your hip, not curl the weight. Lower with control over 2–3 sec. Keep the spine neutral throughout.',url:'https://www.youtube.com/results?search_query=single+arm+dumbbell+row+form'},
+  {term:'Single-leg glute bridge',def:'Lie on your back, knees bent, feet flat. Extend one leg straight. Drive through the heel of the planted foot, squeeze your glute, and lift your hips until your body forms a straight line from shoulder to knee to extended foot. Hold 2 sec at the top, lower slowly.',url:'https://www.youtube.com/results?search_query=single+leg+glute+bridge'},
+  {term:'TKE — Terminal Knee Extension',def:'Anchor a resistance band at knee height to a fixed point. Face the anchor. Loop the band behind your knee — not your thigh. Stand on the banded leg with a slight forward lean and a small knee bend. Fully straighten the knee against the band resistance. Hold 1–2 sec, release slowly. Feel a gentle burn at the inner kneecap — not in the glute. If you feel it in the glute: check you are facing the anchor, check the band is behind the knee, increase forward lean slightly.',url:'https://www.youtube.com/results?search_query=terminal+knee+extension+tke+vmo'},
+  {term:'Thoracic open books',def:'Lie on your side, knees stacked and bent at 90° — they stay together throughout. Both arms extended at chest height. Keep hips completely still. Take your top arm and slowly rotate it up and over to the other side, opening your chest toward the ceiling. Go only as far as your upper back allows. Return slowly. Improves thoracic rotation.',url:'https://www.youtube.com/results?search_query=thoracic+open+books+rotation+stretch'},
+  {term:'Tuck hold',def:'Get into your speedboard tuck position — knees bent, back flat and roughly parallel to the ground, arms tucked. Hold for the prescribed duration. Keep your back flat (not rounded), weight evenly through both feet, core braced. The programme goal is 25 sec comfortably.',url:'https://www.youtube.com/results?search_query=downhill+skateboard+tuck+position'},
+  {term:'Tuck → explosive stand',def:'Get into your full speedboard tuck. Hold 1–2 sec, then explode upward to fully standing as fast as possible — as if reacting to a hazard at speed. Reset completely, lower back into tuck, repeat. Trains reactive power needed to recover from unexpected situations on a run.',url:'https://www.youtube.com/results?search_query=squat+to+explosive+stand+power'},
+  {term:'VMO (Vastus Medialis Oblique)',def:'The teardrop-shaped inner quad muscle just above and inside the kneecap. Fires hardest in the last 30° of knee straightening. When weak, the kneecap is pulled laterally by the stronger outer quad, causing the anterior knee pain on your left side. TKE and scooter in this programme specifically target VMO development.',url:'https://www.youtube.com/results?search_query=vmo+strengthening+exercises+knee'},
+  {term:'Woodchop — high to low / low to high / both directions',def:'Anchor a tube band at head height (high-to-low) or ankle height (low-to-high) in a door frame. Stand side-on to the anchor. Pull diagonally across your body — high-to-low mimics heelside rotation, low-to-high mimics toeside. Power from rotating hips and torso together. Pivot your back foot to allow full rotation. Arms stay relatively straight — this is a rotation, not a pull.',url:'https://www.youtube.com/results?search_query=band+woodchop+rotational+exercise'},
 ];
+
 
 // ══════════════════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════════════════
-let scriptUrl = 'https://script.google.com/macros/s/AKfycbx-fhsW1RAXWP16IpIJ_U8tLmVPX-AZaBFv2zM1pbI5v8GTM_O9YonjbnphxKUaG9mI/exec';
+let scriptUrl = 'https://script.google.com/macros/s/AKfycbwfuNw1fWq_VTNvU0BxjZmTCnM-Yg0hPgbUz4C6EQ7r6UPSVIf9RC5Ohfdog-YxeeMd/exec';
 let logs = {};
 let isOnline = false;
 let selectedFeeling = null;
@@ -729,7 +622,7 @@ function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 
 function loadLocal(){
   // URL is always hardcoded — never read from localStorage
-  scriptUrl = 'https://script.google.com/macros/s/AKfycbx-fhsW1RAXWP16IpIJ_U8tLmVPX-AZaBFv2zM1pbI5v8GTM_O9YonjbnphxKUaG9mI/exec';
+  scriptUrl = 'https://script.google.com/macros/s/AKfycbwfuNw1fWq_VTNvU0BxjZmTCnM-Yg0hPgbUz4C6EQ7r6UPSVIf9RC5Ohfdog-YxeeMd/exec';
   // Always merge local logs with whatever is in localStorage — never wipe
   try{
     const stored = JSON.parse(lsGet('logs') || '{}');
@@ -785,7 +678,6 @@ async function fetchFromSheet(){
         logs[sid] = {...localEntry, ...sheetEntry, ticked};
       });
       saveLocal();
-      renderAll();
       setSyncStatus('synced','Synced');
     }
   }catch(e){
@@ -806,7 +698,6 @@ async function pushToSheet(sessionId, entry){
       feeling: entry.feeling||'',
       note:    entry.note||'',
       ticked:  tickedKeys,
-      actualSession: entry.actualSession||'',
     };
     await fetch(gsUrl(params));
     setSyncStatus('synced','Saved');
@@ -920,20 +811,15 @@ function calcStatus(sid, s){
 // Toggle a single exercise tick
 async function toggleEx(sid, bi, ei){
   const s = SESSIONS.find(x=>x.id===sid);
-  if(!logs[sid]) logs[sid] = {ticked:{}, feeling:null, note:'', loggedAt:null, actualSession:''};
+  if(!logs[sid]) logs[sid] = {ticked:{}, feeling:null, note:'', loggedAt:null};
   if(!logs[sid].ticked) logs[sid].ticked = {};
   const key = exId(sid,bi,ei);
   if(logs[sid].ticked[key]) delete logs[sid].ticked[key];
   else logs[sid].ticked[key] = 1;
-  // Auto-set status — but do not mark done until feeling is logged
-  const calcedStatus = calcStatus(sid, s);
-  // If all exercises ticked but no feeling yet: keep as partial so Today stays on this session
-  if(calcedStatus === 'done' && !logs[sid].feeling){
-    logs[sid].status = 'partial';
-  } else {
-    logs[sid].status = calcedStatus;
-  }
-  if(calcedStatus !== 'none' && !logs[sid].loggedAt) logs[sid].loggedAt = new Date().toISOString();
+  // Auto-set status
+  const newStatus = calcStatus(sid, s);
+  logs[sid].status = newStatus;
+  if(newStatus !== 'none' && !logs[sid].loggedAt) logs[sid].loggedAt = new Date().toISOString();
   saveLocal();
   await pushToSheet(sid, logs[sid]);
   renderAll();
@@ -980,25 +866,20 @@ function renderSession(s, inToday){
     <div class="session-progress-bar"><div class="session-progress-fill" style="width:${Math.round(tickedCount/totalEx*100)}%"></div></div>
     <div class="progress-label">${tickedCount} of ${totalEx} exercises · ${status==='done'?'<span style="color:#1D9E75;font-weight:600">Session complete ✓</span>':status==='partial'?'<span style="color:#BA7517">Partial</span>':'Not started'}</div>` : '';
 
-  // Log form — feeling + notes + export (shown when session has been started, both Today and Plan tabs)
+  // Log form — feeling + notes + export (shown when session has been started)
   let logArea = '';
-  if(inToday || (!inToday && tickedCount > 0)){
+  if(inToday){
     const hasStarted = tickedCount > 0;
     const feeling = log ? log.feeling : null;
     const note = log ? (log.note||'') : '';
-    const actualSession = log ? (log.actualSession||'') : '';
     logArea = `
       <div class="log-form" id="log-form-${s.id}" style="${hasStarted?'':'opacity:.5;pointer-events:none'}">
         <div class="log-form-title">${hasStarted?'Session log':'Tick exercises above to begin logging'}</div>
-        <textarea class="note-area" id="note-${s.id}" placeholder="Notes — left knee, what to tell Claude, anything you skipped..." onblur="saveNote('${s.id}')">${note}</textarea>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
-          <label style="font-size:13px;color:var(--text2);white-space:nowrap">Actual session #</label>
-          <input type="text" id="actual-session-${s.id}" value="${actualSession}" placeholder="e.g. 2 or 2-3" onblur="saveActualSession('${s.id}')" style="flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;background:var(--bg);color:var(--text)">
-        </div>
-        <div style="font-size:12px;color:var(--text3);margin-bottom:8px">How did it feel? (tap to complete session)</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:8px">How did it feel?</div>
         <div class="feeling-grid">
           ${[1,2,3,4].map(f=>`<button class="feel-btn ${feeling===f?'active':''}" data-f="${f}" onclick="selectFeeling('${s.id}',${f})">${feelingLabel(f)}</button>`).join('')}
         </div>
+        <textarea class="note-area" id="note-${s.id}" placeholder="Notes — left knee, what to tell Claude, anything you skipped..." onblur="saveNote('${s.id}')">${note}</textarea>
         <button onclick="exportSession('${s.id}')" style="width:100%;padding:11px;background:var(--bg2);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;margin-top:8px">📋 Export session summary</button>
       </div>`;
   }
@@ -1105,12 +986,6 @@ function renderToday(){
 async function selectFeeling(sessionId, f){
   if(!logs[sessionId]) logs[sessionId] = {ticked:{}, feeling:null, note:'', loggedAt:new Date().toISOString()};
   logs[sessionId].feeling = f;
-  // Now that feeling is set, finalise status — if all exercises ticked, mark done
-  const s = SESSIONS.find(x=>x.id===sessionId);
-  if(s){
-    const calcedStatus = calcStatus(sessionId, s);
-    if(calcedStatus === 'done') logs[sessionId].status = 'done';
-  }
   saveLocal();
   await pushToSheet(sessionId, logs[sessionId]);
   renderAll();
@@ -1120,14 +995,6 @@ async function saveNote(sessionId){
   const note = document.getElementById('note-'+sessionId)?.value?.trim() || '';
   if(!logs[sessionId]) logs[sessionId] = {ticked:{}, feeling:null, note:'', loggedAt:new Date().toISOString()};
   logs[sessionId].note = note;
-  saveLocal();
-  await pushToSheet(sessionId, logs[sessionId]);
-}
-
-async function saveActualSession(sessionId){
-  const val = document.getElementById('actual-session-'+sessionId)?.value?.trim() || '';
-  if(!logs[sessionId]) logs[sessionId] = {ticked:{}, feeling:null, note:'', loggedAt:new Date().toISOString(), actualSession:''};
-  logs[sessionId].actualSession = val;
   saveLocal();
   await pushToSheet(sessionId, logs[sessionId]);
 }
@@ -1243,14 +1110,13 @@ function renderLog(){
         <div class="le-header">
           <div>
             <div class="le-title">${s.title}</div>
-            <div class="le-date">${entry.loggedAt ? formatDateLong(entry.loggedAt.slice(0,10)) : formatDateLong(s.date)}</div>
+            <div class="le-date">${formatDateLong(s.date)}</div>
           </div>
           <span class="le-week" style="flex-shrink:0">Wk ${s.week}</span>
         </div>
         <div class="le-meta">
           <span class="le-status" style="color:${statusColor(entry.status)}">${entry.status==='done'?'✓ Completed':'◐ Partial'}</span>
           ${entry.feeling?`<span class="le-feeling">${feelingLabel(entry.feeling)}</span>`:''}
-          ${entry.actualSession?`<span style="font-size:12px;color:var(--text3);margin-left:4px">· Actual session ${entry.actualSession}</span>`:''}
         </div>
         ${entry.note?`<div class="le-note">${entry.note}</div>`:''}
         ${(()=>{
@@ -1276,7 +1142,6 @@ function renderGlossary(){
     <div class="gterm">
       <div class="gterm-name">${g.term}</div>
       <div class="gterm-def">${g.def}</div>
-      ${g.url ? `<a href="${g.url}" target="_blank" style="font-size:12px;color:var(--ph2);text-decoration:none;margin-top:4px;display:inline-block">▶ Watch video</a>` : ''}
     </div>`).join('');
 }
 
@@ -1327,17 +1192,11 @@ function resetApp(){
 // ══════════════════════════════════════════════════════════
 // NAVIGATION
 // ══════════════════════════════════════════════════════════
-const pageScrollPos = {};
 function showPage(name){
-  // Save current page scroll position
-  const currentPage = document.querySelector('.page.active');
-  if(currentPage) pageScrollPos[currentPage.id] = window.scrollY;
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
   document.getElementById('tab-'+name).classList.add('active');
-  // Restore scroll position for the new page
-  window.scrollTo(0, pageScrollPos['page-'+name] || 0);
 }
 
 // ══════════════════════════════════════════════════════════
