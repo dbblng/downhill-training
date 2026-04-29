@@ -805,15 +805,19 @@ function calcStatus(sid, s){
 // Toggle a single exercise tick
 async function toggleEx(sid, bi, ei){
   const s = SESSIONS.find(x=>x.id===sid);
-  if(!logs[sid]) logs[sid] = {ticked:{}, feeling:null, note:'', loggedAt:null};
+  if(!logs[sid]) logs[sid] = {ticked:{}, feeling:null, note:'', loggedAt:null, actualSession:''};
   if(!logs[sid].ticked) logs[sid].ticked = {};
   const key = exId(sid,bi,ei);
   if(logs[sid].ticked[key]) delete logs[sid].ticked[key];
   else logs[sid].ticked[key] = 1;
-  // Auto-set status
-  const newStatus = calcStatus(sid, s);
-  logs[sid].status = newStatus;
-  if(newStatus !== 'none' && !logs[sid].loggedAt) logs[sid].loggedAt = new Date().toISOString();
+  // Don't mark done until feeling is logged — keeps Today on this session
+  const calcedStatus = calcStatus(sid, s);
+  if(calcedStatus === 'done' && !logs[sid].feeling){
+    logs[sid].status = 'partial';
+  } else {
+    logs[sid].status = calcedStatus;
+  }
+  if(calcedStatus !== 'none' && !logs[sid].loggedAt) logs[sid].loggedAt = new Date().toISOString();
   saveLocal();
   await pushToSheet(sid, logs[sid]);
   renderAll();
@@ -862,18 +866,23 @@ function renderSession(s, inToday){
 
   // Log form — feeling + notes + export (shown when session has been started)
   let logArea = '';
-  if(inToday){
+  if(inToday || (!inToday && tickedCount > 0)){
     const hasStarted = tickedCount > 0;
     const feeling = log ? log.feeling : null;
     const note = log ? (log.note||'') : '';
+    const actualSession = log ? (log.actualSession||'') : '';
     logArea = `
       <div class="log-form" id="log-form-${s.id}" style="${hasStarted?'':'opacity:.5;pointer-events:none'}">
         <div class="log-form-title">${hasStarted?'Session log':'Tick exercises above to begin logging'}</div>
-        <div style="font-size:12px;color:var(--text3);margin-bottom:8px">How did it feel?</div>
+        <textarea class="note-area" id="note-${s.id}" placeholder="Notes — back, left knee, what to tell Claude, anything you skipped..." onblur="saveNote('${s.id}')">${note}</textarea>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+          <label style="font-size:13px;color:var(--text2);white-space:nowrap">Actual session #</label>
+          <input type="text" id="actual-session-${s.id}" value="${actualSession}" placeholder="e.g. 8 or 8-9" onblur="saveActualSession('${s.id}')" style="flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;background:var(--bg);color:var(--text)">
+        </div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:8px">How did it feel? (tap to complete session)</div>
         <div class="feeling-grid">
           ${[1,2,3,4].map(f=>`<button class="feel-btn ${feeling===f?'active':''}" data-f="${f}" onclick="selectFeeling('${s.id}',${f})">${feelingLabel(f)}</button>`).join('')}
         </div>
-        <textarea class="note-area" id="note-${s.id}" placeholder="Notes — left knee, what to tell Claude, anything you skipped..." onblur="saveNote('${s.id}')">${note}</textarea>
         <button onclick="exportSession('${s.id}')" style="width:100%;padding:11px;background:var(--bg2);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;margin-top:8px">📋 Export session summary</button>
       </div>`;
   }
@@ -978,11 +987,24 @@ function renderToday(){
 // LOG
 // ══════════════════════════════════════════════════════════
 async function selectFeeling(sessionId, f){
-  if(!logs[sessionId]) logs[sessionId] = {ticked:{}, feeling:null, note:'', loggedAt:new Date().toISOString()};
+  if(!logs[sessionId]) logs[sessionId] = {ticked:{}, feeling:null, note:'', loggedAt:new Date().toISOString(), actualSession:''};
   logs[sessionId].feeling = f;
+  const s = SESSIONS.find(x=>x.id===sessionId);
+  if(s){
+    const calcedStatus = calcStatus(sessionId, s);
+    if(calcedStatus === 'done') logs[sessionId].status = 'done';
+  }
   saveLocal();
   await pushToSheet(sessionId, logs[sessionId]);
   renderAll();
+}
+
+async function saveActualSession(sessionId){
+  const val = document.getElementById('actual-session-'+sessionId)?.value?.trim() || '';
+  if(!logs[sessionId]) logs[sessionId] = {ticked:{}, feeling:null, note:'', loggedAt:new Date().toISOString(), actualSession:''};
+  logs[sessionId].actualSession = val;
+  saveLocal();
+  await pushToSheet(sessionId, logs[sessionId]);
 }
 
 async function saveNote(sessionId){
@@ -1136,6 +1158,7 @@ function renderGlossary(){
     <div class="gterm">
       <div class="gterm-name">${g.term}</div>
       <div class="gterm-def">${g.def}</div>
+      ${g.url ? `<a href="${g.url}" target="_blank" style="font-size:12px;color:var(--ph2);text-decoration:none;margin-top:4px;display:inline-block">🔍 Search video</a>` : ''}
     </div>`).join('');
 }
 
