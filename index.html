@@ -823,6 +823,23 @@ async function toggleEx(sid, bi, ei){
   renderAll();
 }
 
+// Restart block
+const RESTART_BLOCK = {
+  label:'🔄 Restart warm-up — do before continuing',
+  exercises:[
+    {name:'Side-to-side knee rolls',detail:'2×10 each side. Slow, controlled.'},
+    {name:'Cat camel',detail:'2×5. Round and arch, 2 sec each.'},
+    {name:'Glute bridge on heels',detail:'1×8. Heels only, drive hips up, hold 3 sec.'},
+  ]
+};
+
+function addRestartBlock(sid){
+  if(!logs[sid]) logs[sid] = {ticked:{}, feeling:null, note:'', loggedAt:null, actualSession:''};
+  logs[sid].hasRestartBlock = true;
+  saveLocal();
+  renderAll();
+}
+
 function renderSession(s, inToday){
   const log = logs[s.id];
   const ticked = getTicked(s.id);
@@ -830,6 +847,37 @@ function renderSession(s, inToday){
   const isExpanded = inToday || expandedSessions.has(s.id);
   const totalEx = countExercises(s);
   const tickedCount = log ? countTicked(s.id, s) : 0;
+
+  // Check if session was started on a different day — show restart button
+  const loggedDate = log && log.loggedAt ? log.loggedAt.slice(0,10) : null;
+  const todayDate = todayStr();
+  const isResumption = status === 'partial' && loggedDate && loggedDate !== todayDate;
+  const hasRestartBlock = log && log.hasRestartBlock;
+
+  // Restart block HTML (loggable, prepended when activated)
+  let restartHTML = '';
+  if(isResumption && !hasRestartBlock){
+    restartHTML = `<div style="background:var(--bg2);border:1px solid var(--ph2);border-radius:var(--radius);padding:12px;margin-bottom:12px">
+      <div style="font-size:13px;font-weight:600;color:var(--ph2);margin-bottom:6px">Resuming from a previous day?</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px">Tap to add a 3-min restart warm-up before continuing.</div>
+      <button onclick="addRestartBlock('${s.id}')" style="width:100%;padding:10px;background:var(--ph2);color:#fff;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer">+ Add restart warm-up</button>
+    </div>`;
+  }
+  if(hasRestartBlock){
+    const rb = RESTART_BLOCK;
+    const rbExs = rb.exercises.map((e,ei)=>{
+      const key = `${s.id}_restart_e${ei}`;
+      const done = !!(logs[s.id] && logs[s.id].ticked && logs[s.id].ticked[key]);
+      return `<div class="ex-item">
+        <div class="ex-check ${done?'checked':''}" onclick="toggleRestartEx('${s.id}',${ei})"></div>
+        <div class="ex-content">
+          <div class="ex-name ${done?'done':''}">${e.name}</div>
+          <div class="ex-detail">${e.detail}</div>
+        </div>
+      </div>`;
+    }).join('');
+    restartHTML = `<div class="block-progress"><div class="block-label" style="margin:0">${rb.label}</div></div>${rbExs}`;
+  }
 
   // Blocks with checkboxes
   const blocksHTML = s.blocks.map((b,bi)=>{
@@ -914,6 +962,7 @@ function renderSession(s, inToday){
       </div>
       <div class="sc-body">
         ${progressHTML}
+        ${restartHTML}
         ${blocksHTML}
         ${notesHTML}
         ${logArea}
@@ -996,6 +1045,17 @@ async function selectFeeling(sessionId, f){
   }
   saveLocal();
   await pushToSheet(sessionId, logs[sessionId]);
+  renderAll();
+}
+
+async function toggleRestartEx(sid, ei){
+  if(!logs[sid]) logs[sid] = {ticked:{}, feeling:null, note:'', loggedAt:null, actualSession:''};
+  if(!logs[sid].ticked) logs[sid].ticked = {};
+  const key = `${sid}_restart_e${ei}`;
+  if(logs[sid].ticked[key]) delete logs[sid].ticked[key];
+  else logs[sid].ticked[key] = 1;
+  saveLocal();
+  await pushToSheet(sid, logs[sid]);
   renderAll();
 }
 
