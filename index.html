@@ -173,6 +173,10 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
     Today
   </button>
+  <button class="nav-btn" id="tab-plan" onclick="showPage('plan')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    Plan
+  </button>
   <button class="nav-btn" id="tab-log" onclick="showPage('log')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
     Log
@@ -180,10 +184,6 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
   <button class="nav-btn" id="tab-glossary" onclick="showPage('glossary')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
     Glossary
-  </button>
-  <button class="nav-btn" id="tab-plan" onclick="showPage('plan')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-    Plan
   </button>
   <button class="nav-btn" id="tab-settings" onclick="showPage('settings')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -472,107 +472,95 @@ async function completeActualSession(){
   renderAll();
 }
 
-// ── RENDER TODAY ───────────────────────────────────────────
+// ── RENDER TODAY ─────────────────────────────────────────
 function renderToday(){
-  const el = document.getElementById('today-content');
-  const today = todayStr();
+  var el = document.getElementById('today-content');
+  var today = todayStr();
 
-  // If no current session, show start screen
   if(!state.current){
-    const next = getNextProgrammeSession();
-    const totalDone = state.sessions.length;
-    const lastSession = state.sessions[state.sessions.length-1];
-    const lastDate = lastSession ? formatDate(lastSession.date) : null;
-    const lastPct = lastSession ? lastSession.pct : null;
+    var next = getNextProgrammeSession();
+    var totalDone = state.sessions.length;
+    var lastSession = state.sessions[state.sessions.length-1] || null;
+    var lastInfo = '';
+    if(lastSession){
+      lastInfo = '<div style="background:var(--bg2);border-radius:var(--radius);padding:14px;margin-bottom:16px">'
+        +'<div style="font-size:11px;color:var(--text3);margin-bottom:4px">LAST SESSION</div>'
+        +'<div style="font-size:13px;color:var(--text2)">'+formatDate(lastSession.date)+' · Session '+lastSession.progType+' · '+lastSession.pct+'% complete</div>'
+        +'</div>';
+    }
+    var previewHTML = next.blocks.map(function(b){
+      var exs = b.exercises.map(function(e){
+        return '<div style="font-size:13px;color:var(--text2);padding:5px 0;border-bottom:1px solid var(--border)">'
+          +e.name+'<div style="font-size:11px;color:var(--text3)">'+e.detail+'</div></div>';
+      }).join('');
+      return '<div style="margin-bottom:12px"><div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">'+b.label+'</div>'+exs+'</div>';
+    }).join('');
 
-    el.innerHTML = `
-      <div class="page-header">
-        <div class="page-title">Today</div>
-        <div class="page-sub">${formatDate(today)}</div>
-      </div>
-      ${totalDone > 0 ? `
-        <div style="background:var(--bg2);border-radius:var(--radius);padding:14px;margin-bottom:16px">
-          <div style="font-size:11px;color:var(--text3);margin-bottom:4px">LAST SESSION</div>
-          <div style="font-size:13px;color:var(--text2)">${lastDate} · Session ${lastSession.progType} · ${lastPct}% complete</div>
-        </div>` : ''}
-      <div style="background:var(--bg2);border-radius:var(--radius);padding:20px;margin-bottom:16px;text-align:center">
-        <div style="font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Next up</div>
-        <div class="session-type-badge" style="display:inline-flex;margin-bottom:12px">${next.type}</div>
-        <div style="font-size:14px;font-weight:600;margin-bottom:4px">${next.label}</div>
-        <div style="font-size:12px;color:var(--text2)">Next: ${next.type}${state.prog[next.type]+1} · Completed: A${state.prog.A} B${state.prog.B}</div>
-      </div>
-      <div style="background:var(--bg2);border-radius:var(--radius);margin-bottom:12px;overflow:hidden">
-        <div style="padding:14px;font-size:13px;font-weight:600;color:var(--text2)">Session ${next.type}${state.prog[next.type]+1} — exercises</div>
-        <div style="padding:0 14px 14px">
-          ${next.blocks.map(function(b){
-            return '<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">'+b.label+'</div>'
-              +b.exercises.map(function(e){return '<div style="font-size:13px;color:var(--text2);padding:4px 0;border-bottom:1px solid var(--border)">'+e.name+' <span style="color:var(--text3);font-size:12px">'+e.detail+'</span></div>';}).join('')
-              +'</div>';
-          }).join('')}
-        </div>
-      </div>
-      <button onclick="startNewActualSession()" style="width:100%;padding:16px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:16px;font-weight:700;cursor:pointer">Start session</button>
-    \`;
+    el.innerHTML = '<div class="page-header"><div class="page-title">Today</div><div class="page-sub">'+formatDate(today)+'</div></div>'
+      +lastInfo
+      +'<div style="background:var(--bg2);border-radius:var(--radius);padding:20px;margin-bottom:16px;text-align:center">'
+      +'<div style="font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Next up</div>'
+      +'<div class="session-type-badge" style="display:inline-flex;margin-bottom:12px">'+next.type+(state.prog[next.type]+1)+'</div>'
+      +'<div style="font-size:14px;font-weight:600;margin-bottom:4px">'+next.label+'</div>'
+      +'<div style="font-size:12px;color:var(--text2)">A completed: '+state.prog.A+' · B completed: '+state.prog.B+'</div>'
+      +'</div>'
+      +'<div style="background:var(--bg2);border-radius:var(--radius);margin-bottom:12px;overflow:hidden">'
+      +'<div style="padding:14px;font-size:13px;font-weight:600;color:var(--text2)">Preview exercises</div>'
+      +'<div style="padding:0 14px 14px">'+previewHTML+'</div></div>'
+      +'<button onclick="startNewActualSession()" style="width:100%;padding:16px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:16px;font-weight:700;cursor:pointer">Start session</button>';
     return;
   }
 
   // Active session
-  const totalEx = state.current.blocks.reduce((n,b)=>n+b.exercises.length,0);
-  const tickedEx = state.current.blocks.reduce((n,b)=>n+b.exercises.filter(e=>e.ticked).length,0);
-  const pct = totalEx > 0 ? Math.round(tickedEx/totalEx*100) : 0;
-  const progType = state.current.progType;
+  var totalEx = 0, tickedEx = 0;
+  state.current.blocks.forEach(function(b){
+    totalEx += b.exercises.length;
+    b.exercises.forEach(function(e){ if(e.ticked) tickedEx++; });
+  });
+  var pct = totalEx > 0 ? Math.round(tickedEx/totalEx*100) : 0;
+  var progType = state.current.progType;
 
-  const blocksHTML = state.current.blocks.map((b,bi)=>{
-    const blockDone = b.exercises.length > 0 && b.exercises.every(e=>e.ticked);
-    const exHTML = b.exercises.map((e,ei)=>`
-      <div class="ex-item">
-        <div class="ex-check ${e.ticked?'checked':''}" onclick="tickExercise(${bi},${ei})"></div>
-        <div class="ex-content">
-          <div class="ex-name ${e.ticked?'done':''}">${e.name}</div>
-          ${e.detail?`<div class="ex-detail">${e.detail}</div>`:''}
-          ${e.kit?`<div class="ex-kit">Kit: ${e.kit}</div>`:''}
-        </div>
-      </div>`).join('');
-    return `
-      <div class="block">
-        <div class="block-header">
-          <div class="block-label">${b.blockLabel}</div>
-          ${blockDone?'<div class="block-done-badge">✓ Done</div>':''}
-        </div>
-        ${exHTML}
-      </div>`;
+  var blocksHTML = state.current.blocks.map(function(b, bi){
+    var blockDone = b.exercises.length > 0 && b.exercises.every(function(e){ return e.ticked; });
+    var exs = b.exercises.map(function(e, ei){
+      return '<div class="ex-item">'
+        +'<div class="ex-check '+(e.ticked?'checked':'')+'" onclick="tickExercise('+bi+','+ei+')"></div>'
+        +'<div class="ex-content">'
+        +'<div class="ex-name '+(e.ticked?'done':'')+'">'+e.name+'</div>'
+        +(e.detail?'<div class="ex-detail">'+e.detail+'</div>':'')
+        +(e.kit?'<div class="ex-kit">Kit: '+e.kit+'</div>':'')
+        +'</div></div>';
+    }).join('');
+    return '<div class="block">'
+      +'<div class="block-header"><div class="block-label">'+b.blockLabel+'</div>'
+      +(blockDone?'<div class="block-done-badge">Done</div>':'')
+      +'</div>'+exs+'</div>';
   }).join('');
 
-  const feeling = state.current.feeling;
+  var feeling = state.current.feeling;
+  var feelBtns = [1,2,3,4].map(function(f){
+    return '<button class="feel-btn '+(feeling===f?'active':'')+'" onclick="setFeeling('+f+')">'+feelingLabel(f)+'</button>';
+  }).join('');
 
-  el.innerHTML = `
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-      <div>
-        <div class="session-type-badge">Session ${progType}</div>
-      </div>
-      <div style="font-size:12px;color:var(--text3)">${formatDate(state.current.date)}</div>
-    </div>
-    <div class="progress-row">
-      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-      <div class="progress-label">${tickedEx}/${totalEx}</div>
-    </div>
-    <div class="float-btns">
-      <button class="float-btn" onclick="insertWarmup()">+ Warm-up</button>
-      <button class="float-btn" onclick="insertFinish()">+ Finish</button>
-    </div>
-    ${blocksHTML}
-    <div class="log-form">
-      <div class="log-form-title">Log this session</div>
-      <textarea class="note-area" placeholder="Notes — back, knee, what you skipped, anything for Claude…" onblur="setNote(this.value)">${state.current.note||''}</textarea>
-      <div style="font-size:12px;color:var(--text3);margin-bottom:8px">How did it feel?</div>
-      <div class="feeling-grid">
-        ${[1,2,3,4].map(f=>`<button class="feel-btn ${feeling===f?'active':''}" onclick="setFeeling(${f})">${feelingLabel(f)}</button>`).join('')}
-      </div>
-      <button class="complete-btn" onclick="completeActualSession()" ${!feeling?'disabled':''}>
-        ${!feeling ? 'Select a feeling to complete' : 'Complete & save session'}
-      </button>
-    </div>
-  `;
+  el.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
+    +'<div class="session-type-badge">Session '+progType+'</div>'
+    +'<div style="font-size:12px;color:var(--text3)">'+formatDate(state.current.date)+'</div></div>'
+    +'<div class="progress-row">'
+    +'<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%"></div></div>'
+    +'<div class="progress-label">'+tickedEx+'/'+totalEx+'</div></div>'
+    +'<div class="float-btns">'
+    +'<button class="float-btn" onclick="insertWarmup()">+ Warm-up</button>'
+    +'<button class="float-btn" onclick="insertFinish()">+ Finish</button>'
+    +'</div>'
+    +blocksHTML
+    +'<div class="log-form">'
+    +'<div class="log-form-title">Log this session</div>'
+    +'<textarea class="note-area" placeholder="Notes — back, knee, what you skipped..." onblur="setNote(this.value)">'+( state.current.note||'')+'</textarea>'
+    +'<div style="font-size:12px;color:var(--text3);margin-bottom:8px">How did it feel?</div>'
+    +'<div class="feeling-grid">'+feelBtns+'</div>'
+    +'<button class="complete-btn" onclick="completeActualSession()" '+(feeling?'':'disabled')+'>'
+    +(feeling?'Complete & save session':'Select a feeling to complete')
+    +'</button></div>';
 }
 
 // ── RENDER LOG ─────────────────────────────────────────────
