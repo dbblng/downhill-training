@@ -2,1297 +2,708 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Training">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Downhill Training</title>
 <style>
-/* ── Reset & Base ── */
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{
-  --ph1:#1D9E75;--ph2:#534AB7;--ph3:#BA7517;
-  --bg:#ffffff;--bg2:#F7F7F5;--bg3:#F1EFE8;
-  --text:#2C2C2A;--text2:#5F5E5A;--text3:#888780;
-  --border:#D3D1C7;--border2:#B4B2A9;
-  --radius:12px;--radius-sm:8px;
+:root {
+  --bg: #0F0F0F;
+  --bg2: #1A1A1A;
+  --bg3: #242424;
+  --border: #2E2E2E;
+  --text: #F0EDE8;
+  --text2: #A8A39C;
+  --text3: #666;
+  --accent: #E8501A;
+  --accent2: #C43D10;
+  --green: #2ECC71;
+  --yellow: #F4B942;
+  --radius: 10px;
+  --radius-sm: 6px;
 }
-@media(prefers-color-scheme:dark){:root{
-  --bg:#1a1a18;--bg2:#242422;--bg3:#2C2C2A;
-  --text:#E8E6DF;--text2:#9c9a92;--text3:#73726c;
-  --border:#3d3d3a;--border2:#5F5E5A;
-}}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:80px;font-size:15px}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 15px; min-height: 100vh; padding-bottom: 72px; }
 
-/* ── Setup Screen ── */
-#setup-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center}
-#setup-screen h1{font-size:24px;font-weight:600;margin-bottom:8px}
-#setup-screen p{color:var(--text2);font-size:14px;line-height:1.6;margin-bottom:24px;max-width:340px}
-.setup-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;width:100%;max-width:400px;margin-bottom:16px;text-align:left}
-.setup-card h3{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text)}
-.setup-card ol{padding-left:20px;color:var(--text2);font-size:13px;line-height:1.9}
-.setup-card ol li{margin-bottom:4px}
-.setup-card code{background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:12px;color:var(--ph2);font-family:monospace}
-input[type=text]{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;background:var(--bg);color:var(--text);margin-top:10px;outline:none}
-input[type=text]:focus{border-color:var(--ph2)}
-.btn-primary{width:100%;padding:14px;background:var(--ph2);color:#fff;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;margin-top:12px}
-.btn-secondary{width:100%;padding:12px;background:var(--bg2);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-weight:500;cursor:pointer;margin-top:8px}
-.error-msg{color:#E24B4A;font-size:13px;margin-top:8px;text-align:center;display:none}
-.spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
-@keyframes spin{to{transform:rotate(360deg)}}
+/* NAV */
+.nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg2); border-top: 1px solid var(--border); display: flex; z-index: 100; }
+.nav-btn { flex: 1; padding: 10px 4px 14px; display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: none; color: var(--text3); font-size: 10px; cursor: pointer; transition: color .15s; }
+.nav-btn.active { color: var(--accent); }
+.nav-btn svg { width: 22px; height: 22px; }
 
-/* ── Main App ── */
-#app{display:block}
+/* PAGES */
+.page { display: none; padding: 16px; }
+.page.active { display: block; }
 
-/* ── Tab Bar ── */
-.tab-bar{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
-.tab-btn{flex:1;padding:10px 4px 8px;border:none;background:transparent;color:var(--text3);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:500;transition:color .15s}
-.tab-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.tab-btn.active{color:var(--ph2)}
+/* HEADER */
+.page-header { margin-bottom: 20px; }
+.page-title { font-size: 22px; font-weight: 700; letter-spacing: -.3px; }
+.page-sub { font-size: 13px; color: var(--text2); margin-top: 3px; }
 
-/* ── Pages ── */
-.page{display:none;padding:0 16px;padding-top:16px}
-.page.active{display:block}
+/* TODAY */
+.session-type-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: #fff; font-size: 13px; font-weight: 700; padding: 6px 14px; border-radius: 20px; margin-bottom: 16px; }
+.progress-row { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.progress-bar { flex: 1; height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width .3s; }
+.progress-label { font-size: 12px; color: var(--text2); white-space: nowrap; }
 
-/* ── TODAY ── */
-.hero{border-radius:var(--radius);padding:20px;margin-bottom:16px;color:#fff;position:relative;overflow:hidden}
-.hero-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;opacity:.8;margin-bottom:6px}
-.hero-title{font-size:22px;font-weight:700;line-height:1.2;margin-bottom:4px}
-.hero-sub{font-size:14px;opacity:.85;margin-bottom:12px}
-.hero-meta{display:flex;gap:8px;flex-wrap:wrap}
-.badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(255,255,255,.2)}
-.countdown-days{font-size:42px;font-weight:700;line-height:1;margin:8px 0 4px}
-.countdown-label{font-size:12px;opacity:.75}
+/* BLOCKS */
+.block { background: var(--bg2); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; }
+.block-header { padding: 12px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.block-label { font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: .5px; }
+.block-done-badge { font-size: 11px; color: var(--green); font-weight: 600; }
+.ex-item { display: flex; align-items: flex-start; gap: 12px; padding: 11px 14px; border-bottom: 1px solid var(--border); }
+.ex-item:last-child { border-bottom: none; }
+.ex-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; margin-top: 1px; }
+.ex-check.checked { background: var(--accent); border-color: var(--accent); }
+.ex-check.checked::after { content: ''; display: block; width: 5px; height: 9px; border: 2px solid #fff; border-top: none; border-left: none; transform: rotate(45deg) translate(-1px,-1px); }
+.ex-content { flex: 1; min-width: 0; }
+.ex-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.ex-name.done { color: var(--text3); text-decoration: line-through; }
+.ex-detail { font-size: 12px; color: var(--text2); line-height: 1.5; margin-bottom: 2px; }
+.ex-kit { font-size: 11px; color: var(--text3); }
 
-/* ── Session Card ── */
-.session-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
-.sc-header{padding:14px 16px 12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-.sc-header-left{}
-.sc-day{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:3px}
-.sc-title{font-size:16px;font-weight:600;color:var(--text);line-height:1.3}
-.sc-sub{font-size:13px;color:var(--text2);margin-top:2px}
-.sc-status{width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-top:4px}
-.status-done{background:#1D9E75}
-.status-partial{background:#BA7517}
-.status-none{background:var(--border)}
+/* FLOATING BUTTONS */
+.float-btns { display: flex; gap: 8px; margin-bottom: 16px; }
+.float-btn { flex: 1; padding: 11px; border: 1.5px dashed var(--border); background: none; color: var(--text2); border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s; }
+.float-btn:active { border-color: var(--accent); color: var(--accent); }
 
-.sc-body{padding:14px 16px}
-.block-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin:12px 0 6px}
-.block-label:first-child{margin-top:0}
-.ex-item{padding:8px 0;border-bottom:1px solid var(--border);line-height:1.5}
-.ex-item:last-child{border-bottom:none}
-.ex-name{font-size:14px;font-weight:600;color:var(--text)}
-.ex-detail{font-size:13px;color:var(--text2);margin-top:2px;white-space:pre-line}
-.ex-alt{font-size:12px;color:var(--text3);margin-top:3px;font-style:italic}
-.ex-kit{font-size:11px;color:var(--ph2);margin-top:2px;font-weight:500}
-.ex-note{background:var(--bg3);border-left:3px solid var(--border2);border-radius:0 6px 6px 0;padding:8px 10px;margin:8px 0;font-size:13px;color:var(--text2);line-height:1.5}
+/* LOG FORM */
+.log-form { background: var(--bg2); border-radius: var(--radius); padding: 16px; margin-top: 12px; }
+.log-form-title { font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 12px; }
+.note-area { width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 13px; padding: 10px 12px; resize: none; height: 72px; font-family: inherit; margin-bottom: 12px; }
+.feeling-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; margin-bottom: 12px; }
+.feel-btn { padding: 9px 4px; border: 1.5px solid var(--border); background: var(--bg3); color: var(--text2); border-radius: var(--radius-sm); font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s; }
+.feel-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(232,80,26,.1); }
+.complete-btn { width: 100%; padding: 13px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 700; cursor: pointer; }
+.complete-btn:disabled { background: var(--bg3); color: var(--text3); cursor: not-allowed; }
 
-/* ── Exercise Checkboxes ── */
-.ex-item{padding:8px 0;border-bottom:1px solid var(--border);line-height:1.5;display:flex;align-items:flex-start;gap:10px}
-.ex-item:last-child{border-bottom:none}
-.ex-check{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border2);background:var(--bg);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .15s}
-.ex-check.checked{background:#1D9E75;border-color:#1D9E75}
-.ex-check.checked::after{content:'';display:block;width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translate(-1px,-1px)}
-.ex-content{flex:1}
-.ex-name{font-size:14px;font-weight:600;color:var(--text)}
-.ex-name.done{color:var(--text3);text-decoration:line-through}
-.ex-detail{font-size:13px;color:var(--text2);margin-top:2px;white-space:pre-line}
-.ex-alt{font-size:12px;color:var(--text3);margin-top:3px;font-style:italic}
-.ex-kit{font-size:11px;color:var(--ph2);margin-top:2px;font-weight:500}
-.block-progress{display:flex;align-items:center;gap:8px;margin-bottom:4px}
-.block-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin:12px 0 6px;flex:1}
-.block-label:first-child{margin-top:0}
-.block-tick{font-size:11px;color:#1D9E75;font-weight:600}
-.session-progress-bar{height:4px;background:var(--border);border-radius:2px;margin:10px 0;overflow:hidden}
-.session-progress-fill{height:100%;background:#1D9E75;border-radius:2px;transition:width .3s}
-.progress-label{font-size:12px;color:var(--text3);margin-bottom:8px}
+/* LOG TAB */
+.stats-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-bottom: 20px; }
+.stat-card { background: var(--bg2); border-radius: var(--radius); padding: 14px; }
+.stat-num { font-size: 28px; font-weight: 800; color: var(--accent); letter-spacing: -1px; }
+.stat-label { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.log-entry { background: var(--bg2); border-radius: var(--radius); padding: 14px; margin-bottom: 10px; }
+.le-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.le-num { font-size: 12px; font-weight: 700; color: var(--accent); }
+.le-date { font-size: 12px; color: var(--text3); }
+.le-content { font-size: 13px; color: var(--text2); margin-bottom: 6px; line-height: 1.4; }
+.le-feeling { font-size: 12px; font-weight: 600; }
+.le-note { font-size: 12px; color: var(--text3); margin-top: 4px; font-style: italic; }
+.feeling-tough { color: #E24B4A; }
+.feeling-hard { color: var(--yellow); }
+.feeling-good { color: var(--green); }
+.feeling-great { color: #5BC4F5; }
 
-/* ── Log Form ── */
-.log-form{background:var(--bg2);border-radius:var(--radius);padding:16px;margin-top:12px}
-.log-form-title{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text)}
-.feeling-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
-.feel-btn{padding:10px 8px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;background:var(--bg);color:var(--text);text-align:center;transition:all .15s}
-.feel-btn.active{border-color:transparent;color:#fff}
-.feel-btn[data-f="1"].active{background:#E24B4A}
-.feel-btn[data-f="2"].active{background:#BA7517}
-.feel-btn[data-f="3"].active{background:#1D9E75}
-.feel-btn[data-f="4"].active{background:#534AB7}
-.note-area{width:100%;padding:12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-family:inherit;resize:vertical;min-height:80px;background:var(--bg);color:var(--text);margin-bottom:12px;line-height:1.5}
-.note-area:focus{outline:none;border-color:var(--ph2)}
-.log-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.btn-done{padding:13px;background:var(--ph1);color:#fff;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer}
-.btn-partial{padding:13px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer}
-.btn-saving{opacity:.6;cursor:not-allowed}
+/* GLOSSARY */
+.glossary-search { width: 100%; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 14px; padding: 10px 14px; font-family: inherit; margin-bottom: 16px; }
+.gterm { background: var(--bg2); border-radius: var(--radius); padding: 14px; margin-bottom: 8px; }
+.gterm-name { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.gterm-def { font-size: 13px; color: var(--text2); line-height: 1.5; margin-bottom: 8px; }
+.gterm-link { font-size: 12px; color: var(--accent); text-decoration: none; }
 
-.logged-summary{background:var(--bg2);border-radius:var(--radius-sm);padding:12px 14px;margin-top:12px}
-.logged-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.logged-status{font-size:14px;font-weight:600}
-.logged-feeling{font-size:13px;color:var(--text2)}
-.logged-note{font-size:13px;color:var(--text2);line-height:1.5;margin-top:4px}
-.edit-link{font-size:12px;color:var(--ph2);cursor:pointer;text-decoration:underline;margin-top:8px;display:inline-block}
+/* SETTINGS */
+.settings-card { background: var(--bg2); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
+.settings-label { font-size: 12px; color: var(--text3); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px; }
+.settings-val { font-size: 13px; color: var(--text2); margin-bottom: 12px; }
+.settings-btn { width: 100%; padding: 11px; background: var(--bg3); color: var(--text2); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; }
+.settings-btn.danger { color: #E24B4A; border-color: #E24B4A; }
 
-/* ── PLAN ── */
-.phase-pills{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px}
-.phase-pills::-webkit-scrollbar{display:none}
-.phase-pill{padding:8px 16px;border-radius:20px;border:1px solid var(--border);font-size:13px;font-weight:500;cursor:pointer;background:transparent;color:var(--text2);white-space:nowrap;flex-shrink:0;transition:all .15s}
-.phase-pill.active{color:#fff;border-color:transparent}
-.week-pills{display:flex;gap:8px;margin-bottom:14px}
-.week-pill{padding:6px 14px;border-radius:20px;border:1px solid var(--border);font-size:12px;font-weight:500;cursor:pointer;background:transparent;color:var(--text2);transition:all .15s}
-.week-pill.active{color:#fff;border-color:transparent}
-.ph-desc{font-size:13px;color:var(--text2);line-height:1.6;background:var(--bg2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px;border:1px solid var(--border)}
+/* SYNC */
+.sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text3); display: inline-block; margin-right: 5px; }
+.sync-dot.synced { background: var(--green); }
+.sync-dot.syncing { background: var(--yellow); }
+.sync-dot.error { background: #E24B4A; }
+.sync-bar { position: fixed; top: 0; left: 0; right: 0; padding: 6px 16px; font-size: 12px; color: var(--text2); background: var(--bg2); border-bottom: 1px solid var(--border); display: flex; align-items: center; z-index: 99; }
+.page { padding-top: 36px; }
 
-/* ── LOG HISTORY ── */
-.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}
-.stat-card{background:var(--bg2);border-radius:var(--radius-sm);padding:12px;text-align:center;border:1px solid var(--border)}
-.stat-num{font-size:26px;font-weight:700;line-height:1}
-.stat-label{font-size:11px;color:var(--text3);margin-top:4px}
-.log-entry{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px}
-.le-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:12px}
-.le-title{font-size:14px;font-weight:600;color:var(--text);line-height:1.3}
-.le-date{font-size:11px;color:var(--text3);white-space:nowrap;margin-top:2px}
-.le-meta{display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
-.le-status{font-size:13px;font-weight:600}
-.le-feeling{font-size:13px;color:var(--text2)}
-.le-week{font-size:11px;color:var(--text3);background:var(--bg2);padding:2px 8px;border-radius:10px}
-.le-note{font-size:13px;color:var(--text2);line-height:1.5;margin-top:6px;padding-top:6px;border-top:1px solid var(--border)}
-.empty-state{text-align:center;padding:48px 24px;color:var(--text3)}
-.empty-state .icon{font-size:40px;margin-bottom:12px}
-.empty-state p{font-size:14px;line-height:1.6}
-
-/* ── GLOSSARY ── */
-.gterm{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px}
-.gterm-name{font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px}
-.gterm-def{font-size:13px;color:var(--text2);line-height:1.6}
-
-/* ── Settings ── */
-.settings-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
-.settings-card h3{font-size:15px;font-weight:600;margin-bottom:4px}
-.settings-card p{font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.5}
-.url-display{font-size:11px;color:var(--text3);background:var(--bg2);padding:8px 10px;border-radius:6px;font-family:monospace;word-break:break-all;margin-bottom:10px}
-.btn-danger{padding:11px;background:#E24B4A;color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:500;cursor:pointer;width:100%}
-
-.section-title{font-size:18px;font-weight:700;margin-bottom:4px}
-.section-sub{font-size:13px;color:var(--text2);margin-bottom:16px}
-
-.sync-indicator{position:fixed;top:12px;right:12px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:500;z-index:200;transition:opacity .3s;display:flex;align-items:center;gap:6px}
-.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--ph1)}
-.sync-dot.syncing{background:#BA7517;animation:pulse .8s ease-in-out infinite}
-.sync-dot.error{background:#E24B4A}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+/* EMPTY STATE */
+.empty { text-align: center; padding: 48px 24px; color: var(--text3); font-size: 14px; }
 </style>
 </head>
 <body>
 
-<!-- ══════════ SETUP SCREEN ══════════ -->
-<div id="setup-screen" style="display:none">
-  <div style="font-size:48px;margin-bottom:16px">🛹</div>
-  <h1>Downhill Training</h1>
-  <p>One-time setup: connect your Google Sheet so your logs sync across all your devices.</p>
-
-  <div class="setup-card">
-    <h3>Step 1 — Create your Google Sheet</h3>
-    <ol>
-      <li>Go to <strong>sheets.google.com</strong> and create a new blank spreadsheet</li>
-      <li>Name it anything — e.g. <em>"Downhill Training Logs"</em></li>
-      <li>Leave it open, you'll need it for Step 2</li>
-    </ol>
-  </div>
-
-  <div class="setup-card">
-    <h3>Step 2 — Add the script</h3>
-    <ol>
-      <li>In your Sheet, click <strong>Extensions → Apps Script</strong></li>
-      <li>Delete any existing code in the editor</li>
-      <li>Paste the entire contents of <code>TrainingApp.gs</code> (the other file you downloaded)</li>
-      <li>Click <strong>Save</strong> (disk icon), then click <strong>Deploy → New deployment</strong></li>
-      <li>Set type to <strong>Web app</strong>, set "Who has access" to <strong>Anyone</strong>, click <strong>Deploy</strong></li>
-      <li>Authorise when prompted, then copy the <strong>Web app URL</strong> you're given</li>
-    </ol>
-  </div>
-
-  <div class="setup-card">
-    <h3>Step 3 — Paste your URL below</h3>
-    <input type="text" id="script-url-input" placeholder="https://script.google.com/macros/s/..." />
-    <div class="error-msg" id="url-error">Please enter a valid Apps Script URL</div>
-    <button class="btn-primary" onclick="connectSheet()">
-      <span id="connect-spinner" class="spinner" style="display:none"></span>
-      Connect and start
-    </button>
-  </div>
-
-  <div class="setup-card" style="border-color:#BA7517">
-    <h3>⚠ Having trouble with setup?</h3>
-    <p style="font-size:13px;color:var(--text2);margin:0">You can use the app without syncing — your logs will be saved on this device only. You can connect a Sheet later in Settings.</p>
-    <button class="btn-secondary" onclick="skipSetup()">Use offline (this device only)</button>
-  </div>
+<div class="sync-bar" id="sync-bar">
+  <span class="sync-dot" id="sync-dot"></span>
+  <span id="sync-text">Connecting…</span>
 </div>
 
-<!-- ══════════ SYNC INDICATOR ══════════ -->
-<div class="sync-indicator" id="sync-indicator" style="display:none">
-  <div class="sync-dot" id="sync-dot"></div>
-  <span id="sync-label">Synced</span>
+<!-- TODAY -->
+<div class="page active" id="page-today">
+  <div id="today-content"></div>
 </div>
 
-<!-- ══════════ MAIN APP ══════════ -->
-<div id="app">
-
-  <!-- TODAY -->
-  <div class="page active" id="page-today">
-    <div id="today-content"></div>
+<!-- LOG -->
+<div class="page" id="page-log">
+  <div class="page-header">
+    <div class="page-title">My Log</div>
+    <div class="page-sub">Every actual session, what you did and how it felt</div>
   </div>
-
-  <!-- PLAN -->
-  <div class="page" id="page-plan">
-    <div class="section-title">Full plan</div>
-    <div class="section-sub">Tap any session to expand</div>
-    <div class="phase-pills" id="phase-pills"></div>
-    <div class="ph-desc" id="phase-desc"></div>
-    <div class="week-pills" id="week-pills"></div>
-    <div id="plan-sessions"></div>
-  </div>
-
-  <!-- LOG -->
-  <div class="page" id="page-log">
-    <div class="section-title">My log</div>
-    <div class="section-sub">All completed sessions</div>
-    <div id="log-content"></div>
-  </div>
-
-  <!-- GLOSSARY -->
-  <div class="page" id="page-glossary">
-    <div class="section-title">Glossary</div>
-    <div class="section-sub">Every exercise term explained</div>
-    <div id="glossary-content"></div>
-  </div>
-
-  <!-- SETTINGS -->
-  <div class="page" id="page-settings">
-    <div class="section-title">Settings</div>
-    <div class="section-sub">App configuration</div>
-
-    <div class="settings-card">
-      <h3>Google Sheet connection</h3>
-      <p id="settings-sync-status"></p>
-      <div class="url-display" id="settings-url-display"></div>
-      <input type="text" id="settings-url-input" placeholder="Paste new Apps Script URL..." style="margin-bottom:10px" />
-      <button class="btn-primary" onclick="updateScriptUrl()" style="margin-bottom:8px">Update URL</button>
-      <button class="btn-secondary" onclick="testConnection()">Test connection</button>
-    </div>
-
-    <div class="settings-card">
-      <h3>Export logs</h3>
-      <p>Download all your session logs as a JSON file — backup or transfer to another device.</p>
-      <button class="btn-secondary" onclick="exportLogs()">Download logs JSON</button>
-    </div>
-
-    <div class="settings-card" style="border-color:#E24B4A">
-      <h3>Reset app</h3>
-      <p>Clears all local settings and logs. Your Google Sheet data is not affected.</p>
-      <button class="btn-danger" onclick="resetApp()">Reset everything</button>
-    </div>
-  </div>
-
-  <!-- TAB BAR -->
-  <div class="tab-bar">
-    <button class="tab-btn active" onclick="showPage('today')" id="tab-today">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      Today
-    </button>
-    <button class="tab-btn" onclick="showPage('plan')" id="tab-plan">
-      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      Plan
-    </button>
-    <button class="tab-btn" onclick="showPage('log')" id="tab-log">
-      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      My log
-    </button>
-    <button class="tab-btn" onclick="showPage('glossary')" id="tab-glossary">
-      <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
-      Glossary
-    </button>
-    <button class="tab-btn" onclick="showPage('settings')" id="tab-settings">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-      Settings
-    </button>
-  </div>
+  <div id="log-stats"></div>
+  <div id="log-entries"></div>
 </div>
+
+<!-- GLOSSARY -->
+<div class="page" id="page-glossary">
+  <div class="page-header">
+    <div class="page-title">Glossary</div>
+  </div>
+  <input class="glossary-search" id="glossary-search" placeholder="Search exercises…" oninput="filterGlossary(this.value)">
+  <div id="glossary-content"></div>
+</div>
+
+<!-- SETTINGS -->
+<div class="page" id="page-settings">
+  <div class="page-header">
+    <div class="page-title">Settings</div>
+  </div>
+  <div id="settings-content"></div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-btn active" id="tab-today" onclick="showPage('today')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Today
+  </button>
+  <button class="nav-btn" id="tab-log" onclick="showPage('log')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+    Log
+  </button>
+  <button class="nav-btn" id="tab-glossary" onclick="showPage('glossary')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    Glossary
+  </button>
+  <button class="nav-btn" id="tab-settings" onclick="showPage('settings')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    Settings
+  </button>
+</nav>
 
 <script>
-// ══════════════════════════════════════════════════════════
-// DATA
-// ══════════════════════════════════════════════════════════
-const SESSIONS = [
+// ── CONSTANTS ──────────────────────────────────────────────
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx-fhsW1RAXWP16IpIJ_U8tLmVPX-AZaBFv2zM1pbI5v8GTM_O9YonjbnphxKUaG9mI/exec';
 
-  // ── WEEK 1 · LONDON · BACK REINTEGRATION ─────────────────────────────
-  {id:'s1a',week:1,phase:1,session:1,date:'2026-04-29',title:'Session 1 — Back reintegration + lower body',sub:'~60 min · Home · Power tower available',apple:'Functional Strength Training',
-   blocks:[
-    {label:'Physio stretches · 10 min — do FIRST every session',exercises:[
-      {name:'Deep belly breathing',detail:'2×10 breaths. Lie on back, legs elevated on sofa. Inhale 4 counts, hold 2, exhale 4. Purely relaxing — do not force it.',kit:'Yoga mat'},
-      {name:'Side-to-side knee rolls',detail:'2×10 each side. Lie on back, arms wide, knees bent. Lower both knees slowly to one side, return, other side. Only go as far as comfortable.',kit:'Yoga mat'},
-      {name:'Cat camel',detail:'2×10. On hands and knees. Round spine up (cat), hold 2 sec. Arch spine, chest forward (camel), hold 2 sec.',kit:'Yoga mat'},
-      {name:'Lying twist stretch',detail:'1×30 sec each side. Lie on back, pull one knee across body, keep opposite shoulder on floor. Breathe into it.',kit:'Yoga mat'},
-    ]},
-    {label:'Physio strength · 15 min',exercises:[
-      {name:'Glute bridge on heels',detail:'3×8, hold 5 sec at top. Lie on back, knees bent, toes lifted — heels only on floor. Drive hips up, squeeze glutes, tuck pelvis. Hamstring focus.',kit:'Yoga mat'},
-      {name:'Dead bug — straight leg',detail:'3×8 each side. Lie on back, arms to ceiling, legs at 90°. Lower opposite arm and straight leg simultaneously without arching lower back.',kit:'Yoga mat'},
-      {name:'Box squat',detail:'3×10. Stand in front of a chair. Sit hips back and down slowly, touch chair lightly, stand back up. Chest tall throughout. Add 8kg KB in front if painless.',kit:'Chair, 8kg KB optional'},
-    ]},
-    {label:'Lower body · 15 min',exercises:[
-      {name:'Bulgarian split squat — bodyweight',detail:'3×8 each. Rear foot on sofa. Front foot forward. Lower slowly, drive up through front heel. Zero back loading — this is all legs. Stop immediately if any lower back sensation.',kit:'Sofa'},
-      {name:'Scooter',detail:'2×5 each variation. Mini band at ankles. Stand on one leg, hinge slightly at hip, reach opposite foot out to side then behind. Glute of standing leg works hard. 3 variations: side tap, rear tap, diagonal tap.',kit:'Mini loop band'},
-      {name:'TKE',detail:'3×12 each. Band anchored at knee height to power tower. Face tower, band behind knee. Small knee bend to start. Straighten fully against resistance. Feel inner kneecap — not glute.',kit:'Tube band or light loop band'},
-    ]},
-    {label:'Upper body · 10 min',exercises:[
-      {name:'Single-arm dumbbell row',detail:'3×10 each. Hinge forward with flat back, one hand on chair. Pull elbow to hip. 2-sec lower. No spinal rotation — brace core throughout.',kit:'10–12kg dumbbell'},
-      {name:'Push-up',detail:'3×8. Standard push-up or on knees if needed. Core braced — do not let hips sag. This is your only pressing movement today — no load through spine.',kit:'Yoga mat'},
-      {name:'Pallof press',detail:'2×10 each side. Band anchored at chest height to power tower. Stand side-on, press band straight out, hold 2 sec, return. Anti-rotation core.',kit:'Tube band'},
-    ]},
-    {label:'Finish · 5 min',exercises:[
-      {name:'Hip flexor + quad stretch',detail:'45 sec each side. Kneeling, tuck tailbone, shift hips forward. Add quad pull if comfortable.'},
-      {name:'Pigeon pose or figure-4',detail:'60 sec each side. Lie on back, cross ankle over opposite knee, draw toward chest.'},
-    ]},
-   ],notes:['Physio stretches are mandatory at the start of every session this week. If your back gives any signal during box squat or split squat — stop that exercise, do not push through.']},
+const WARMUP_BLOCK = {
+  id: 'warmup',
+  label: 'Warm-up · 10 min',
+  exercises: [
+    {name:'Deep belly breathing', detail:'2×10 breaths. Lie on back, legs elevated. Inhale 4 counts, hold 2, exhale 4.'},
+    {name:'Side-to-side knee rolls', detail:'2×10 each side. Lie on back, arms wide, knees bent. Lower both knees slowly each side.'},
+    {name:'Cat camel', detail:'2×10. On hands and knees. Round spine up (cat) 2 sec, arch spine (camel) 2 sec.'},
+    {name:'Lying twist stretch', detail:'1×30 sec each side. Pull one knee across body, keep opposite shoulder down. Breathe into it.'},
+  ]
+};
 
-  {id:'s1b',week:1,phase:1,session:2,date:'2026-05-01',title:'Session 2 — Upper body + single leg',sub:'~60 min · Home · Power tower available',apple:'Functional Strength Training',
-   blocks:[
-    {label:'Physio stretches · 10 min — do FIRST',exercises:[
-      {name:'Deep belly breathing',detail:'2×10 breaths. Legs elevated on sofa.'},
-      {name:'Side-to-side knee rolls',detail:'2×10 each side.'},
-      {name:'Cat camel',detail:'2×10.'},
-      {name:'Lying twist stretch',detail:'1×30 sec each side.'},
-    ]},
-    {label:'Physio strength · 12 min',exercises:[
-      {name:'Glute bridge on heels',detail:'3×8, hold 5 sec. Progress: if easy, elevate heels on sofa edge.',kit:'Yoga mat, sofa optional'},
-      {name:'Dead bug — straight leg',detail:'3×8 each side. Focus on keeping lower back completely flat.',kit:'Yoga mat'},
-      {name:'Scooter',detail:'2×5 each variation each side. Mini band at ankles.',kit:'Mini loop band'},
-    ]},
-    {label:'Upper body push · 12 min',exercises:[
-      {name:'DB shoulder press — seated',detail:'3×10. Sit upright on chair, DB at shoulder height, press overhead. Seated removes spinal compression risk.',kit:'8–10kg dumbbells'},
-      {name:'Push-up with rotation',detail:'3×8. Standard push-up. At top, rotate one arm to ceiling. Core stays braced — hips do not drop.',kit:'Yoga mat'},
-      {name:'Lateral raise',detail:'2×10. Stand tall, DBs at sides, raise arms to shoulder height. Slow lower.',kit:'6–8kg dumbbells'},
-    ]},
-    {label:'Upper body pull + core · 12 min',exercises:[
-      {name:'Single-arm dumbbell row',detail:'3×10 each. Flat back, elbow to hip.',kit:'10–12kg dumbbells'},
-      {name:'Assisted pull-up',detail:'2×max reps. Purple long loop band over pull-up bar, kneel in loop. Pull eyes to bar, 3-sec lower. Record reps.',kit:'Purple long loop band'},
-      {name:'Side plank with reach-through',detail:'3×6 each. Side plank, top arm threads under body, returns to ceiling. Lateral core endurance.',kit:'Yoga mat'},
-    ]},
-    {label:'Finish · 5 min',exercises:[
-      {name:'Thoracic open books',detail:'8 each side. Lie on side, knees stacked, open top arm behind you. Hips stay still.'},
-      {name:'Quad stretch',detail:'45 sec each side.'},
-    ]},
-   ],notes:['Seated shoulder press only — no standing overhead pressing this week. If lower back feels any strain on push-ups, drop to knees immediately.']},
+const FINISH_BLOCK = {
+  id: 'finish',
+  label: 'Finish · 5 min',
+  exercises: [
+    {name:'Hip flexor + quad stretch', detail:'45 sec each side. Kneeling, tuck tailbone, shift hips forward.'},
+    {name:'Lying twist stretch', detail:'30 sec each side. End every session with this.'},
+    {name:'Quad stretch', detail:'45 sec each side. Stand on one leg, hold foot behind you.'},
+  ]
+};
 
-  {id:'s1c',week:1,phase:1,session:3,date:'2026-05-03',title:'Session 3 — Full body + tuck conditioning',sub:'~60 min · Home · Power tower available',apple:'Functional Strength Training',
-   blocks:[
-    {label:'Physio stretches · 10 min — do FIRST',exercises:[
-      {name:'Deep belly breathing',detail:'2×10 breaths.'},
-      {name:'Side-to-side knee rolls',detail:'2×10 each side.'},
-      {name:'Cat camel',detail:'2×10.'},
-      {name:'Lying twist stretch',detail:'1×30 sec each side.'},
+const SESSION_A = {
+  type: 'A',
+  label: 'Session A — Lower body + posterior chain',
+  blocks: [
+    {id:'a_legs', label:'Legs · compound', exercises:[
+      {name:'Bulgarian split squat', detail:'3×8 each. Rear foot on sofa. 3-sec lower, explosive up. Add 8kg DBs when bodyweight feels easy.', kit:'Sofa, DBs optional'},
+      {name:'DB Romanian deadlift', detail:'3×8. DBs in front of thighs. Hinge at hips, back flat, lower DBs to shins, drive hips forward. Light weight if back uncertain.', kit:'8–10kg dumbbells'},
+      {name:'Reverse lunge', detail:'2×8 each. Step back, lower rear knee. Front shin stays vertical. Bodyweight or DBs at sides.', kit:'DBs optional'},
     ]},
-    {label:'Physio strength · 12 min',exercises:[
-      {name:'Glute bridge on heels',detail:'2×8, hold 5 sec.',kit:'Yoga mat'},
-      {name:'Dead bug — straight leg',detail:'2×8 each side.',kit:'Yoga mat'},
-      {name:'Box squat',detail:'3×10. Add 8kg KB at chest if last session was pain-free.',kit:'Chair, 8kg KB'},
+    {id:'a_single', label:'Single leg + knee', exercises:[
+      {name:'Single-leg glute bridge', detail:'2×8 each. One leg straight, drive through planted heel, hold 2 sec at top.', kit:'Yoga mat'},
+      {name:'TKE', detail:'2×12 each. Band behind knee, face anchor. Slight forward lean. Straighten fully — feel inner kneecap not glute.', kit:'Tube band'},
+      {name:'Lateral band walk', detail:'2×10 each direction. Mini band above knees. Slight squat, maintain tension.', kit:'Mini loop band'},
     ]},
-    {label:'Lower body · 12 min',exercises:[
-      {name:'Bulgarian split squat — bodyweight',detail:'3×10 each. Increase reps from S1. Slow 3-sec lower, explosive up.',kit:'Sofa'},
-      {name:'Single-leg glute bridge',detail:'3×10 each. One leg extended straight, drive through planted heel. 2-sec hold at top.',kit:'Yoga mat'},
-      {name:'Lateral band walk',detail:'3×15 each direction. Mini band above knees. Shallow squat, steps wide.',kit:'Mini loop band'},
+    {id:'a_balance', label:'Balance + tuck', exercises:[
+      {name:'Balance board', detail:'2×60 sec. Riding stance. Eyes open then soft-focus. Progress to eyes closed.', kit:'Balance board + 30" deck'},
+      {name:'Tuck hold', detail:'2×20 sec. Speedboard stance. Back flat, core braced, weight even. Rest 90 sec between.'},
     ]},
-    {label:'Upper body · 10 min',exercises:[
-      {name:'DB shoulder press — seated',detail:'3×10. Progress weight if S2 felt comfortable.',kit:'10kg dumbbells'},
-      {name:'Single-arm dumbbell row',detail:'3×10 each.',kit:'12–14kg dumbbells'},
-      {name:'Woodchop — high to low',detail:'3×10 each. Band anchored high on power tower. Pull diagonally to opposite hip. Rotate from hips, not arms.',kit:'Tube band'},
-    ]},
-    {label:'Tuck + balance · 8 min',exercises:[
-      {name:'Tuck hold',detail:'2×20 sec. Actual speedboard stance. Back flat, core braced. Rest 90 sec. First tuck work since back injury — stop if any sensation.',kit:''},
-      {name:'Balance board',detail:'2×60 sec. Riding stance. Eyes open. Keeping the pattern alive.',kit:'Balance board + 30" deck'},
-    ]},
-    {label:'Finish · 5 min',exercises:[
-      {name:'Hip flexor + quad stretch',detail:'45 sec each side.'},
-      {name:'Lying twist stretch',detail:'30 sec each side. End every session with this for the back.'},
-    ]},
-   ],notes:['First tuck work since injury. If 20 sec feels fine, great. If back gives any signal during tuck, stop and note it. This is information, not failure.']},
+  ]
+};
 
-  // ── WEEK 2 · ROME · STRENGTH RETURN · DBs + BANDS ONLY ───────────────
-  {id:'s2a',week:2,phase:2,session:1,date:'2026-05-07',title:'Session 4 — Lower body strength + back loading return',sub:'~60 min · Rome · DBs and bands only',apple:'Functional Strength Training',
-   blocks:[
-    {label:'Physio stretches · 8 min — do FIRST',exercises:[
-      {name:'Deep belly breathing',detail:'2×10 breaths.'},
-      {name:'Side-to-side knee rolls',detail:'2×10 each side.'},
-      {name:'Cat camel',detail:'2×10.'},
-      {name:'Lying twist stretch',detail:'1×30 sec each side.'},
+const SESSION_B = {
+  type: 'B',
+  label: 'Session B — Upper body + core',
+  blocks: [
+    {id:'b_push', label:'Push + pull', exercises:[
+      {name:'DB shoulder press — standing', detail:'3×8. Core braced. Press overhead, slow lower.', kit:'10kg dumbbells'},
+      {name:'Single-arm dumbbell row', detail:'3×10 each. Flat back, drive elbow to hip. 2-sec lower.', kit:'12–14kg dumbbells'},
+      {name:'Push-up with rotation', detail:'2×8. At top, rotate one arm to ceiling. Core braced — hips do not drop.', kit:'Yoga mat'},
     ]},
-    {label:'Physio strength · 10 min',exercises:[
-      {name:'Glute bridge on heels',detail:'2×8, hold 5 sec.',kit:'Chair optional'},
-      {name:'Scooter',detail:'2×5 each variation. Mini band at ankles.',kit:'Mini loop band'},
-      {name:'Box squat',detail:'3×10. Hold 10kg DB at chest if back pain-free.',kit:'Chair, 10kg DB'},
+    {id:'b_arms_core', label:'Arms + core', exercises:[
+      {name:'Lateral raise', detail:'2×10. Arms to shoulder height, slow lower. No shrugging.', kit:'6–8kg dumbbells'},
+      {name:'DB bicep curl', detail:'2×10. Elbows pinned at sides, slow lower.', kit:'10kg dumbbells'},
+      {name:'Pallof press', detail:'2×10 each. Band at chest height, press out 2 sec, return. Resist rotation.', kit:'Tube band'},
+      {name:'Dead bug — straight leg', detail:'2×8 each. Lower opposite arm + straight leg. Back stays flat throughout.', kit:'Yoga mat'},
     ]},
-    {label:'Lower body · 18 min',exercises:[
-      {name:'Bulgarian split squat — light DB',detail:'3×10 each. Add 8kg DB each hand if bodyweight felt easy in W1. 3-sec lower.',kit:'8kg dumbbells'},
-      {name:'DB Romanian deadlift',detail:'3×10. Stand tall, DBs in front of thighs. Hinge at hips — push hips back, lower DBs down shins, back stays flat throughout. Drive hips forward to stand. This is the first hip hinge since injury — light weight, perfect form.',kit:'8–10kg dumbbells'},
-      {name:'Reverse lunge — light DB',detail:'3×8 each. DB at sides, step back, lower rear knee toward floor. Front shin stays vertical. Check left knee — stop if sharp pain.',kit:'8kg dumbbells'},
+    {id:'b_tower', label:'Power tower', exercises:[
+      {name:'Assisted pull-up', detail:'2×max reps. Purple or black long loop band over bar, kneel in loop. Pull eyes to bar. 3-sec lower. Record reps.', kit:'Long loop band'},
+      {name:"Captain's chair knee raise", detail:'2×10. Arms on padded rests. Drive knees to hip height, hold 1 sec, lower slowly. No swinging.'},
+      {name:'Woodchop — high to low', detail:'2×8 each. Band high on tower. Pull diagonally to opposite hip. Hips rotate, arms stay straight.', kit:'Tube band'},
     ]},
-    {label:'Upper body · 12 min',exercises:[
-      {name:'DB shoulder press — standing',detail:'3×10. Now standing — back should be ready. Core braced. Press overhead, slow lower.',kit:'10kg dumbbells'},
-      {name:'Single-arm dumbbell row',detail:'3×10 each. Heavier than W1 if W1 felt manageable.',kit:'12–14kg dumbbells'},
-      {name:'Lateral raise',detail:'3×12.',kit:'6–8kg dumbbells'},
-    ]},
-    {label:'Core · 8 min',exercises:[
-      {name:'Dead bug — straight leg',detail:'3×8 each. Harder than W1 — slower movement.',kit:'Yoga mat'},
-      {name:'Pallof press',detail:'3×10 each. Band anchored in door frame. Anti-rotation.',kit:'Tube band + door anchor'},
-    ]},
-    {label:'Finish · 5 min',exercises:[
-      {name:'Hip flexor + quad stretch',detail:'45 sec each side.'},
-      {name:'Lying twist stretch',detail:'30 sec each side.'},
-    ]},
-   ],notes:['Rome — no power tower. DB Romanian deadlift is the key new exercise: this is your first posterior chain loading since the injury. Light weight, no rounding of back at any point.']},
+  ]
+};
 
-  {id:'s2b',week:2,phase:2,session:2,date:'2026-05-09',title:'Session 5 — Upper body + rotational strength',sub:'~60 min · Rome · DBs and bands only',apple:'Functional Strength Training',
-   blocks:[
-    {label:'Physio stretches · 8 min — do FIRST',exercises:[
-      {name:'Deep belly breathing',detail:'2×10 breaths.'},
-      {name:'Side-to-side knee rolls',detail:'2×10 each side.'},
-      {name:'Cat camel',detail:'2×10.'},
-      {name:'Lying twist stretch',detail:'1×30 sec each side.'},
-    ]},
-    {label:'Upper body push · 14 min',exercises:[
-      {name:'DB shoulder press — standing',detail:'2×10. Build on S4.',kit:'10–12kg dumbbells'},
-      {name:'Push-up with rotation',detail:'2×8.',kit:'Yoga mat'},
-      {name:'DB bicep curl',detail:'2×10. Standing, curl to shoulder, slow lower.',kit:'10kg dumbbells'},
-    ]},
-    {label:'Upper body pull + back · 14 min',exercises:[
-      {name:'Single-arm dumbbell row',detail:'3×10 each. Max controllable weight.',kit:'12–14kg dumbbells'},
-      {name:'DB bent-over row',detail:'2×10. Hinge forward 45°, pull both elbows back. Back flat throughout.',kit:'10–12kg dumbbells'},
-      {name:'Lateral raise',detail:'2×10.',kit:'8kg dumbbells'},
-    ]},
-    {label:'Core + rotation · 12 min',exercises:[
-      {name:'Woodchop — high to low',detail:'2×10 each. Band at head height. Hip rotation leads.',kit:'Tube band + door anchor'},
-      {name:'Woodchop — low to high',detail:'2×10 each. Band at ankle height.',kit:'Tube band + door anchor'},
-      {name:'Side plank with reach-through',detail:'2×6 each.',kit:'Yoga mat'},
-    ]},
-    {label:'Finish · 5 min',exercises:[
-      {name:'Thoracic open books',detail:'8 each side.'},
-      {name:'Lying twist stretch',detail:'30 sec each side.'},
-    ]},
-   ],notes:['DB bent-over row is new — maintain flat back throughout. If you feel any lower back strain, reduce weight immediately.']},
+// ── STATE ──────────────────────────────────────────────────
+let state = {
+  // Actual sessions array: each = {id, date, feeling, note, blocks:[], programmeProgress:{A:n, B:n}}
+  sessions: [],
+  // Current in-progress actual session (not yet saved with feeling)
+  current: null,
+  // Programme progress — how many complete A and B programme sessions done
+  prog: {A: 0, B: 0},
+  // Next programme session type
+  nextType: 'A',
+};
 
-  {id:'s2c',week:2,phase:2,session:3,date:'2026-05-11',title:'Session 6 — Event conditioning + tuck peak',sub:'~60 min · Rome · DBs and bands only',apple:'High Intensity Interval Training (HIIT)',
-   blocks:[
-    {label:'Physio stretches · 8 min — do FIRST',exercises:[
-      {name:'Deep belly breathing',detail:'2×10 breaths.'},
-      {name:'Side-to-side knee rolls',detail:'2×10 each side.'},
-      {name:'Cat camel',detail:'2×10.'},
-      {name:'Lying twist stretch',detail:'1×30 sec each side.'},
-    ]},
-    {label:'Tuck protocol · 12 min — do FIRST after stretches',exercises:[
-      {name:'Tuck hold',detail:'3×25 sec, 90 sec rest. Peak tuck — fresh legs, best quality. Back flat.',kit:''},
-      {name:'Tuck → explosive stand',detail:'5 reps. From tuck, explode to fully upright. Reset completely between reps.',kit:''},
-    ]},
-    {label:'Run simulation circuit · 22 min',exercises:[
-      {name:'3 rounds · 40 sec on / 20 sec rest · 90 sec rest between rounds',detail:'A — Reverse lunge alternating (DB optional) · B — Push-up with rotation · C — DB Romanian deadlift · D — Woodchop high-to-low (band) · E — Lateral band walk · F — Dead bug straight leg · G — DB shoulder press',kit:'DBs, mini band, tube band'},
-    ]},
-    {label:'Finish · 8 min',exercises:[
-      {name:'Hip flexor + quad stretch',detail:'45 sec each side.'},
-      {name:'Pigeon pose or figure-4',detail:'60 sec each side.'},
-      {name:'Lying twist stretch',detail:'30 sec each side.'},
-    ]},
-   ],notes:['Tuck first — always when fresh. Circuit is event simulation: commit fully each interval, recover fully between rounds. DB weights are optional — bodyweight is fine if back feels uncertain.']},
+// current = {
+//   date: 'YYYY-MM-DD',
+//   blocks: [{blockId, blockLabel, exercises:[{name,detail,kit,ticked}]}],
+//   ticked: {blockIdx_exIdx: true},
+//   note: '',
+//   feeling: null,
+// }
 
-  // ── WEEK 3 · ROME · TAPER ─────────────────────────────────────────────
-  {id:'s3a',week:3,phase:3,session:1,date:'2026-05-14',title:'Session 7 — Taper: sharp and light',sub:'~45 min · Rome · DBs and bands only',apple:'Functional Strength Training',
-   blocks:[
-    {label:'Physio stretches · 8 min — do FIRST',exercises:[
-      {name:'Deep belly breathing',detail:'2×10 breaths.'},
-      {name:'Side-to-side knee rolls',detail:'2×10 each side.'},
-      {name:'Cat camel',detail:'2×10.'},
-      {name:'Lying twist stretch',detail:'1×30 sec each side.'},
-    ]},
-    {label:'Activation · 20 min',exercises:[
-      {name:'Bulgarian split squat — bodyweight',detail:'2×5 each. Light, sharp, controlled.',kit:'Chair or sofa'},
-      {name:'DB Romanian deadlift',detail:'2×6. Same weight as S4. Pattern only.',kit:'8–10kg dumbbells'},
-      {name:'DB shoulder press — standing',detail:'2×6. Light.',kit:'8–10kg dumbbells'},
-      {name:'Single-arm dumbbell row',detail:'2×6 each.',kit:'10–12kg dumbbells'},
-      {name:'Glute bridge on heels',detail:'2×6, hold 3 sec.',kit:'Yoga mat'},
-    ]},
-    {label:'Tuck · 8 min',exercises:[
-      {name:'Tuck hold',detail:'2×25 sec, 90 sec rest. Consolidate only — do not push further.',kit:''},
-    ]},
-    {label:'Finish · 8 min',exercises:[
-      {name:'Hip flexor + quad stretch',detail:'60 sec each side.'},
-      {name:'Lying twist stretch',detail:'30 sec each side.'},
-    ]},
-   ],notes:['Taper session. Volume -40%. Fitness is banked — banking freshness now. Resist any urge to do more.']},
-
-  {id:'s3b',week:3,phase:3,session:2,date:'2026-05-17',title:'Session 8 — Activation only',sub:'~40 min · Rome · DBs and bands only',apple:'Cooldown',
-   blocks:[
-    {label:'Physio stretches · 8 min — do FIRST',exercises:[
-      {name:'Deep belly breathing',detail:'2×10 breaths.'},
-      {name:'Side-to-side knee rolls',detail:'2×10 each side.'},
-      {name:'Cat camel',detail:'2×10.'},
-      {name:'Lying twist stretch',detail:'1×30 sec each side.'},
-    ]},
-    {label:'Activation · 20 min',exercises:[
-      {name:'Scooter',detail:'2×5 each variation. Keep glutes switched on.',kit:'Mini loop band'},
-      {name:'Glute bridge on heels',detail:'2×8, hold 3 sec.',kit:'Yoga mat'},
-      {name:'DB Romanian deadlift',detail:'2×6. Light — pattern only.',kit:'8kg dumbbells'},
-      {name:'Woodchop — both directions',detail:'2×8 each. Band. Easy rotational movement.',kit:'Tube band'},
-      {name:'TKE',detail:'2×10 each. Light band. Final left knee care.',kit:'Light band'},
-      {name:'Lateral raise',detail:'2×10. Keep shoulders active.',kit:'6kg dumbbells'},
-    ]},
-    {label:'Finish · 8 min',exercises:[
-      {name:'Hip flexor + quad stretch',detail:'60 sec each side.'},
-      {name:'Pigeon pose or figure-4',detail:'60 sec each side.'},
-      {name:'Lying twist stretch',detail:'30 sec each side. Leave feeling better than you started.'},
-    ]},
-   ],notes:['No circuits. No max efforts. No tuck intervals. Everything is just switched on. Arrive at the event fresh.']},
-];
-
-const PHASES = [
-  {id:1,label:'Week 1 · London · Reintegration',color:'#1D9E75',
-   desc:'Back reintegration after MSK injury. Every session opens with physio stretches — non-negotiable. Strength work is conservative: physio exercises, bodyweight split squats, single-leg work, upper body with DBs. No spinal compression loading. Power tower available.'},
-  {id:2,label:'Week 2 · Rome · Strength Return',color:'#534AB7',
-   desc:'Rome — DBs and bands only, no power tower. Back loading returns carefully with DB Romanian deadlift and DB bent-over row. Bulgarian split squats with light DB added. Event conditioning circuit in Session 6. Physio stretches open every session.'},
-  {id:3,label:'Week 3 · Rome · Taper',color:'#BA7517',
-   desc:'Two sessions only. Volume −40%. Fitness is banked — arrive at the event fresh. Physio stretches daily. Tuck holds to 25 sec maximum. No new loading, no max efforts.'},
-];
-
-
-const GLOSSARY = [
-  {term:'Assisted pull-up',def:'Loop your purple long loop band over the pull-up bar. Kneel in the loop with both knees, or place one foot in the loop. Grip the bar with hands shoulder-width apart. From a full hang, pull up as high as you can — ceiling limits you to eyes at bar level, not chin-over. Lower over 3 seconds. The band stretches as you lower and assists you back up. Purple = most assistance. Black or red = less.',url:'https://www.youtube.com/results?search_query=assisted+pull+up+resistance+band'},
-  {term:'Balance board',def:'Stand on your roller balance board with your 30" street deck on top. Feet in your actual speedboard stance — narrow, roughly 32–33" apart. Find the balance point before shifting. Start eyes open, progress to eyes soft-focused. Trains the micro-adjustments that keep you stable at speed.',url:'https://www.youtube.com/results?search_query=balance+board+riding+stance'},
-  {term:'Box squat',def:'Stand in front of a sturdy chair or box, feet shoulder-width apart, toes slightly out. Sit your hips back and down slowly — arms reach forward to counterbalance. Touch the chair lightly (do not collapse onto it), then stand back up, driving through heels. Back stays straight throughout. Easier than a goblet squat — safer for the lower back during reintegration.',url:'https://www.youtube.com/results?search_query=box+squat+technique'},
-  {term:'Bulgarian split squat',def:'Rear foot elevated on a sofa or chair. Front foot well forward — test by lowering: your front shin should stay roughly vertical at the bottom. Lower your rear knee toward the floor, drive straight down. Push up through your front heel. Keep your torso upright. Bodyweight first, add DBs at sides when form is solid.',url:'https://www.youtube.com/results?search_query=bulgarian+split+squat+form'},
-  {term:'Cat camel',def:'On hands and knees, wrists under shoulders, knees under hips. Cat: exhale and round your entire spine up toward the ceiling, tuck chin and tailbone, hold 2 sec. Camel: inhale, let your belly drop, lift your head and tailbone, hold 2 sec. Move slowly between positions. Prescribed by physio — mobilises the whole spine and warms up the lower back.',url:'https://www.youtube.com/results?search_query=cat+camel+exercise+back'},
-  {term:'DB Romanian deadlift',def:'Stand tall, DBs in front of your thighs. Hinge at the hips — push your hips back, lower the DBs down the front of your shins, keeping them close to your legs. Back stays completely flat throughout — no rounding at any point. Lower until you feel a hamstring stretch (roughly shin level), then drive your hips forward to stand. This is a hip hinge, not a squat — knees stay soft but do not bend deeply.',url:'https://www.youtube.com/results?search_query=dumbbell+romanian+deadlift+form'},
-  {term:'DB bent-over row',def:'Stand with feet hip-width, hinge forward at the hips to about 45° — back flat, core braced. DBs hanging in both hands. Pull both elbows back and up simultaneously, squeezing shoulder blades together at the top. Lower slowly. Maintain the flat back throughout — if you feel lower back strain, reduce the weight immediately.',url:'https://www.youtube.com/results?search_query=dumbbell+bent+over+row+form'},
-  {term:'DB bicep curl',def:'Stand tall, DBs at your sides, palms facing forward. Curl both DBs to shoulder height — keep elbows pinned at your sides throughout. Lower slowly over 2–3 seconds. Do not swing or use momentum. Builds arm and grip strength.',url:'https://www.youtube.com/results?search_query=dumbbell+bicep+curl+form'},
-  {term:'DB shoulder press — seated',def:'Sit upright on a chair, back straight. DBs at shoulder height, palms facing forward. Press straight overhead until arms are extended. Lower slowly. Seated removes the spinal compression risk of standing press — use this during back reintegration.',url:'https://www.youtube.com/results?search_query=seated+dumbbell+shoulder+press'},
-  {term:'DB shoulder press — standing',def:'Stand tall, core braced. DBs at shoulder height, palms forward. Press straight overhead. Lower slowly. Only use standing version once lower back is pain-free.',url:'https://www.youtube.com/results?search_query=standing+dumbbell+shoulder+press'},
-  {term:'Dead bug — straight leg',def:'Lie on your back, arms pointing to the ceiling, legs at 90° tabletop. Press your lower back into the floor — keep it there throughout. Slowly lower your right arm overhead and straighten + lower your left leg toward the floor simultaneously. Go only as far as your back stays flat. Return and switch sides. The straight leg version (prescribed by physio) is harder than bent-knee — demands more core control.',url:'https://www.youtube.com/results?search_query=dead+bug+straight+leg+exercise'},
-  {term:'Deep belly breathing',def:'Prescribed by physio for back recovery. Lie on your back, legs elevated on a sofa or chair. One hand on stomach, one on chest. Inhale through your nose for 4 counts, lifting both belly and chest. Hold 2 counts. Exhale through your mouth for 4 counts. Relaxes the deep spinal muscles that go into protective spasm after a back injury.',url:'https://www.youtube.com/results?search_query=diaphragmatic+breathing+back+pain+relief'},
-  {term:'Glute bridge on heels',def:'Prescribed by physio. Lie on your back, knees bent to 90°. Lift your toes — only heels contact the floor. Drive your heels into the floor and lift your hips. At the top, tuck your pelvis slightly and hold for 5 seconds, squeezing glutes. Lower slowly. The heel position shifts emphasis to hamstrings — your primary spinal stabilisers. Progress by elevating heels on a chair or adding a DB on your hips.',url:'https://www.youtube.com/results?search_query=glute+bridge+on+heels+hamstring'},
-  {term:'Hip flexor + quad stretch',def:'Kneel on one knee on a mat. The kneeling leg is being stretched. Keep your torso upright, tuck your tailbone slightly, shift your hips gently forward until you feel a stretch at the front of the rear hip. To add the quad: reach back and pull your rear foot toward your glute with the same-side hand. Hold 45–60 sec per side. Counteracts hip flexor tightness from sustained tuck position.',url:'https://www.youtube.com/results?search_query=kneeling+hip+flexor+quad+stretch'},
-  {term:'Lateral band walk',def:'Loop a mini band above your knees (easier) or at your ankles (harder). Stand with a slight knee bend. Step sideways — lead foot steps out, trailing foot follows, keeping band tension throughout. Do not let knees cave inward. Targets glute medius — controls knee tracking and prevents the inward collapse behind anterior knee pain.',url:'https://www.youtube.com/results?search_query=lateral+band+walk+glute+med'},
-  {term:'Lateral raise',def:'Stand tall, DBs at your sides. Raise both arms out to shoulder height — a slight bend in the elbows is fine. Hold 1 sec at the top, lower slowly over 2–3 sec. Do not shrug or use momentum. Builds deltoid strength and shoulder stability.',url:'https://www.youtube.com/results?search_query=dumbbell+lateral+raise+form'},
-  {term:'Lying twist stretch',def:'Prescribed by physio. Lie on your back, legs straight, arms out to the sides. Place one hand on the outside of the opposite knee and pull that leg across your body, rotating your whole torso. Keep the back of the opposite hand in contact with the floor throughout. Hold 30 sec, breathe steadily into the stretch. Relieves tension in the lower back and improves spinal rotation mobility.',url:'https://www.youtube.com/results?search_query=lying+twist+stretch+lower+back'},
-  {term:'Pallof press',def:'Anchor a tube band at chest height in a door frame or to a fixed point. Stand side-on to the anchor. Hold the band at your chest with both hands. Press straight out in front of you, hold 2 seconds, return to chest. The band constantly tries to rotate you toward the anchor — you resist entirely. Anti-rotation core stability. Step further from the anchor to increase difficulty.',url:'https://www.youtube.com/results?search_query=pallof+press+anti+rotation+core'},
-  {term:'Pigeon pose / Figure-4 stretch',def:'Figure-4 (on your back, easier): lie on your back, cross one ankle over the opposite thigh just above the knee. Flex the foot. Draw the bottom knee toward your chest to intensify. Hold 45–60 sec per side. Targets hip external rotators and glutes.',url:'https://www.youtube.com/results?search_query=figure+4+stretch+hip+piriformis'},
-  {term:'Push-up',def:'Hands shoulder-width apart, body in a straight line from head to heel. Lower until chest is close to the floor, push back up. Core braced throughout — do not let hips sag. On knees if needed: same rules, just knees replace feet.',url:'https://www.youtube.com/results?search_query=push+up+correct+form'},
-  {term:'Push-up with rotation',def:'Standard push-up. At the top of each rep, rotate your whole torso — one arm reaches straight to the ceiling, eyes follow. Body forms a T. Return both hands to floor, lower into the next rep, rotate the other side. Combines chest and shoulder strength with thoracic rotation under load.',url:'https://www.youtube.com/results?search_query=push+up+with+rotation+t+push+up'},
-  {term:'Quad stretch',def:'Stand on one leg, bend the other knee and hold your foot behind you with the same-side hand. Keep knees together, stand tall, do not arch your lower back. Hold 45 sec. Use a wall or chair for balance if needed.',url:'https://www.youtube.com/results?search_query=standing+quad+stretch'},
-  {term:'Reverse lunge',def:'Stand tall, feet together. Step one foot back and lower your rear knee toward the floor. Front shin stays vertical, front knee tracks over the second toe. Push through your front heel to return to standing. More knee-friendly than a forward lunge — less shear force on the kneecap.',url:'https://www.youtube.com/results?search_query=reverse+lunge+form'},
-  {term:'Scooter',def:'Prescribed by physio. Mini band around your ankles. Stand with feet hip-width, slight knee bend, hips slightly back. Shift all weight onto one foot — do not let your hip sway out. With the opposite foot, reach out to the side (variation 1), behind you (variation 2), or diagonally behind (variation 3), tapping your toe. Return slowly, keeping weight in the standing leg throughout. You should feel the glute of the standing leg working hard. Also excellent for left knee VMO and lateral hip stability.',url:'https://www.youtube.com/results?search_query=scooter+exercise+single+leg+glute'},
-  {term:'Side plank with reach-through',def:'Side plank on your forearm, hips up, body in a straight line. Top arm extends to the ceiling. Thread that arm under your body as far as you can, then return it to the ceiling. That is one rep. Combines lateral core stability with thoracic rotation.',url:'https://www.youtube.com/results?search_query=side+plank+reach+through'},
-  {term:'Side-to-side knee rolls',def:'Prescribed by physio. Lie on your back, arms out to the sides, knees bent. Slowly lower both knees to one side — only go as far as comfortable. Return through centre, lower to the other side. Continuous side-to-side motion. Relieves tension in the lower back and improves rotation mobility. A gentle mobilisation — not a stretch to push through.',url:'https://www.youtube.com/results?search_query=supine+knee+rolls+lower+back+mobility'},
-  {term:'Single-arm dumbbell row',def:'Hinge forward at the hips with a flat back, one hand on a chair or knee for support. Let the dumbbell hang from the working arm. Pull the elbow straight back and up — drive it toward your hip, not curl the weight. Lower with control over 2–3 sec. Keep the spine neutral throughout.',url:'https://www.youtube.com/results?search_query=single+arm+dumbbell+row+form'},
-  {term:'Single-leg glute bridge',def:'Lie on your back, knees bent, feet flat. Extend one leg straight. Drive through the heel of the planted foot, squeeze your glute, and lift your hips until your body forms a straight line from shoulder to knee to extended foot. Hold 2 sec at the top, lower slowly.',url:'https://www.youtube.com/results?search_query=single+leg+glute+bridge'},
-  {term:'TKE — Terminal Knee Extension',def:'Anchor a resistance band at knee height to a fixed point. Face the anchor. Loop the band behind your knee — not your thigh. Stand on the banded leg with a slight forward lean and a small knee bend. Fully straighten the knee against the band resistance. Hold 1–2 sec, release slowly. Feel a gentle burn at the inner kneecap — not in the glute. If you feel it in the glute: check you are facing the anchor, check the band is behind the knee, increase forward lean slightly.',url:'https://www.youtube.com/results?search_query=terminal+knee+extension+tke+vmo'},
-  {term:'Thoracic open books',def:'Lie on your side, knees stacked and bent at 90° — they stay together throughout. Both arms extended at chest height. Keep hips completely still. Take your top arm and slowly rotate it up and over to the other side, opening your chest toward the ceiling. Go only as far as your upper back allows. Return slowly. Improves thoracic rotation.',url:'https://www.youtube.com/results?search_query=thoracic+open+books+rotation+stretch'},
-  {term:'Tuck hold',def:'Get into your speedboard tuck position — knees bent, back flat and roughly parallel to the ground, arms tucked. Hold for the prescribed duration. Keep your back flat (not rounded), weight evenly through both feet, core braced. The programme goal is 25 sec comfortably.',url:'https://www.youtube.com/results?search_query=downhill+skateboard+tuck+position'},
-  {term:'Tuck → explosive stand',def:'Get into your full speedboard tuck. Hold 1–2 sec, then explode upward to fully standing as fast as possible — as if reacting to a hazard at speed. Reset completely, lower back into tuck, repeat. Trains reactive power needed to recover from unexpected situations on a run.',url:'https://www.youtube.com/results?search_query=squat+to+explosive+stand+power'},
-  {term:'VMO (Vastus Medialis Oblique)',def:'The teardrop-shaped inner quad muscle just above and inside the kneecap. Fires hardest in the last 30° of knee straightening. When weak, the kneecap is pulled laterally by the stronger outer quad, causing the anterior knee pain on your left side. TKE and scooter in this programme specifically target VMO development.',url:'https://www.youtube.com/results?search_query=vmo+strengthening+exercises+knee'},
-  {term:'Woodchop — high to low / low to high / both directions',def:'Anchor a tube band at head height (high-to-low) or ankle height (low-to-high) in a door frame. Stand side-on to the anchor. Pull diagonally across your body — high-to-low mimics heelside rotation, low-to-high mimics toeside. Power from rotating hips and torso together. Pivot your back foot to allow full rotation. Arms stay relatively straight — this is a rotation, not a pull.',url:'https://www.youtube.com/results?search_query=band+woodchop+rotational+exercise'},
-];
-
-
-// ══════════════════════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════════════════════
-let scriptUrl = 'https://script.google.com/macros/s/AKfycbx-fhsW1RAXWP16IpIJ_U8tLmVPX-AZaBFv2zM1pbI5v8GTM_O9YonjbnphxKUaG9mI/exec';
-let logs = {};
-let isOnline = false;
-let selectedFeeling = null;
-let currentPhase = 1;
-let currentWeek = 1;
-let expandedSessions = new Set();
-
-// ══════════════════════════════════════════════════════════
-// STORAGE
-// ══════════════════════════════════════════════════════════
-function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
-function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+// ── LOCAL STORAGE ──────────────────────────────────────────
+function saveLocal(){
+  localStorage.setItem('dht_state_v2', JSON.stringify(state));
+}
 
 function loadLocal(){
-  // URL is always hardcoded — never read from localStorage
-  scriptUrl = 'https://script.google.com/macros/s/AKfycbx-fhsW1RAXWP16IpIJ_U8tLmVPX-AZaBFv2zM1pbI5v8GTM_O9YonjbnphxKUaG9mI/exec';
-  // Always merge local logs with whatever is in localStorage — never wipe
-  try{
-    const stored = JSON.parse(lsGet('logs') || '{}');
-    logs = {...logs, ...stored};
-  }catch(e){ logs = {}; }
-}
-
-function saveLocal(){
-  lsSet('logs', JSON.stringify(logs));
-}
-
-// ══════════════════════════════════════════════════════════
-// GOOGLE SHEETS SYNC
-// ══════════════════════════════════════════════════════════
-function setSyncStatus(state, label){
-  const ind = document.getElementById('sync-indicator');
-  const dot = document.getElementById('sync-dot');
-  const lbl = document.getElementById('sync-label');
-  if(!ind) return;
-  ind.style.display = 'flex';
-  dot.className = 'sync-dot' + (state === 'syncing' ? ' syncing' : state === 'error' ? ' error' : '');
-  lbl.textContent = label;
-  if(state === 'synced') setTimeout(()=>{ ind.style.opacity='0'; setTimeout(()=>{ ind.style.display='none'; ind.style.opacity='1'; },400); }, 2000);
-}
-
-function gsUrl(params){
-  const qs = Object.entries(params).map(([k,v])=>
-    encodeURIComponent(k)+'='+encodeURIComponent(v??'')).join('&');
-  return scriptUrl + '?' + qs;
-}
-
-async function fetchFromSheet(){
-  if(!scriptUrl) return;
-  setSyncStatus('syncing','Syncing…');
-  try{
-    const r = await fetch(gsUrl({action:'getLogs'}));
-    const data = await r.json();
-    if(data.logs){
-      // Merge: for each session in sheet, take sheet data but preserve local ticks
-      // if sheet has no ticks for that session (handles migration)
-      Object.entries(data.logs).forEach(([sid, sheetEntry]) => {
-        const localEntry = logs[sid] || {};
-        // Sheet ticked wins if it has data, otherwise keep local ticks
-        // Ticked comes back from sheet as object (parsed by GS) or as comma-separated string
-        let sheetTicked = sheetEntry.ticked || {};
-        if(typeof sheetTicked === 'string' && sheetTicked.length > 0){
-          sheetTicked = {};
-          sheetEntry.ticked.split(',').forEach(k=>{ if(k) sheetTicked[k]=1; });
-        }
-        const ticked = (Object.keys(sheetTicked).length > 0)
-          ? sheetTicked
-          : (localEntry.ticked || {});
-        logs[sid] = {...localEntry, ...sheetEntry, ticked};
-      });
-      saveLocal();
-      setSyncStatus('synced','Synced');
-    }
-  }catch(e){
-    setSyncStatus('error','Offline');
+  const raw = localStorage.getItem('dht_state_v2');
+  if(raw){
+    try { Object.assign(state, JSON.parse(raw)); } catch(e){}
   }
 }
 
-async function pushToSheet(sessionId, entry){
-  if(!scriptUrl) return;
+// ── SHEET SYNC ─────────────────────────────────────────────
+function gsUrl(params){
+  return SCRIPT_URL + '?' + Object.entries(params).map(([k,v])=>
+    encodeURIComponent(k)+'='+encodeURIComponent(v||'')
+  ).join('&');
+}
+
+function setSyncStatus(status, text){
+  document.getElementById('sync-dot').className = 'sync-dot ' + status;
+  document.getElementById('sync-text').textContent = text;
+}
+
+async function pushSession(session){
+  if(!SCRIPT_URL) return;
   setSyncStatus('syncing','Saving…');
-  try{
-    // gsUrl handles encoding — do NOT pre-encode values here
-    const tickedKeys = Object.keys(entry.ticked||{}).join(',');
+  try {
     const params = {
-      action:'saveLog',
-      sessionId,
-      status:  entry.status||'',
-      feeling: entry.feeling||'',
-      note:    entry.note||'',
-      ticked:  tickedKeys,
+      action: 'saveSession',
+      sessionId: session.id,
+      date: session.date,
+      feeling: session.feeling || '',
+      note: session.note || '',
+      progA: state.prog.A,
+      progB: state.prog.B,
+      blocks: JSON.stringify(session.blocks.map(b=>({
+        blockId: b.blockId,
+        blockLabel: b.blockLabel,
+        ticked: b.exercises.filter(e=>e.ticked).map(e=>e.name)
+      })))
     };
     await fetch(gsUrl(params));
     setSyncStatus('synced','Saved');
-  }catch(e){
+  } catch(e){
     setSyncStatus('error','Save failed — stored locally');
   }
 }
 
-// ══════════════════════════════════════════════════════════
-// SETUP
-// ══════════════════════════════════════════════════════════
-async function connectSheet(){
-  const url = document.getElementById('script-url-input').value.trim();
-  if(!url.includes('script.google.com')){
-    document.getElementById('url-error').style.display = 'block';
-    return;
-  }
-  document.getElementById('url-error').style.display = 'none';
-  const btn = document.querySelector('#setup-screen .btn-primary');
-  btn.innerHTML = '<span class="spinner"></span> Connecting…';
-  btn.disabled = true;
-  try{
-    const r = await fetch(url + '?action=getLogs', {mode:'cors'});
+async function fetchSessions(){
+  if(!SCRIPT_URL) return;
+  setSyncStatus('syncing','Syncing…');
+  try {
+    const r = await fetch(gsUrl({action:'getSessions'}));
     const data = await r.json();
-    if(data.logs !== undefined){
-      scriptUrl = url;
-      lsSet('scriptUrl', url);
-      lsSet('setupDone','1');
-      logs = {...logs, ...data.logs};
+    if(data.sessions && data.sessions.length > 0){
+      // Merge: sheet is source of truth for completed sessions
+      state.sessions = data.sessions;
+      if(data.prog) state.prog = data.prog;
+      if(data.nextType) state.nextType = data.nextType;
       saveLocal();
-      isOnline = true;
-      launchApp();
-    } else {
-      throw new Error('Unexpected response');
+      renderAll();
     }
-  }catch(e){
-    btn.innerHTML = 'Connect and start';
-    btn.disabled = false;
-    document.getElementById('url-error').textContent = 'Could not connect. Check the URL and try again.';
-    document.getElementById('url-error').style.display = 'block';
+    setSyncStatus('synced','Synced');
+  } catch(e){
+    setSyncStatus('error','Offline — using local data');
   }
 }
 
-function skipSetup(){
-  lsSet('setupDone','1');
-  launchApp();
-}
-
-function launchApp(){
-  document.getElementById('setup-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  renderAll();
-  if(scriptUrl) fetchFromSheet();
-}
-
-// ══════════════════════════════════════════════════════════
-// HELPERS
-// ══════════════════════════════════════════════════════════
+// ── HELPERS ────────────────────────────────────────────────
 function todayStr(){
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
-function daysBetween(a,b){
-  return Math.round((new Date(b)-new Date(a))/86400000);
+function formatDate(ds){
+  return new Date(ds+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
 }
 
-function formatDateLong(ds){
-  return new Date(ds+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+function feelingLabel(f){ return ['','Tough','Hard','Good','Great'][f] || ''; }
+function feelingClass(f){ return ['','feeling-tough','feeling-hard','feeling-good','feeling-great'][f] || ''; }
+
+function getNextProgrammeSession(){
+  // Returns the programme session template to show next
+  return state.nextType === 'A' ? SESSION_A : SESSION_B;
 }
 
-function formatDateShort(ds){
-  return new Date(ds+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+function getCurrentBlocksFromProg(progSession){
+  // Build flat block list from programme session
+  return progSession.blocks.map(b=>({
+    blockId: b.id,
+    blockLabel: b.label,
+    exercises: b.exercises.map(e=>({...e, ticked:false}))
+  }));
 }
 
-function phaseColor(p){ return ['','#1D9E75','#534AB7','#BA7517'][p]||'#444441'; }
-
-function feelingLabel(f){ return ['','😰 Tough','😤 Hard','💪 Good','🚀 Great'][f]||''; }
-
-function statusColor(s){ return s==='done'?'#1D9E75':s==='partial'?'#BA7517':'var(--border)'; }
-
-function getNext(fromDate){
-  return SESSIONS.filter(s=>s.date>=fromDate).sort((a,b)=>a.date.localeCompare(b.date))[0]||null;
-}
-
-// ══════════════════════════════════════════════════════════
-// RENDER SESSION
-// ══════════════════════════════════════════════════════════
-
-// Generate stable exercise ID from session id + block index + exercise index
-function exId(sid, bi, ei){ return sid+'_b'+bi+'_e'+ei; }
-
-// Get ticked exercises for a session from logs
-function getTicked(sid){ return (logs[sid] && logs[sid].ticked) ? logs[sid].ticked : {}; }
-
-// Count total exercises in a session
-function countExercises(s){ return s.blocks.reduce((t,b)=>t+b.exercises.length,0); }
-
-// Count ticked exercises
-function countTicked(sid, s){ const t=getTicked(sid); return s.blocks.reduce((tot,b,bi)=>tot+b.exercises.filter((_,ei)=>t[exId(sid,bi,ei)]).length,0); }
-
-// Auto-calculate status from ticks
-function calcStatus(sid, s){
-  const total = countExercises(s);
-  const ticked = countTicked(sid, s);
-  if(ticked===0) return 'none';
-  if(ticked===total) return 'done';
-  return 'partial';
-}
-
-// Toggle a single exercise tick
-async function toggleEx(sid, bi, ei){
-  const s = SESSIONS.find(x=>x.id===sid);
-  if(!logs[sid]) logs[sid] = {ticked:{}, feeling:null, note:'', loggedAt:null, actualSession:''};
-  if(!logs[sid].ticked) logs[sid].ticked = {};
-  const key = exId(sid,bi,ei);
-  if(logs[sid].ticked[key]) delete logs[sid].ticked[key];
-  else logs[sid].ticked[key] = 1;
-  // Don't mark done until feeling is logged — keeps Today on this session
-  const calcedStatus = calcStatus(sid, s);
-  if(calcedStatus === 'done' && !logs[sid].feeling){
-    logs[sid].status = 'partial';
-  } else {
-    logs[sid].status = calcedStatus;
-  }
-  if(calcedStatus !== 'none' && !logs[sid].loggedAt) logs[sid].loggedAt = new Date().toISOString();
+// ── TODAY: CURRENT SESSION MANAGEMENT ─────────────────────
+function startNewActualSession(){
+  const prog = getNextProgrammeSession();
+  const progBlocks = getCurrentBlocksFromProg(prog);
+  state.current = {
+    date: todayStr(),
+    progType: state.nextType,
+    blocks: progBlocks,
+    note: '',
+    feeling: null,
+  };
   saveLocal();
-  await pushToSheet(sid, logs[sid]);
+  renderToday();
+}
+
+function insertWarmup(){
+  if(!state.current) return;
+  const wb = {
+    blockId: 'warmup_' + Date.now(),
+    blockLabel: WARMUP_BLOCK.label,
+    exercises: WARMUP_BLOCK.exercises.map(e=>({...e, ticked:false})),
+    isInserted: true
+  };
+  state.current.blocks.unshift(wb);
+  saveLocal();
+  renderToday();
+}
+
+function insertFinish(){
+  if(!state.current) return;
+  const fb = {
+    blockId: 'finish_' + Date.now(),
+    blockLabel: FINISH_BLOCK.label,
+    exercises: FINISH_BLOCK.exercises.map(e=>({...e, ticked:false})),
+    isInserted: true
+  };
+  state.current.blocks.push(fb);
+  saveLocal();
+  renderToday();
+}
+
+function tickExercise(blockIdx, exIdx){
+  if(!state.current) return;
+  const ex = state.current.blocks[blockIdx].exercises[exIdx];
+  ex.ticked = !ex.ticked;
+  saveLocal();
+  renderToday();
+}
+
+function setFeeling(f){
+  if(!state.current) return;
+  state.current.feeling = f;
+  saveLocal();
+  renderToday();
+}
+
+function setNote(val){
+  if(!state.current) return;
+  state.current.note = val;
+  saveLocal();
+}
+
+async function completeActualSession(){
+  if(!state.current || !state.current.feeling) return;
+
+  // Count ticked exercises from programme blocks (not inserted warmup/finish)
+  const progBlocks = state.current.blocks.filter(b=>!b.isInserted);
+  const totalProgEx = progBlocks.reduce((n,b)=>n+b.exercises.length,0);
+  const tickedProgEx = progBlocks.reduce((n,b)=>n+b.exercises.filter(e=>e.ticked).length,0);
+  const pct = totalProgEx > 0 ? Math.round(tickedProgEx/totalProgEx*100) : 0;
+
+  // Build saved session
+  const session = {
+    id: 'actual_' + Date.now(),
+    date: state.current.date,
+    feeling: state.current.feeling,
+    note: state.current.note,
+    progType: state.current.progType,
+    pct: pct,
+    blocks: state.current.blocks,
+  };
+
+  // If 100% of programme exercises ticked, advance programme
+  if(pct === 100){
+    state.prog[state.current.progType]++;
+    state.nextType = state.nextType === 'A' ? 'B' : 'A';
+  }
+  // If partial, keep nextType same so next session continues same programme session
+
+  state.sessions.push(session);
+  state.current = null;
+  saveLocal();
+  await pushSession(session);
   renderAll();
 }
 
-// Restart block
-const RESTART_BLOCK = {
-  label:'🔄 Restart warm-up — do before continuing',
-  exercises:[
-    {name:'Side-to-side knee rolls',detail:'2×10 each side. Slow, controlled.'},
-    {name:'Cat camel',detail:'2×5. Round and arch, 2 sec each.'},
-    {name:'Glute bridge on heels',detail:'1×8. Heels only, drive hips up, hold 3 sec.'},
-  ]
-};
+// ── RENDER TODAY ───────────────────────────────────────────
+function renderToday(){
+  const el = document.getElementById('today-content');
+  const today = todayStr();
 
-function addRestartBlock(sid){
-  if(!logs[sid]) logs[sid] = {ticked:{}, feeling:null, note:'', loggedAt:null, actualSession:''};
-  logs[sid].hasRestartBlock = true;
-  saveLocal();
-  renderAll();
-}
+  // If no current session, show start screen
+  if(!state.current){
+    const next = getNextProgrammeSession();
+    const totalDone = state.sessions.length;
+    const lastSession = state.sessions[state.sessions.length-1];
+    const lastDate = lastSession ? formatDate(lastSession.date) : null;
+    const lastPct = lastSession ? lastSession.pct : null;
 
-function renderSession(s, inToday){
-  const log = logs[s.id];
-  const ticked = getTicked(s.id);
-  const status = log ? (log.status||'none') : 'none';
-  const isExpanded = inToday || expandedSessions.has(s.id);
-  const totalEx = countExercises(s);
-  const tickedCount = log ? countTicked(s.id, s) : 0;
-
-  // Check if session was started on a different day — show restart button
-  const loggedDate = log && log.loggedAt ? log.loggedAt.slice(0,10) : null;
-  const todayDate = todayStr();
-  const isResumption = status === 'partial' && loggedDate && loggedDate !== todayDate;
-  const hasRestartBlock = log && log.hasRestartBlock;
-
-  // Restart block HTML (loggable, prepended when activated)
-  let restartHTML = '';
-  if(isResumption && !hasRestartBlock){
-    restartHTML = `<div style="background:var(--bg2);border:1px solid var(--ph2);border-radius:var(--radius);padding:12px;margin-bottom:12px">
-      <div style="font-size:13px;font-weight:600;color:var(--ph2);margin-bottom:6px">Resuming from a previous day?</div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:10px">Tap to add a 3-min restart warm-up before continuing.</div>
-      <button onclick="addRestartBlock('${s.id}')" style="width:100%;padding:10px;background:var(--ph2);color:#fff;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer">+ Add restart warm-up</button>
-    </div>`;
-  }
-  if(hasRestartBlock){
-    const rb = RESTART_BLOCK;
-    const rbExs = rb.exercises.map((e,ei)=>{
-      const key = `${s.id}_restart_e${ei}`;
-      const done = !!(logs[s.id] && logs[s.id].ticked && logs[s.id].ticked[key]);
-      return `<div class="ex-item">
-        <div class="ex-check ${done?'checked':''}" onclick="toggleRestartEx('${s.id}',${ei})"></div>
-        <div class="ex-content">
-          <div class="ex-name ${done?'done':''}">${e.name}</div>
-          <div class="ex-detail">${e.detail}</div>
-        </div>
-      </div>`;
-    }).join('');
-    restartHTML = `<div class="block-progress"><div class="block-label" style="margin:0">${rb.label}</div></div>${rbExs}`;
-  }
-
-  // Blocks with checkboxes
-  const blocksHTML = s.blocks.map((b,bi)=>{
-    const blockTotal = b.exercises.length;
-    const blockTicked = b.exercises.filter((_,ei)=>ticked[exId(s.id,bi,ei)]).length;
-    const blockDone = blockTotal>0 && blockTicked===blockTotal;
-    return `
-      <div class="block-progress">
-        <div class="block-label" style="margin:0">${b.label}</div>
-        ${blockDone ? '<span class="block-tick">✓</span>' : blockTicked>0 ? `<span style="font-size:11px;color:var(--ph3)">${blockTicked}/${blockTotal}</span>` : ''}
+    el.innerHTML = `
+      <div class="page-header">
+        <div class="page-title">Today</div>
+        <div class="page-sub">${formatDate(today)}</div>
       </div>
-      ${b.exercises.map((e,ei)=>{
-        const key = exId(s.id,bi,ei);
-        const done = !!ticked[key];
-        return `
-          <div class="ex-item">
-            <div class="ex-check ${done?'checked':''}" onclick="toggleEx('${s.id}',${bi},${ei})"></div>
-            <div class="ex-content">
-              <div class="ex-name ${done?'done':''}">${e.name}</div>
-              ${e.detail ? `<div class="ex-detail">${e.detail.replace(/\n/g,'<br>')}</div>` : ''}
-              ${e.alt ? `<div class="ex-alt">${e.alt}</div>` : ''}
-              ${e.kit ? `<div class="ex-kit">🎒 ${e.kit}</div>` : ''}
-            </div>
-          </div>`;
-      }).join('')}`;
+      ${totalDone > 0 ? `
+        <div style="background:var(--bg2);border-radius:var(--radius);padding:14px;margin-bottom:16px">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:4px">LAST SESSION</div>
+          <div style="font-size:13px;color:var(--text2)">${lastDate} · Session ${lastSession.progType} · ${lastPct}% complete</div>
+        </div>` : ''}
+      <div style="background:var(--bg2);border-radius:var(--radius);padding:20px;margin-bottom:16px;text-align:center">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Next up</div>
+        <div class="session-type-badge" style="display:inline-flex;margin-bottom:12px">${next.type}</div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:4px">${next.label}</div>
+        <div style="font-size:12px;color:var(--text2)">A${state.prog.A} completed · B${state.prog.B} completed</div>
+      </div>
+      <button onclick="startNewActualSession()" style="width:100%;padding:16px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:16px;font-weight:700;cursor:pointer">Start session</button>
+    `;
+    return;
+  }
+
+  // Active session
+  const totalEx = state.current.blocks.reduce((n,b)=>n+b.exercises.length,0);
+  const tickedEx = state.current.blocks.reduce((n,b)=>n+b.exercises.filter(e=>e.ticked).length,0);
+  const pct = totalEx > 0 ? Math.round(tickedEx/totalEx*100) : 0;
+  const progType = state.current.progType;
+
+  const blocksHTML = state.current.blocks.map((b,bi)=>{
+    const blockDone = b.exercises.length > 0 && b.exercises.every(e=>e.ticked);
+    const exHTML = b.exercises.map((e,ei)=>`
+      <div class="ex-item">
+        <div class="ex-check ${e.ticked?'checked':''}" onclick="tickExercise(${bi},${ei})"></div>
+        <div class="ex-content">
+          <div class="ex-name ${e.ticked?'done':''}">${e.name}</div>
+          ${e.detail?`<div class="ex-detail">${e.detail}</div>`:''}
+          ${e.kit?`<div class="ex-kit">🎒 ${e.kit}</div>`:''}
+        </div>
+      </div>`).join('');
+    return `
+      <div class="block">
+        <div class="block-header">
+          <div class="block-label">${b.blockLabel}</div>
+          ${blockDone?'<div class="block-done-badge">✓ Done</div>':''}
+        </div>
+        ${exHTML}
+      </div>`;
   }).join('');
 
-  const notesHTML = s.notes.map(n=>`<div class="ex-note">${n}</div>`).join('');
-
-  // Progress bar (only when in today and has some ticks)
-  const progressHTML = (inToday && totalEx>0) ? `
-    <div class="session-progress-bar"><div class="session-progress-fill" style="width:${Math.round(tickedCount/totalEx*100)}%"></div></div>
-    <div class="progress-label">${tickedCount} of ${totalEx} exercises · ${status==='done'?'<span style="color:#1D9E75;font-weight:600">Session complete ✓</span>':status==='partial'?'<span style="color:#BA7517">Partial</span>':'Not started'}</div>` : '';
-
-  // Log form — feeling + notes + export (shown when session has been started)
-  let logArea = '';
-  if(inToday || (!inToday && tickedCount > 0)){
-    const hasStarted = tickedCount > 0;
-    const feeling = log ? log.feeling : null;
-    const note = log ? (log.note||'') : '';
-    const actualSession = log ? (log.actualSession||'') : '';
-    logArea = `
-      <div class="log-form" id="log-form-${s.id}" style="${hasStarted?'':'opacity:.5;pointer-events:none'}">
-        <div class="log-form-title">${hasStarted?'Session log':'Tick exercises above to begin logging'}</div>
-        <textarea class="note-area" id="note-${s.id}" placeholder="Notes — back, left knee, what to tell Claude, anything you skipped..." onblur="saveNote('${s.id}')">${note}</textarea>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
-          <label style="font-size:13px;color:var(--text2);white-space:nowrap">Actual session #</label>
-          <input type="text" id="actual-session-${s.id}" value="${actualSession}" placeholder="e.g. 8 or 8-9" onblur="saveActualSession('${s.id}')" style="flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;background:var(--bg);color:var(--text)">
-        </div>
-        <div style="font-size:12px;color:var(--text3);margin-bottom:8px">How did it feel? (tap to complete session)</div>
-        <div class="feeling-grid">
-          ${[1,2,3,4].map(f=>`<button class="feel-btn ${feeling===f?'active':''}" data-f="${f}" onclick="selectFeeling('${s.id}',${f})">${feelingLabel(f)}</button>`).join('')}
-        </div>
-        <button onclick="exportSession('${s.id}')" style="width:100%;padding:11px;background:var(--bg2);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;margin-top:8px">📋 Export session summary</button>
-      </div>`;
-  }
-
-  if(!isExpanded){
-    return `
-      <div class="session-card" onclick="toggleSession('${s.id}')">
-        <div class="sc-header">
-          <div class="sc-header-left">
-            <div class="sc-day">${s.title.split(' — ')[0]}</div>
-            <div class="sc-title">${s.title.includes(' — ') ? s.title.split(' — ').slice(1).join(' — ') : s.title}</div>
-            <div class="sc-sub">${s.sub}</div>
-          </div>
-          <div class="sc-status ${status==='done'?'status-done':status==='partial'?'status-partial':'status-none'}"></div>
-        </div>
-      </div>`;
-  }
-
-  return `
-    <div class="session-card">
-      <div class="sc-header" onclick="${!inToday?`toggleSession('${s.id}')`:''}" style="${!inToday?'cursor:pointer':''}">
-        <div class="sc-header-left">
-          <div class="sc-day">${s.title.split(' — ')[0]}</div>
-          <div class="sc-title">${s.title.includes(' — ') ? s.title.split(' — ').slice(1).join(' — ') : s.title}</div>
-          <div class="sc-sub">${s.sub}</div>
-          ${s.apple ? `<div style="font-size:11px;color:var(--ph2);font-weight:500;margin-top:3px">⌚ Apple Fitness: ${s.apple}</div>` : ''}
-        </div>
-        <div class="sc-status ${status==='done'?'status-done':status==='partial'?'status-partial':'status-none'}"></div>
-      </div>
-      <div class="sc-body">
-        ${progressHTML}
-        ${restartHTML}
-        ${blocksHTML}
-        ${notesHTML}
-        ${logArea}
-      </div>
-    </div>`;
-}
-
-function toggleSession(id){
-  if(expandedSessions.has(id)) expandedSessions.delete(id);
-  else expandedSessions.add(id);
-  renderPlan();
-}
-
-// ══════════════════════════════════════════════════════════
-// TODAY
-// ══════════════════════════════════════════════════════════
-function renderToday(){
-  const td = todayStr();
-  const daysToEnd = daysBetween(td,'2026-05-19');
-  const sessionsLeft = SESSIONS.filter(s => !logs[s.id] || logs[s.id].status !== 'done').length;
-  // Next session = first session that isn't fully done
-  // A session with partial ticks or no ticks should still show as current
-  const nextSession = SESSIONS.find(s => {
-    const log = logs[s.id];
-    if (!log) return true; // no log at all — show this
-    if (log.status === 'done') return false; // fully done — skip
-    return true; // partial or none — show this
-  });
-  const allDone = SESSIONS.every(s => logs[s.id] && logs[s.id].status === 'done');
-  const el = document.getElementById('today-content');
-
-  if(allDone){
-    el.innerHTML = `
-      <div class="hero" style="background:linear-gradient(135deg,#BA7517,#633806)">
-        <div class="hero-label">All sessions complete</div>
-        <div class="hero-title">Go skate 🏁</div>
-        <div class="countdown-days">0</div>
-        <div class="countdown-label">sessions remaining</div>
-        <div class="hero-meta" style="margin-top:12px">
-          <span class="badge">${daysToEnd} days to last session</span>
-        </div>
-      </div>`;
-    return;
-  }
-
-  const pc = nextSession.phase;
-  const colors = ['','#1D9E75,#085041','#534AB7,#26215C','#BA7517,#412402'];
-  const weekLabel = nextSession.title.split(' — ')[0];
-  const sessionTitle = nextSession.title.includes(' — ') ? nextSession.title.split(' — ').slice(1).join(' — ') : nextSession.title;
-  const sessionsInWeek = SESSIONS.filter(s => s.week === nextSession.week).length;
-  const sessionNumInWeek = nextSession.session;
+  const feeling = state.current.feeling;
 
   el.innerHTML = `
-    <div class="hero" style="background:linear-gradient(135deg,${colors[pc]})">
-      <div class="hero-label">Up next</div>
-      <div class="hero-label" style="font-size:13px;opacity:.8;margin-bottom:2px">Week ${nextSession.week} &middot; Session ${sessionNumInWeek} of ${sessionsInWeek}</div>
-      <div class="hero-title">${sessionTitle}</div>
-      <div class="hero-sub">${nextSession.sub}</div>
-      ${nextSession.apple ? `<div style="font-size:12px;opacity:.85;margin-bottom:8px">⌚ Apple Fitness: ${nextSession.apple}</div>` : ''}
-      <div class="countdown-days">${sessionsLeft}</div>
-      <div class="countdown-label">sessions remaining</div>
-      <div class="hero-meta" style="margin-top:8px">
-        <span class="badge">Phase ${pc}</span>
-        <span class="badge">${daysToEnd} days to last session</span>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div>
+        <div class="session-type-badge">Session ${progType}</div>
       </div>
+      <div style="font-size:12px;color:var(--text3)">${formatDate(state.current.date)}</div>
     </div>
-    ${renderSession(nextSession, true)}`;
+    <div class="progress-row">
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="progress-label">${tickedEx}/${totalEx}</div>
+    </div>
+    <div class="float-btns">
+      <button class="float-btn" onclick="insertWarmup()">+ Warm-up</button>
+      <button class="float-btn" onclick="insertFinish()">+ Finish</button>
+    </div>
+    ${blocksHTML}
+    <div class="log-form">
+      <div class="log-form-title">Log this session</div>
+      <textarea class="note-area" placeholder="Notes — back, knee, what you skipped, anything for Claude…" onblur="setNote(this.value)">${state.current.note||''}</textarea>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:8px">How did it feel?</div>
+      <div class="feeling-grid">
+        ${[1,2,3,4].map(f=>`<button class="feel-btn ${feeling===f?'active':''}" onclick="setFeeling(${f})">${feelingLabel(f)}</button>`).join('')}
+      </div>
+      <button class="complete-btn" onclick="completeActualSession()" ${!feeling?'disabled':''}>
+        ${!feeling ? 'Select a feeling to complete' : 'Complete & save session'}
+      </button>
+    </div>
+  `;
 }
 
-// ══════════════════════════════════════════════════════════
-// LOG
-// ══════════════════════════════════════════════════════════
-async function selectFeeling(sessionId, f){
-  if(!logs[sessionId]) logs[sessionId] = {ticked:{}, feeling:null, note:'', loggedAt:new Date().toISOString(), actualSession:''};
-  logs[sessionId].feeling = f;
-  const s = SESSIONS.find(x=>x.id===sessionId);
-  if(s){
-    const calcedStatus = calcStatus(sessionId, s);
-    if(calcedStatus === 'done') logs[sessionId].status = 'done';
-  }
-  saveLocal();
-  await pushToSheet(sessionId, logs[sessionId]);
-  renderAll();
-}
-
-async function toggleRestartEx(sid, ei){
-  if(!logs[sid]) logs[sid] = {ticked:{}, feeling:null, note:'', loggedAt:null, actualSession:''};
-  if(!logs[sid].ticked) logs[sid].ticked = {};
-  const key = `${sid}_restart_e${ei}`;
-  if(logs[sid].ticked[key]) delete logs[sid].ticked[key];
-  else logs[sid].ticked[key] = 1;
-  saveLocal();
-  await pushToSheet(sid, logs[sid]);
-  renderAll();
-}
-
-async function saveActualSession(sessionId){
-  const val = document.getElementById('actual-session-'+sessionId)?.value?.trim() || '';
-  if(!logs[sessionId]) logs[sessionId] = {ticked:{}, feeling:null, note:'', loggedAt:new Date().toISOString(), actualSession:''};
-  logs[sessionId].actualSession = val;
-  saveLocal();
-  await pushToSheet(sessionId, logs[sessionId]);
-}
-
-async function saveNote(sessionId){
-  const note = document.getElementById('note-'+sessionId)?.value?.trim() || '';
-  if(!logs[sessionId]) logs[sessionId] = {ticked:{}, feeling:null, note:'', loggedAt:new Date().toISOString()};
-  logs[sessionId].note = note;
-  saveLocal();
-  await pushToSheet(sessionId, logs[sessionId]);
-}
-
-function exportSession(sid){
-  const s = SESSIONS.find(x=>x.id===sid);
-  const log = logs[sid] || {};
-  const ticked = log.ticked || {};
-  const lines = [];
-  lines.push('SESSION EXPORT — ' + s.title);
-  lines.push('Status: ' + (log.status||'not started'));
-  lines.push('Feeling: ' + (log.feeling ? feelingLabel(log.feeling) : 'not rated'));
-  lines.push('');
-  s.blocks.forEach((b,bi)=>{
-    lines.push('[' + b.label + ']');
-    b.exercises.forEach((e,ei)=>{
-      const done = !!ticked[exId(sid,bi,ei)];
-      lines.push((done ? '✓ ' : '✗ ') + e.name);
-    });
-    lines.push('');
-  });
-  if(log.note) lines.push('Notes: ' + log.note);
-  const text = lines.join('\n');
-  // Copy to clipboard
-  navigator.clipboard.writeText(text).then(()=>{
-    alert('Session summary copied to clipboard — paste it into Claude.');
-  }).catch(()=>{
-    // Fallback: show in alert
-    alert(text);
-  });
-}
-
-// ══════════════════════════════════════════════════════════
-// PLAN
-// ══════════════════════════════════════════════════════════
-function renderPlan(){
-  // Phase pills
-  const pp = document.getElementById('phase-pills');
-  pp.innerHTML = PHASES.map(p=>`
-    <button class="phase-pill ${p.id===currentPhase?'active':''}"
-      style="${p.id===currentPhase?`background:${p.color};border-color:${p.color}`:''}"
-      onclick="switchPhase(${p.id})">${p.label}</button>`).join('');
-
-  // Phase desc
-  const ph = PHASES.find(p=>p.id===currentPhase);
-  document.getElementById('phase-desc').textContent = ph.desc;
-
-  // Week pills
-  const weeks = [...new Set(SESSIONS.filter(s=>s.phase===currentPhase).map(s=>s.week))];
-  if(!weeks.includes(currentWeek)) currentWeek = weeks[0];
-  const wp = document.getElementById('week-pills');
-  wp.innerHTML = weeks.map(w=>`
-    <button class="week-pill ${w===currentWeek?'active':''}"
-      style="${w===currentWeek?`background:${ph.color};border-color:${ph.color};color:#fff`:''}"
-      onclick="switchWeek(${w})">Week ${w}</button>`).join('');
-
-  // Sessions
-  const sessions = SESSIONS.filter(s=>s.week===currentWeek);
-  document.getElementById('plan-sessions').innerHTML = sessions.map(s=>renderSession(s,false)).join('');
-}
-
-function switchPhase(p){
-  currentPhase = p;
-  const weeks = [...new Set(SESSIONS.filter(s=>s.phase===p).map(s=>s.week))];
-  currentWeek = weeks[0];
-  renderPlan();
-}
-
-function switchWeek(w){
-  currentWeek = w;
-  renderPlan();
-}
-
-// ══════════════════════════════════════════════════════════
-// LOG HISTORY
-// ══════════════════════════════════════════════════════════
+// ── RENDER LOG ─────────────────────────────────────────────
 function renderLog(){
-  const el = document.getElementById('log-content');
-  const entries = Object.entries(logs).sort((a,b)=>{
-    const sa = SESSIONS.find(s=>s.id===a[0]);
-    const sb = SESSIONS.find(s=>s.id===b[0]);
-    return (sb?.date||'').localeCompare(sa?.date||'');
-  });
+  const total = state.sessions.length;
+  const thisWeek = (() => {
+    const now = new Date();
+    const weekAgo = new Date(now - 7*24*60*60*1000);
+    return state.sessions.filter(s=>new Date(s.date+'T12:00:00')>=weekAgo).length;
+  })();
+  const thisMonth = (() => {
+    const now = new Date();
+    return state.sessions.filter(s=>{
+      const d = new Date(s.date+'T12:00:00');
+      return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
+    }).length;
+  })();
 
-  const done = entries.filter(([,v])=>v.status==='done').length;
-  const partial = entries.filter(([,v])=>v.status==='partial').length;
-  const remaining = SESSIONS.length - entries.length;
+  document.getElementById('log-stats').innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-num">${total}</div><div class="stat-label">Total sessions</div></div>
+      <div class="stat-card"><div class="stat-num">${thisWeek}</div><div class="stat-label">This week</div></div>
+      <div class="stat-card"><div class="stat-num">${thisMonth}</div><div class="stat-label">This month</div></div>
+      <div class="stat-card"><div class="stat-num">A${state.prog.A} B${state.prog.B}</div><div class="stat-label">Programme progress</div></div>
+    </div>
+  `;
 
-  if(!entries.length){
-    el.innerHTML = `
-      <div class="stats-row">
-        <div class="stat-card"><div class="stat-num" style="color:#1D9E75">0</div><div class="stat-label">Completed</div></div>
-        <div class="stat-card"><div class="stat-num">0</div><div class="stat-label">Logged</div></div>
-        <div class="stat-card"><div class="stat-num" style="color:var(--text2)">${SESSIONS.length}</div><div class="stat-label">Remaining</div></div>
-      </div>
-      <div class="empty-state">
-        <div class="icon">📋</div>
-        <p>No sessions logged yet.<br>Complete your first session on Monday to see your history here.</p>
-      </div>`;
+  if(total === 0){
+    document.getElementById('log-entries').innerHTML = '<div class="empty">No sessions logged yet.<br>Start your first session on the Today tab.</div>';
     return;
   }
 
-  el.innerHTML = `
-    <div class="stats-row">
-      <div class="stat-card"><div class="stat-num" style="color:#1D9E75">${done}</div><div class="stat-label">Done</div></div>
-      <div class="stat-card"><div class="stat-num" style="color:#BA7517">${partial}</div><div class="stat-label">Partial</div></div>
-      <div class="stat-card"><div class="stat-num" style="color:var(--text2)">${remaining}</div><div class="stat-label">Left</div></div>
-    </div>
-    ${entries.map(([id,entry])=>{
-      const s = SESSIONS.find(s=>s.id===id);
-      if(!s) return '';
-      return `<div class="log-entry">
+  const entriesHTML = [...state.sessions].reverse().map((s,i)=>{
+    const num = total - i;
+    const blocksDesc = s.blocks
+      .filter(b=>!b.isInserted || b.blockId.startsWith('warmup') || b.blockId.startsWith('finish'))
+      .map(b=>{
+        const tickedNames = b.exercises.filter(e=>e.ticked).map(e=>e.name);
+        const totalN = b.exercises.length;
+        if(tickedNames.length === 0) return null;
+        if(tickedNames.length === totalN) return b.blockLabel;
+        return `${b.blockLabel} (${tickedNames.length}/${totalN})`;
+      }).filter(Boolean).join(' · ');
+
+    return `
+      <div class="log-entry">
         <div class="le-header">
-          <div>
-            <div class="le-title">${s.title}</div>
-            <div class="le-date">${formatDateLong(s.date)}</div>
-          </div>
-          <span class="le-week" style="flex-shrink:0">Wk ${s.week}</span>
+          <div class="le-num">Session ${num} · ${s.progType}</div>
+          <div class="le-date">${formatDate(s.date)}</div>
         </div>
-        <div class="le-meta">
-          <span class="le-status" style="color:${statusColor(entry.status)}">${entry.status==='done'?'✓ Completed':'◐ Partial'}</span>
-          ${entry.feeling?`<span class="le-feeling">${feelingLabel(entry.feeling)}</span>`:''}
-        </div>
-        ${entry.note?`<div class="le-note">${entry.note}</div>`:''}
-        ${(()=>{
-          const s2 = SESSIONS.find(x=>x.id===id);
-          if(!s2||!entry.ticked) return '';
-          const skipped = [];
-          s2.blocks.forEach((b,bi)=>{
-            b.exercises.forEach((e,ei)=>{
-              if(!entry.ticked[exId(id,bi,ei)]) skipped.push(e.name);
-            });
-          });
-          return skipped.length ? `<div style="font-size:12px;color:#E24B4A;margin-top:6px;padding-top:6px;border-top:1px solid var(--border)">Skipped: ${skipped.join(', ')}</div>` : '';
-        })()}
+        <div class="le-content">${blocksDesc || 'No exercises ticked'} · ${s.pct}% complete</div>
+        <div class="le-feeling ${feelingClass(s.feeling)}">${feelingLabel(s.feeling)}</div>
+        ${s.note ? `<div class="le-note">"${s.note}"</div>` : ''}
       </div>`;
-    }).join('')}`;
+  }).join('');
+
+  document.getElementById('log-entries').innerHTML = entriesHTML;
 }
 
-// ══════════════════════════════════════════════════════════
-// GLOSSARY
-// ══════════════════════════════════════════════════════════
+// ── GLOSSARY ───────────────────────────────────────────────
+const GLOSSARY = [
+  {term:'Assisted pull-up',def:'Loop your purple long loop band over the pull-up bar. Kneel in the loop. Pull up as high as you can — ceiling limits you to eyes at bar level. Lower over 3 seconds. Purple = most assistance, black = less, red = least.',url:'https://www.youtube.com/results?search_query=assisted+pull+up+resistance+band'},
+  {term:'Balance board',def:'Stand on your roller balance board with your 30" street deck on top. Feet in your speedboard stance — narrow. Find the balance point. Eyes open first, then soft-focus, then closed. Trains the micro-adjustments that keep you stable at speed.',url:'https://www.youtube.com/results?search_query=balance+board+riding+stance'},
+  {term:'Bulgarian split squat',def:'Rear foot elevated on sofa. Front foot well forward. Lower rear knee toward floor, drive through front heel. Keep torso upright. 3-sec lower. Bodyweight first, add DBs at sides when solid.',url:'https://www.youtube.com/results?search_query=bulgarian+split+squat+form'},
+  {term:"Captain's chair knee raise",def:'On the power tower, forearms on padded rests, body hanging. Drive both knees to hip height, hold 1 sec, lower slowly. No swinging. Core focus — grip is just for support.',url:'https://www.youtube.com/results?search_query=captains+chair+knee+raise'},
+  {term:'Cat camel',def:'On hands and knees. Cat: exhale, round spine up, tuck chin and tailbone, hold 2 sec. Camel: inhale, let belly drop, lift head and tailbone, hold 2 sec. Slow and continuous. Mobilises whole spine.',url:'https://www.youtube.com/results?search_query=cat+camel+exercise+back'},
+  {term:'DB Romanian deadlift',def:'Stand tall, DBs in front of thighs. Push hips back, lower DBs down shins — back completely flat throughout. Feel hamstring stretch. Drive hips forward to stand. This is a hip hinge, not a squat.',url:'https://www.youtube.com/results?search_query=dumbbell+romanian+deadlift+form'},
+  {term:'DB bicep curl',def:'Stand tall, DBs at sides, palms forward. Curl to shoulder height — elbows pinned at sides throughout. Lower slowly over 2–3 sec. No swinging.',url:'https://www.youtube.com/results?search_query=dumbbell+bicep+curl+form'},
+  {term:'DB shoulder press — standing',def:'Stand tall, core braced. DBs at shoulder height, palms forward. Press overhead until arms extended. Lower slowly. Only use standing version when lower back is fully comfortable.',url:'https://www.youtube.com/results?search_query=standing+dumbbell+shoulder+press'},
+  {term:'Dead bug — straight leg',def:'Lie on back, arms to ceiling, legs at 90°. Press lower back into floor — keep it there throughout. Lower opposite arm overhead and straighten + lower opposite leg simultaneously. Only go as far as back stays flat. Return and switch.',url:'https://www.youtube.com/results?search_query=dead+bug+straight+leg+exercise'},
+  {term:'Deep belly breathing',def:'Lie on back, legs elevated on sofa. One hand on stomach, one on chest. Inhale through nose 4 counts, hold 2, exhale through mouth 4. Relaxes deep spinal muscles. Non-negotiable opener.',url:'https://www.youtube.com/results?search_query=diaphragmatic+breathing+back+relief'},
+  {term:'Hip flexor + quad stretch',def:'Kneel on one knee. Tuck tailbone, shift hips gently forward — feel stretch at front of rear hip. Add quad: reach back and pull rear foot to glute. Hold 45 sec per side.',url:'https://www.youtube.com/results?search_query=kneeling+hip+flexor+quad+stretch'},
+  {term:'Lateral band walk',def:'Mini band above knees. Slight knee bend. Step sideways — maintain band tension throughout. Do not let knees cave. Targets glute medius — controls knee tracking.',url:'https://www.youtube.com/results?search_query=lateral+band+walk+glute+med'},
+  {term:'Lateral raise',def:'DBs at sides. Raise arms to shoulder height — slight bend in elbows fine. Hold 1 sec, lower slowly over 2–3 sec. No shrugging, no momentum.',url:'https://www.youtube.com/results?search_query=dumbbell+lateral+raise+form'},
+  {term:'Lying twist stretch',def:'Lie on back, arms out to sides. Pull one knee across body with opposite hand, keep opposite shoulder on floor. Hold 30 sec. Breathe into it. Relieves lower back tension.',url:'https://www.youtube.com/results?search_query=lying+twist+stretch+lower+back'},
+  {term:'Pallof press',def:'Tube band at chest height in door frame. Stand side-on. Hold band at chest, press straight out, hold 2 sec, return. Band tries to rotate you — resist entirely. Anti-rotation core.',url:'https://www.youtube.com/results?search_query=pallof+press+anti+rotation'},
+  {term:'Push-up with rotation',def:'Standard push-up. At the top, rotate one arm to ceiling — body forms a T. Return, lower, rotate other side. Core braced throughout.',url:'https://www.youtube.com/results?search_query=push+up+with+rotation'},
+  {term:'Quad stretch',def:'Stand on one leg, hold other foot behind you with same-side hand. Knees together, stand tall. Hold 45 sec. Use wall for balance.',url:'https://www.youtube.com/results?search_query=standing+quad+stretch'},
+  {term:'Reverse lunge',def:'Step one foot back, lower rear knee toward floor. Front shin stays vertical. Push through front heel to return. More knee-friendly than forward lunge.',url:'https://www.youtube.com/results?search_query=reverse+lunge+form'},
+  {term:'Side-to-side knee rolls',def:'Lie on back, arms wide, knees bent. Lower both knees slowly to one side, return, other side. Only go as far as comfortable. Relieves lower back tension.',url:'https://www.youtube.com/results?search_query=supine+knee+rolls+lower+back'},
+  {term:'Single-arm dumbbell row',def:'Hinge forward, flat back, one hand on chair for support. Dumbbell hangs from working arm. Pull elbow to hip — not a curl. Lower with control.',url:'https://www.youtube.com/results?search_query=single+arm+dumbbell+row+form'},
+  {term:'Single-leg glute bridge',def:'Lie on back, one leg extended straight. Drive through planted heel, squeeze glute, lift hips to straight line. Hold 2 sec at top, lower slowly.',url:'https://www.youtube.com/results?search_query=single+leg+glute+bridge'},
+  {term:'TKE — Terminal Knee Extension',def:'Band anchored at knee height. Face the anchor. Band behind your knee — not thigh. Slight forward lean, small knee bend. Fully straighten against resistance. Feel inner kneecap — not glute. If you feel it in glute: face anchor, band behind knee, lean forward more.',url:'https://www.youtube.com/results?search_query=terminal+knee+extension+tke+vmo'},
+  {term:'Tuck hold',def:'Speedboard tuck — knees bent, back flat and parallel to ground, arms tucked. Hold for prescribed time. Back flat not rounded, weight even, core braced.',url:'https://www.youtube.com/results?search_query=downhill+skateboard+tuck+position'},
+  {term:'VMO (Vastus Medialis Oblique)',def:'Inner quad teardrop muscle above and inside the kneecap. Fires in the last 30° of knee straightening. When weak, kneecap pulls laterally causing anterior knee pain on your left side. TKE directly targets this.',url:'https://www.youtube.com/results?search_query=vmo+strengthening+knee'},
+  {term:'Woodchop — high to low',def:'Band at head height on power tower. Stand side-on. Pull diagonally to opposite hip. Power from rotating hips and torso together — pivot back foot. Arms stay relatively straight.',url:'https://www.youtube.com/results?search_query=band+woodchop+high+to+low'},
+];
+
 function renderGlossary(){
-  document.getElementById('glossary-content').innerHTML = GLOSSARY.map(g=>`
+  filterGlossary('');
+}
+
+function filterGlossary(query){
+  const q = query.toLowerCase();
+  const filtered = q ? GLOSSARY.filter(g=>g.term.toLowerCase().includes(q)||g.def.toLowerCase().includes(q)) : GLOSSARY;
+  document.getElementById('glossary-content').innerHTML = filtered.map(g=>`
     <div class="gterm">
       <div class="gterm-name">${g.term}</div>
       <div class="gterm-def">${g.def}</div>
-      ${g.url ? `<a href="${g.url}" target="_blank" style="font-size:12px;color:var(--ph2);text-decoration:none;margin-top:4px;display:inline-block">🔍 Search video</a>` : ''}
+      ${g.url?`<a class="gterm-link" href="${g.url}" target="_blank">▶ Search video</a>`:''}
     </div>`).join('');
 }
 
-// ══════════════════════════════════════════════════════════
-// SETTINGS
-// ══════════════════════════════════════════════════════════
+// ── SETTINGS ───────────────────────────────────────────────
 function renderSettings(){
-  document.getElementById('settings-sync-status').textContent =
-    scriptUrl ? 'Connected to Google Sheets — logs sync across all devices.' : 'Not connected — logs saved on this device only.';
-  document.getElementById('settings-url-display').textContent = scriptUrl || 'No URL configured';
+  document.getElementById('settings-content').innerHTML = `
+    <div class="settings-card">
+      <div class="settings-label">Sync</div>
+      <div class="settings-val">Google Sheets via Apps Script. All sessions sync across devices.</div>
+      <button class="settings-btn" onclick="fetchSessions()">Sync now</button>
+    </div>
+    <div class="settings-card">
+      <div class="settings-label">Programme progress</div>
+      <div class="settings-val">Session A completed: ${state.prog.A}<br>Session B completed: ${state.prog.B}<br>Next session: ${state.nextType}</div>
+    </div>
+    <div class="settings-card">
+      <div class="settings-label">Data</div>
+      <div class="settings-val">${state.sessions.length} actual sessions logged.</div>
+      <button class="settings-btn danger" onclick="clearData()">Clear all local data</button>
+    </div>
+  `;
 }
 
-async function updateScriptUrl(){
-  const url = document.getElementById('settings-url-input').value.trim();
-  if(!url) return;
-  scriptUrl = url;
-  lsSet('scriptUrl', url);
-  renderSettings();
-  await fetchFromSheet();
+function clearData(){
+  if(!confirm('Clear all local data? Sheet data is unaffected.')) return;
+  localStorage.removeItem('dht_state_v2');
+  state = {sessions:[], current:null, prog:{A:0,B:0}, nextType:'A'};
   renderAll();
 }
 
-async function testConnection(){
-  if(!scriptUrl){ alert('No URL configured.'); return; }
-  try{
-    const r = await fetch(scriptUrl+'?action=getLogs', {mode:'cors'});
-    const d = await r.json();
-    alert(d.logs !== undefined ? '✓ Connection successful!' : '⚠ Connected but unexpected response.');
-  }catch(e){
-    alert('✗ Connection failed. Check the URL.');
-  }
-}
-
-function exportLogs(){
-  const blob = new Blob([JSON.stringify(logs,null,2)],{type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'training-logs.json';
-  a.click();
-}
-
-function resetApp(){
-  if(!confirm('Reset everything? This clears local settings and logs. Your Google Sheet is not affected.')) return;
-  localStorage.clear();
-  location.reload();
-}
-
-// ══════════════════════════════════════════════════════════
-// NAVIGATION
-// ══════════════════════════════════════════════════════════
+// ── NAVIGATION ─────────────────────────────────────────────
+const pageScrollPos = {};
 function showPage(name){
+  const current = document.querySelector('.page.active');
+  if(current) pageScrollPos[current.id] = window.scrollY;
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
   document.getElementById('tab-'+name).classList.add('active');
+  window.scrollTo(0, pageScrollPos['page-'+name]||0);
 }
 
-// ══════════════════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════════════════
+// ── RENDER ALL ─────────────────────────────────────────────
 function renderAll(){
   renderToday();
-  renderPlan();
   renderLog();
   renderGlossary();
   renderSettings();
 }
 
+// ── INIT ───────────────────────────────────────────────────
 loadLocal();
-// Always skip setup — URL is hardcoded, no config needed
-document.getElementById('setup-screen').style.display='none';
-document.getElementById('app').style.display='block';
 renderAll();
-fetchFromSheet(); // always sync from sheet on load
+fetchSessions();
 </script>
 </body>
 </html>
