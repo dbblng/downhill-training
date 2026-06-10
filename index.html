@@ -150,6 +150,15 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
   <div id="glossary-content"></div>
 </div>
 
+<!-- PLAN -->
+<div class="page" id="page-plan">
+  <div class="page-header">
+    <div class="page-title">Plan</div>
+    <div class="page-sub">Session A and B templates — your repeating programme</div>
+  </div>
+  <div id="plan-content"></div>
+</div>
+
 <!-- SETTINGS -->
 <div class="page" id="page-settings">
   <div class="page-header">
@@ -171,6 +180,10 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
   <button class="nav-btn" id="tab-glossary" onclick="showPage('glossary')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
     Glossary
+  </button>
+  <button class="nav-btn" id="tab-plan" onclick="showPage('plan')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    Plan
   </button>
   <button class="nav-btn" id="tab-settings" onclick="showPage('settings')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -486,10 +499,20 @@ function renderToday(){
         <div style="font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Next up</div>
         <div class="session-type-badge" style="display:inline-flex;margin-bottom:12px">${next.type}</div>
         <div style="font-size:14px;font-weight:600;margin-bottom:4px">${next.label}</div>
-        <div style="font-size:12px;color:var(--text2)">A${state.prog.A} completed · B${state.prog.B} completed</div>
+        <div style="font-size:12px;color:var(--text2)">Next: ${next.type}${state.prog[next.type]+1} · Completed: A${state.prog.A} B${state.prog.B}</div>
+      </div>
+      <div style="background:var(--bg2);border-radius:var(--radius);margin-bottom:12px;overflow:hidden">
+        <div style="padding:14px;font-size:13px;font-weight:600;color:var(--text2)">Session ${next.type}${state.prog[next.type]+1} — exercises</div>
+        <div style="padding:0 14px 14px">
+          ${next.blocks.map(function(b){
+            return '<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">'+b.label+'</div>'
+              +b.exercises.map(function(e){return '<div style="font-size:13px;color:var(--text2);padding:4px 0;border-bottom:1px solid var(--border)">'+e.name+' <span style="color:var(--text3);font-size:12px">'+e.detail+'</span></div>';}).join('')
+              +'</div>';
+          }).join('')}
+        </div>
       </div>
       <button onclick="startNewActualSession()" style="width:100%;padding:16px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:16px;font-weight:700;cursor:pointer">Start session</button>
-    `;
+    \`;
     return;
   }
 
@@ -507,7 +530,7 @@ function renderToday(){
         <div class="ex-content">
           <div class="ex-name ${e.ticked?'done':''}">${e.name}</div>
           ${e.detail?`<div class="ex-detail">${e.detail}</div>`:''}
-          ${e.kit?`<div class="ex-kit">🎒 ${e.kit}</div>`:''}
+          ${e.kit?`<div class="ex-kit">Kit: ${e.kit}</div>`:''}
         </div>
       </div>`).join('');
     return `
@@ -693,9 +716,28 @@ function showPage(name){
 }
 
 // ── RENDER ALL ─────────────────────────────────────────────
+function renderPlan(){
+  function exHTML(e){
+    return '<div class="ex-item"><div class="ex-content"><div class="ex-name">'+e.name+'</div>'+(e.detail?'<div class="ex-detail">'+e.detail+'</div>':'')+(e.kit?'<div class="ex-kit">Kit: '+e.kit+'</div>':'')+'</div></div>';
+  }
+  function blockHTML(b){
+    return '<div class="block" style="margin-bottom:8px"><div class="block-header"><div class="block-label">'+b.label+'</div></div>'+b.exercises.map(exHTML).join('')+'</div>';
+  }
+  function sessionHTML(s){
+    return '<div style="background:var(--bg2);border-radius:var(--radius);padding:16px;margin-bottom:16px">'
+      +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">'
+      +'<div class="session-type-badge">'+s.type+'</div>'
+      +'<div style="font-size:14px;font-weight:600">'+s.label+'</div></div>'
+      +'<div style="font-size:12px;color:var(--text3);margin-bottom:12px">Opens with 10-min warm-up · Closes with 5-min finish · Both inserted manually</div>'
+      +s.blocks.map(blockHTML).join('')+'</div>';
+  }
+  document.getElementById('plan-content').innerHTML = [SESSION_A, SESSION_B].map(sessionHTML).join('');
+}
+
 function renderAll(){
   renderToday();
   renderLog();
+  renderPlan();
   renderGlossary();
   renderSettings();
 }
