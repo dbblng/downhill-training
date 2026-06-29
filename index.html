@@ -428,19 +428,45 @@ function insertWarmup(){
 
 function insertFinish(){
   if(!state.current) return;
+
+  // Find the last ticked exercise across all blocks
+  var lastTickedBlock = -1;
+  var lastTickedEx = -1;
+  state.current.blocks.forEach(function(b, bi){
+    b.exercises.forEach(function(e, ei){
+      if(e.ticked){ lastTickedBlock = bi; lastTickedEx = ei; }
+    });
+  });
+
   var fb = {
     blockId: 'finish_' + Date.now(),
     blockLabel: FINISH_BLOCK.label,
     exercises: FINISH_BLOCK.exercises.map(function(e){ return Object.assign({}, e, {ticked:false}); }),
     isInserted: true
   };
-  // Insert after the last block that has any ticked exercise
-  var lastTickedBlockIdx = -1;
-  state.current.blocks.forEach(function(b, i){
-    if(b.exercises.some(function(e){ return e.ticked; })) lastTickedBlockIdx = i;
-  });
-  var insertAt = lastTickedBlockIdx >= 0 ? lastTickedBlockIdx + 1 : state.current.blocks.length;
-  state.current.blocks.splice(insertAt, 0, fb);
+
+  if(lastTickedBlock === -1){
+    // Nothing ticked — append at end
+    state.current.blocks.push(fb);
+  } else {
+    var b = state.current.blocks[lastTickedBlock];
+    var remainingEx = b.exercises.slice(lastTickedEx + 1);
+    if(remainingEx.length === 0){
+      // Last ticked was last exercise in block — insert finish block after this block
+      state.current.blocks.splice(lastTickedBlock + 1, 0, fb);
+    } else {
+      // Split block: keep ticked exercises in current block, move remaining to new block after finish
+      b.exercises = b.exercises.slice(0, lastTickedEx + 1);
+      var remainderBlock = {
+        blockId: b.blockId + '_remainder',
+        blockLabel: b.blockLabel + ' (continued)',
+        exercises: remainingEx,
+        isInserted: false
+      };
+      state.current.blocks.splice(lastTickedBlock + 1, 0, fb, remainderBlock);
+    }
+  }
+
   saveLocal();
   renderToday();
   pushCurrent();
