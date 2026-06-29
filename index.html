@@ -304,6 +304,24 @@ function setSyncStatus(status, text){
   document.getElementById('sync-text').textContent = text;
 }
 
+async function pushCurrent(){
+  if(!state.current || !SCRIPT_URL) return;
+  setSyncStatus('syncing','Saving...');
+  try {
+    var params = {
+      action: 'saveCurrent',
+      data: JSON.stringify(state.current),
+      progA: state.prog.A,
+      progB: state.prog.B,
+      nextType: state.nextType
+    };
+    await fetch(gsUrl(params));
+    setSyncStatus('synced','Saved');
+  } catch(e){
+    setSyncStatus('error','Save failed — stored locally');
+  }
+}
+
 async function pushSession(session){
   if(!SCRIPT_URL) return;
   setSyncStatus('syncing','Saving…');
@@ -335,14 +353,17 @@ async function fetchSessions(){
   try {
     const r = await fetch(gsUrl({action:'getSessions'}));
     const data = await r.json();
-    if(data.sessions && data.sessions.length > 0){
-      // Merge: sheet is source of truth for completed sessions
+    if(data.sessions !== undefined){
       state.sessions = data.sessions;
       if(data.prog) state.prog = data.prog;
       if(data.nextType) state.nextType = data.nextType;
-      saveLocal();
-      renderAll();
     }
+    // Restore in-progress session from sheet if local has none
+    if(!state.current && data.current){
+      state.current = data.current;
+    }
+    saveLocal();
+    renderAll();
     setSyncStatus('synced','Synced');
   } catch(e){
     setSyncStatus('error','Offline — using local data');
@@ -402,27 +423,44 @@ function insertWarmup(){
   state.current.blocks.unshift(wb);
   saveLocal();
   renderToday();
+  pushCurrent();
 }
 
 function insertFinish(){
   if(!state.current) return;
-  const fb = {
+  var fb = {
     blockId: 'finish_' + Date.now(),
     blockLabel: FINISH_BLOCK.label,
-    exercises: FINISH_BLOCK.exercises.map(e=>({...e, ticked:false})),
+    exercises: FINISH_BLOCK.exercises.map(function(e){ return Object.assign({}, e, {ticked:false}); }),
     isInserted: true
   };
-  state.current.blocks.push(fb);
+  // Insert after the last block that has any ticked exercise
+  var lastTickedBlockIdx = -1;
+  state.current.blocks.forEach(function(b, i){
+    if(b.exercises.some(function(e){ return e.ticked; })) lastTickedBlockIdx = i;
+  });
+  var insertAt = lastTickedBlockIdx >= 0 ? lastTickedBlockIdx + 1 : state.current.blocks.length;
+  state.current.blocks.splice(insertAt, 0, fb);
   saveLocal();
   renderToday();
+  pushCurrent();
 }
 
-function tickExercise(blockIdx, exIdx){
+function removeInsertedBlock(blockIdx){
   if(!state.current) return;
-  const ex = state.current.blocks[blockIdx].exercises[exIdx];
+  state.current.blocks.splice(blockIdx, 1);
+  saveLocal();
+  renderToday();
+  pushCurrent();
+}
+
+async function tickExercise(blockIdx, exIdx){
+  if(!state.current) return;
+  var ex = state.current.blocks[blockIdx].exercises[exIdx];
   ex.ticked = !ex.ticked;
   saveLocal();
   renderToday();
+  await pushCurrent();
 }
 
 function setFeeling(f){
@@ -522,6 +560,9 @@ function renderToday(){
 
   var blocksHTML = state.current.blocks.map(function(b, bi){
     var blockDone = b.exercises.length > 0 && b.exercises.every(function(e){ return e.ticked; });
+    var insertedControls = b.isInserted
+      ? '<button onclick="removeInsertedBlock('+bi+')" style="font-size:11px;color:#E24B4A;background:none;border:none;cursor:pointer;padding:0">Remove</button>'
+      : '';
     var exs = b.exercises.map(function(e, ei){
       return '<div class="ex-item">'
         +'<div class="ex-check '+(e.ticked?'checked':'')+'" onclick="tickExercise('+bi+','+ei+')"></div>'
@@ -533,7 +574,7 @@ function renderToday(){
     }).join('');
     return '<div class="block">'
       +'<div class="block-header"><div class="block-label">'+b.blockLabel+'</div>'
-      +(blockDone?'<div class="block-done-badge">Done</div>':'')
+      +(blockDone?'<div class="block-done-badge">Done</div>':insertedControls)
       +'</div>'+exs+'</div>';
   }).join('');
 
