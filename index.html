@@ -399,12 +399,50 @@ function getCurrentBlocksFromProg(progSession){
 
 // ── TODAY: CURRENT SESSION MANAGEMENT ─────────────────────
 function startNewActualSession(){
-  const prog = getNextProgrammeSession();
-  const progBlocks = getCurrentBlocksFromProg(prog);
+  var prog = getNextProgrammeSession();
+  var progBlocks = getCurrentBlocksFromProg(prog);
+
+  // Check if last session was partial — if so, carry over remaining exercises
+  var lastSession = state.sessions.length > 0 ? state.sessions[state.sessions.length-1] : null;
+  var completedSummary = null;
+
+  if(lastSession && lastSession.pct < 100 && lastSession.progType === state.nextType){
+    // Build set of ticked exercise names from last session
+    var tickedNames = {};
+    lastSession.blocks.forEach(function(b){
+      b.exercises.forEach(function(e){
+        if(e.ticked) tickedNames[e.name] = true;
+      });
+    });
+
+    // Split progBlocks into done and remaining
+    var doneItems = [];
+    var remainingBlocks = [];
+
+    progBlocks.forEach(function(b){
+      var doneEx = b.exercises.filter(function(e){ return tickedNames[e.name]; });
+      var remainEx = b.exercises.filter(function(e){ return !tickedNames[e.name]; });
+
+      if(doneEx.length > 0) doneItems.push({label: b.blockLabel, count: doneEx.length, total: b.exercises.length});
+      if(remainEx.length > 0){
+        remainingBlocks.push({
+          blockId: b.blockId,
+          blockLabel: b.blockLabel,
+          exercises: remainEx,
+          isInserted: false
+        });
+      }
+    });
+
+    completedSummary = doneItems;
+    progBlocks = remainingBlocks;
+  }
+
   state.current = {
     date: todayStr(),
     progType: state.nextType,
     blocks: progBlocks,
+    completedSummary: completedSummary,
     note: '',
     feeling: null,
   };
@@ -584,6 +622,17 @@ function renderToday(){
   var pct = totalEx > 0 ? Math.round(tickedEx/totalEx*100) : 0;
   var progType = state.current.progType;
 
+  // Completed summary from previous actual session
+  var summaryHTML = '';
+  if(state.current.completedSummary && state.current.completedSummary.length > 0){
+    var items = state.current.completedSummary.map(function(d){
+      return '<div style="font-size:12px;color:var(--text3);padding:3px 0">✓ '+d.label+' ('+d.count+'/'+d.total+')</div>';
+    }).join('');
+    summaryHTML = '<div style="background:var(--bg2);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px;border-left:3px solid var(--green)">'
+      +'<div style="font-size:11px;font-weight:600;color:var(--green);margin-bottom:6px">COMPLETED IN PREVIOUS SESSION</div>'
+      +items+'</div>';
+  }
+
   var blocksHTML = state.current.blocks.map(function(b, bi){
     var blockDone = b.exercises.length > 0 && b.exercises.every(function(e){ return e.ticked; });
     var insertedControls = b.isInserted
@@ -609,7 +658,8 @@ function renderToday(){
     return '<button class="feel-btn '+(feeling===f?'active':'')+'" onclick="setFeeling('+f+')">'+feelingLabel(f)+'</button>';
   }).join('');
 
-  el.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
+  el.innerHTML = summaryHTML
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
     +'<div class="session-type-badge">Session '+progType+'</div>'
     +'<div style="font-size:12px;color:var(--text3)">'+formatDate(state.current.date)+'</div></div>'
     +'<div class="progress-row">'
