@@ -673,8 +673,24 @@ function renderToday(){
         +'<div style="font-size:13px;color:var(--text2)">'+formatDate(lastSession.date)+' · Session '+lastSession.progType+' · '+lastSession.pct+'% complete</div>'
         +'</div>';
     }
-    var previewHTML = next.blocks.map(function(b){
-      var exs = b.exercises.map(function(e){
+    // Build preview — show only remaining exercises if last session was partial
+    var tickedNames = {};
+    var isPartial = lastSession && lastSession.pct < 100 && lastSession.progType === next.type;
+    if(isPartial){
+      lastSession.blocks.forEach(function(b){
+        (b.exercises||[]).forEach(function(e){ if(e.ticked) tickedNames[e.name] = true; });
+      });
+    }
+    var previewHTML = '';
+    if(isPartial){
+      previewHTML += '<div style="font-size:11px;color:var(--green);font-weight:600;margin-bottom:8px">Continuing from last session — remaining exercises only:</div>';
+    }
+    previewHTML += next.blocks.map(function(b){
+      var exsToShow = isPartial
+        ? (b.exercises||[]).filter(function(e){ return !tickedNames[e.name]; })
+        : (b.exercises||[]);
+      if(exsToShow.length === 0) return '';
+      var exs = exsToShow.map(function(e){
         return '<div style="font-size:13px;color:var(--text2);padding:5px 0;border-bottom:1px solid var(--border)">'
           +e.name+'<div style="font-size:11px;color:var(--text3)">'+e.detail+'</div></div>';
       }).join('');
