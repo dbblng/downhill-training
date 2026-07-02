@@ -290,9 +290,28 @@ function saveLocal(){
 }
 
 function loadLocal(){
-  const raw = localStorage.getItem('dht_state_v2');
+  var raw = localStorage.getItem('dht_state_v2');
   if(raw){
-    try { Object.assign(state, JSON.parse(raw)); } catch(e){}
+    try {
+      var parsed = JSON.parse(raw);
+      function sanitizeBlocks(blocks){
+        if(!Array.isArray(blocks)) return [];
+        return blocks.map(function(b){
+          if(!b) return null;
+          if(!Array.isArray(b.exercises)) b.exercises = [];
+          return b;
+        }).filter(Boolean);
+      }
+      if(parsed.current && parsed.current.blocks){
+        parsed.current.blocks = sanitizeBlocks(parsed.current.blocks);
+      }
+      if(Array.isArray(parsed.sessions)){
+        parsed.sessions.forEach(function(s){
+          if(s && s.blocks) s.blocks = sanitizeBlocks(s.blocks);
+        });
+      }
+      Object.assign(state, parsed);
+    } catch(e){ console.error('loadLocal error:', e); }
   }
 }
 
@@ -426,10 +445,10 @@ function startNewActualSession(){
     var remainingBlocks = [];
 
     progBlocks.forEach(function(b){
-      var doneEx = b.exercises.filter(function(e){ return tickedNames[e.name]; });
-      var remainEx = b.exercises.filter(function(e){ return !tickedNames[e.name]; });
+      var doneEx = (b.exercises||[]).filter(function(e){ return tickedNames[e.name]; });
+      var remainEx = (b.exercises||[]).filter(function(e){ return !tickedNames[e.name]; });
 
-      if(doneEx.length > 0) doneItems.push({label: b.blockLabel, count: doneEx.length, total: b.exercises.length});
+      if(doneEx.length > 0) doneItems.push({label: b.blockLabel, count: doneEx.length, total: (b.exercises||[]).length});
       if(remainEx.length > 0){
         remainingBlocks.push({
           blockId: b.blockId,
@@ -477,7 +496,7 @@ function insertFinish(){
   var lastTickedBlock = -1;
   var lastTickedEx = -1;
   state.current.blocks.forEach(function(b, bi){
-    b.exercises.forEach(function(e, ei){
+    (b.exercises||[]).forEach(function(e, ei){
       if(e.ticked){ lastTickedBlock = bi; lastTickedEx = ei; }
     });
   });
@@ -494,13 +513,13 @@ function insertFinish(){
     state.current.blocks.push(fb);
   } else {
     var b = state.current.blocks[lastTickedBlock];
-    var remainingEx = b.exercises.slice(lastTickedEx + 1);
+    var remainingEx = (b.exercises||[]).slice(lastTickedEx + 1);
     if(remainingEx.length === 0){
       // Last ticked was last exercise in block — insert finish block after this block
       state.current.blocks.splice(lastTickedBlock + 1, 0, fb);
     } else {
       // Split block: keep ticked exercises in current block, move remaining to new block after finish
-      b.exercises = b.exercises.slice(0, lastTickedEx + 1);
+      b.exercises = (b.exercises||[]).slice(0, lastTickedEx + 1);
       var remainderBlock = {
         blockId: b.blockId + '_remainder',
         blockLabel: b.blockLabel + ' (continued)',
@@ -551,7 +570,7 @@ async function completeActualSession(){
 
   // Count ticked exercises from programme blocks (not inserted warmup/finish)
   const progBlocks = state.current.blocks.filter(b=>!b.isInserted);
-  const totalProgEx = progBlocks.reduce((n,b)=>n+b.exercises.length,0);
+  const totalProgEx = progBlocks.reduce((n,b)=>n+(b.exercises||[]).length,0);
   const tickedProgEx = progBlocks.reduce((n,b)=>n+b.exercises.filter(e=>e.ticked).length,0);
   const pct = totalProgEx > 0 ? Math.round(tickedProgEx/totalProgEx*100) : 0;
 
@@ -622,7 +641,7 @@ function renderToday(){
   // Active session
   var totalEx = 0, tickedEx = 0;
   state.current.blocks.forEach(function(b){
-    totalEx += b.exercises.length;
+    totalEx += (b.exercises||[]).length;
     b.exercises.forEach(function(e){ if(e.ticked) tickedEx++; });
   });
   var pct = totalEx > 0 ? Math.round(tickedEx/totalEx*100) : 0;
@@ -640,11 +659,11 @@ function renderToday(){
   }
 
   var blocksHTML = state.current.blocks.map(function(b, bi){
-    var blockDone = b.exercises.length > 0 && b.exercises.every(function(e){ return e.ticked; });
+    var blockDone = (b.exercises&&(b.exercises||[]).length > 0) && b.exercises.every(function(e){ return e.ticked; });
     var insertedControls = b.isInserted
       ? '<button onclick="removeInsertedBlock('+bi+')" style="font-size:11px;color:#E24B4A;background:none;border:none;cursor:pointer;padding:0">Remove</button>'
       : '';
-    var exs = b.exercises.map(function(e, ei){
+    var exs = (b.exercises||[]).map(function(e, ei){
       return '<div class="ex-item">'
         +'<div class="ex-check '+(e.ticked?'checked':'')+'" onclick="tickExercise('+bi+','+ei+')"></div>'
         +'<div class="ex-content">'
@@ -715,8 +734,8 @@ function renderLog(){
     var blocksDesc = s.blocks
       .filter(function(b){ return !b.isInserted || (b.blockId&&(b.blockId.indexOf('warmup')===0||b.blockId.indexOf('finish')===0)); })
       .map(function(b){
-        var tickedN = b.exercises.filter(function(e){ return e.ticked; }).length;
-        var totalN = b.exercises.length;
+        var tickedN = (b.exercises||[]).filter(function(e){ return e.ticked; }).length;
+        var totalN = (b.exercises||[]).length;
         if(tickedN === 0) return null;
         if(tickedN === totalN) return b.blockLabel;
         return b.blockLabel+' ('+tickedN+'/'+totalN+')';
@@ -835,7 +854,7 @@ function renderPlan(){
     var badge = isInserted ? '<div style="font-size:10px;color:var(--text3)">tap + to insert</div>' : '';
     return '<div class="block" style="'+borderStyle+'">'
       +'<div class="block-header"><div class="block-label">'+b.label+'</div>'+badge+'</div>'
-      +b.exercises.map(exHTML).join('')
+      +(b.exercises||[]).map(exHTML).join('')
       +'</div>';
   }
   function sessionHTML(s){
