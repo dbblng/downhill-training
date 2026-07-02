@@ -370,6 +370,64 @@ async function pushSession(session){
   }
 }
 
+function normaliseDateStr(d){
+  // Convert any date format to YYYY-MM-DD
+  if(!d) return '';
+  if(/^\d{4}-\d{2}-\d{2}$/.test(d)) return d; // already correct
+  var dt = new Date(d);
+  if(isNaN(dt)) return '';
+  return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
+}
+
+function normaliseSession(s){
+  // Normalise date
+  s.date = normaliseDateStr(s.date);
+  // Convert blocks from sheet format (ticked:[names]) to app format (exercises:[{name,ticked}])
+  if(Array.isArray(s.blocks)){
+    s.blocks = s.blocks.map(function(b){
+      if(!b) return null;
+      // If block already has exercises array, it's already in app format
+      if(Array.isArray(b.exercises)) return b;
+      // Convert from sheet format: find matching programme block and rebuild exercises
+      var tickedNames = {};
+      (b.ticked||[]).forEach(function(n){ tickedNames[n] = true; });
+      // Find programme block to get exercise definitions
+      var progBlock = null;
+      var allBlocks = SESSION_A.blocks.concat(SESSION_B.blocks);
+      allBlocks.forEach(function(pb){ if(pb.id === b.blockId) progBlock = pb; });
+      var exercises;
+      if(progBlock){
+        exercises = progBlock.exercises.map(function(e){
+          return Object.assign({}, e, {ticked: !!tickedNames[e.name]});
+        });
+      } else if(b.blockId && b.blockId.indexOf('warmup')===0){
+        exercises = WARMUP_BLOCK.exercises.map(function(e){
+          return Object.assign({}, e, {ticked: !!tickedNames[e.name]});
+        });
+      } else if(b.blockId && b.blockId.indexOf('finish')===0){
+        exercises = FINISH_BLOCK.exercises.map(function(e){
+          return Object.assign({}, e, {ticked: !!tickedNames[e.name]});
+        });
+      } else {
+        // Unknown block — create minimal exercise objects from ticked names
+        exercises = (b.ticked||[]).map(function(n){ return {name:n, ticked:true}; });
+      }
+      return {
+        blockId: b.blockId,
+        blockLabel: b.blockLabel,
+        exercises: exercises,
+        isInserted: b.blockId&&(b.blockId.indexOf('warmup')===0||b.blockId.indexOf('finish')===0)
+      };
+    }).filter(Boolean);
+  }
+  // Recalculate pct from exercises
+  var progBlocks = s.blocks.filter(function(b){ return !b.isInserted; });
+  var totalEx = progBlocks.reduce(function(n,b){ return n+(b.exercises||[]).length; }, 0);
+  var tickedEx = progBlocks.reduce(function(n,b){ return n+(b.exercises||[]).filter(function(e){ return e.ticked; }).length; }, 0);
+  s.pct = totalEx > 0 ? Math.round(tickedEx/totalEx*100) : 0;
+  return s;
+}
+
 async function fetchSessions(){
   if(!SCRIPT_URL){ setSyncStatus('','Ready'); return; }
   setSyncStatus('syncing','Syncing…');
@@ -379,7 +437,7 @@ async function fetchSessions(){
     var data;
     try { data = JSON.parse(text); } catch(e){ throw new Error('Bad JSON: '+text.slice(0,100)); }
     if(data.sessions !== undefined){
-      state.sessions = data.sessions;
+      state.sessions = data.sessions.map(normaliseSession);
       if(data.prog) state.prog = data.prog;
       if(data.nextType) state.nextType = data.nextType;
     }
