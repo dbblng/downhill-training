@@ -684,60 +684,54 @@ function renderToday(){
 
 // ── RENDER LOG ─────────────────────────────────────────────
 function renderLog(){
-  const total = state.sessions.length;
-  const thisWeek = (() => {
-    const now = new Date();
-    const weekAgo = new Date(now - 7*24*60*60*1000);
-    return state.sessions.filter(s=>new Date(s.date+'T12:00:00')>=weekAgo).length;
-  })();
-  const thisMonth = (() => {
-    const now = new Date();
-    return state.sessions.filter(s=>{
-      const d = new Date(s.date+'T12:00:00');
-      return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
-    }).length;
-  })();
+  var total = state.sessions.length;
+  var now = new Date();
+  var weekAgo = new Date(now - 7*24*60*60*1000);
+  var thisWeek = state.sessions.filter(function(s){ return new Date(s.date+'T12:00:00') >= weekAgo; }).length;
+  var thisMonth = state.sessions.filter(function(s){
+    var d = new Date(s.date+'T12:00:00');
+    return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
+  }).length;
 
-  document.getElementById('log-stats').innerHTML = `
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-num">${total}</div><div class="stat-label">Total sessions</div></div>
-      <div class="stat-card"><div class="stat-num">${thisWeek}</div><div class="stat-label">This week</div></div>
-      <div class="stat-card"><div class="stat-num">${thisMonth}</div><div class="stat-label">This month</div></div>
-      <div class="stat-card"><div class="stat-num">A${state.prog.A} B${state.prog.B}</div><div class="stat-label">Programme progress</div></div>
-    </div>
-  `;
+  document.getElementById('log-stats').innerHTML =
+    '<div class="stats-grid">'
+    +'<div class="stat-card"><div class="stat-num">'+total+'</div><div class="stat-label">Total sessions</div></div>'
+    +'<div class="stat-card"><div class="stat-num">'+thisWeek+'</div><div class="stat-label">This week</div></div>'
+    +'<div class="stat-card"><div class="stat-num">'+thisMonth+'</div><div class="stat-label">This month</div></div>'
+    +'<div class="stat-card"><div class="stat-num">A'+state.prog.A+' B'+state.prog.B+'</div><div class="stat-label">Programme progress</div></div>'
+    +'</div>';
 
   if(total === 0){
     document.getElementById('log-entries').innerHTML = '<div class="empty">No sessions logged yet.<br>Start your first session on the Today tab.</div>';
     return;
   }
 
-  const entriesHTML = [...state.sessions].reverse().map((s,i)=>{
-    const num = total - i;
-    const blocksDesc = s.blocks
-      .filter(b=>!b.isInserted || b.blockId.startsWith('warmup') || b.blockId.startsWith('finish'))
-      .map(b=>{
-        const tickedNames = b.exercises.filter(e=>e.ticked).map(e=>e.name);
-        const totalN = b.exercises.length;
-        if(tickedNames.length === 0) return null;
-        if(tickedNames.length === totalN) return b.blockLabel;
-        return `${b.blockLabel} (${tickedNames.length}/${totalN})`;
+  var entriesHTML = state.sessions.slice().reverse().map(function(s, i){
+    var num = total - i;
+    var blocksDesc = s.blocks
+      .filter(function(b){ return !b.isInserted || (b.blockId&&(b.blockId.indexOf('warmup')===0||b.blockId.indexOf('finish')===0)); })
+      .map(function(b){
+        var tickedN = b.exercises.filter(function(e){ return e.ticked; }).length;
+        var totalN = b.exercises.length;
+        if(tickedN === 0) return null;
+        if(tickedN === totalN) return b.blockLabel;
+        return b.blockLabel+' ('+tickedN+'/'+totalN+')';
       }).filter(Boolean).join(' · ');
 
-    return `
-      <div class="log-entry">
-        <div class="le-header">
-          <div class="le-num">Session ${num} · ${s.progType}</div>
-          <div class="le-date">${formatDate(s.date)}</div>
-        </div>
-        <div class="le-content">${blocksDesc || 'No exercises ticked'} · ${s.pct}% complete</div>
-        <div class="le-feeling ${feelingClass(s.feeling)}">${feelingLabel(s.feeling)}</div>
-        ${s.note ? `<div class="le-note">"${s.note}"</div>` : ''}
-      </div>`;
+    return '<div class="log-entry">'
+      +'<div class="le-header">'
+      +'<div class="le-num">Session '+num+' · '+s.progType+'</div>'
+      +'<div class="le-date">'+formatDate(s.date)+'</div>'
+      +'</div>'
+      +'<div class="le-content">'+(blocksDesc||'No exercises ticked')+' · '+s.pct+'% complete</div>'
+      +'<div class="le-feeling '+feelingClass(s.feeling)+'">'+feelingLabel(s.feeling)+'</div>'
+      +(s.note?'<div class="le-note">'+s.note+'</div>':'')
+      +'</div>';
   }).join('');
 
   document.getElementById('log-entries').innerHTML = entriesHTML;
 }
+
 
 // ── GLOSSARY ───────────────────────────────────────────────
 const GLOSSARY = [
@@ -773,14 +767,15 @@ function renderGlossary(){
 }
 
 function filterGlossary(query){
-  const q = query.toLowerCase();
-  const filtered = q ? GLOSSARY.filter(g=>g.term.toLowerCase().includes(q)||g.def.toLowerCase().includes(q)) : GLOSSARY;
-  document.getElementById('glossary-content').innerHTML = filtered.map(g=>`
-    <div class="gterm">
-      <div class="gterm-name">${g.term}</div>
-      <div class="gterm-def">${g.def}</div>
-      ${g.url?`<a class="gterm-link" href="${g.url}" target="_blank">▶ Search video</a>`:''}
-    </div>`).join('');
+  var q = (query||'').toLowerCase();
+  var filtered = q ? GLOSSARY.filter(function(g){ return g.term.toLowerCase().indexOf(q)>=0 || g.def.toLowerCase().indexOf(q)>=0; }) : GLOSSARY;
+  document.getElementById('glossary-content').innerHTML = filtered.map(function(g){
+    return '<div class="gterm">'
+      +'<div class="gterm-name">'+g.term+'</div>'
+      +'<div class="gterm-def">'+g.def+'</div>'
+      +(g.url?'<a class="gterm-link" href="'+g.url+'" target="_blank">Search video</a>':'')
+      +'</div>';
+  }).join('');
 }
 
 // ── SETTINGS ───────────────────────────────────────────────
@@ -825,17 +820,19 @@ function showPage(name){
 // ── RENDER ALL ─────────────────────────────────────────────
 function renderPlan(){
   function exHTML(e){
-    return '<div class="ex-item"><div class="ex-content"><div class="ex-name">'+e.name+'</div>'
+    return '<div class="ex-item"><div class="ex-content">'
+      +'<div class="ex-name">'+e.name+'</div>'
       +(e.detail?'<div class="ex-detail">'+e.detail+'</div>':'')
       +(e.kit?'<div class="ex-kit">Kit: '+e.kit+'</div>':'')
       +'</div></div>';
   }
   function blockHTML(b, isInserted){
-    var style = isInserted ? 'margin-bottom:8px;border:1px dashed var(--border);border-radius:var(--radius);overflow:hidden' : 'margin-bottom:8px';
-    return '<div class="block" style="'+style+'">'
-      +'<div class="block-header"><div class="block-label">'+b.label+'</div>'
-      +(isInserted?'<div style="font-size:10px;color:var(--text3)">tap + to insert</div>':'')
-      +'</div>'+b.exercises.map(function(e){return exHTML(e);}).join('')+'</div>';
+    var borderStyle = isInserted ? 'border:1px dashed var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:8px' : 'margin-bottom:8px';
+    var badge = isInserted ? '<div style="font-size:10px;color:var(--text3)">tap + to insert</div>' : '';
+    return '<div class="block" style="'+borderStyle+'">'
+      +'<div class="block-header"><div class="block-label">'+b.label+'</div>'+badge+'</div>'
+      +b.exercises.map(exHTML).join('')
+      +'</div>';
   }
   function sessionHTML(s){
     return '<div style="background:var(--bg2);border-radius:var(--radius);padding:16px;margin-bottom:16px">'
@@ -843,7 +840,7 @@ function renderPlan(){
       +'<div class="session-type-badge">'+s.type+'</div>'
       +'<div style="font-size:14px;font-weight:600">'+s.label+'</div></div>'
       +blockHTML(WARMUP_BLOCK, true)
-      +s.blocks.map(function(b){return blockHTML(b, false);}).join('')
+      +s.blocks.map(function(b){ return blockHTML(b, false); }).join('')
       +blockHTML(FINISH_BLOCK, true)
       +'</div>';
   }
