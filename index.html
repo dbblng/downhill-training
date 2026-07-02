@@ -348,17 +348,18 @@ async function pushSession(session){
 }
 
 async function fetchSessions(){
-  if(!SCRIPT_URL) return;
+  if(!SCRIPT_URL){ setSyncStatus('','Ready'); return; }
   setSyncStatus('syncing','Syncing…');
   try {
     const r = await fetch(gsUrl({action:'getSessions'}));
-    const data = await r.json();
+    const text = await r.text();
+    var data;
+    try { data = JSON.parse(text); } catch(e){ throw new Error('Bad JSON: '+text.slice(0,100)); }
     if(data.sessions !== undefined){
       state.sessions = data.sessions;
       if(data.prog) state.prog = data.prog;
       if(data.nextType) state.nextType = data.nextType;
     }
-    // Restore in-progress session from sheet if local has none
     if(!state.current && data.current){
       state.current = data.current;
     }
@@ -366,6 +367,7 @@ async function fetchSessions(){
     renderAll();
     setSyncStatus('synced','Synced');
   } catch(e){
+    console.error('fetchSessions error:', e);
     setSyncStatus('error','Offline — using local data');
   }
 }
@@ -859,6 +861,7 @@ function renderAll(){
 // ── INIT ───────────────────────────────────────────────────
 loadLocal();
 renderAll();
+setSyncStatus('','Ready');
 fetchSessions();
 </script>
 </body>
