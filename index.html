@@ -439,7 +439,17 @@ async function fetchSessions(){
     if(data.sessions !== undefined){
       state.sessions = data.sessions.map(normaliseSession);
       if(data.prog) state.prog = data.prog;
-      if(data.nextType) state.nextType = data.nextType;
+      // Recalculate nextType from sessions on client — do not trust GS script
+      if(state.sessions.length > 0){
+        var last = state.sessions[state.sessions.length-1];
+        if(last.pct >= 100){
+          state.nextType = last.progType === 'A' ? 'B' : 'A';
+        } else {
+          state.nextType = last.progType;
+        }
+      } else {
+        state.nextType = 'A';
+      }
     }
     if(!state.current && data.current){
       state.current = data.current;
