@@ -420,6 +420,14 @@ function normaliseSession(s){
       };
     }).filter(Boolean);
   }
+  // Derive progType from block IDs if not set or wrong
+  var progBlocks = s.blocks.filter(function(b){ return !b.isInserted; });
+  if(progBlocks.length > 0){
+    var firstBlockId = progBlocks[0].blockId || '';
+    if(firstBlockId.indexOf('b_') === 0) s.progType = 'B';
+    else if(firstBlockId.indexOf('a_') === 0) s.progType = 'A';
+  }
+
   // Recalculate pct from exercises
   var progBlocks = s.blocks.filter(function(b){ return !b.isInserted; });
   var totalEx = progBlocks.reduce(function(n,b){ return n+(b.exercises||[]).length; }, 0);
