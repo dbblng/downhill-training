@@ -674,6 +674,8 @@ async function completeActualSession(){
     progType: state.current.progType,
     pct: pct,
     blocks: state.current.blocks,
+    // blocks done in this actual session only (excludes carried-over history)
+    newBlocks: state.current.blocks,
   };
 
   // If 100% of programme exercises ticked, advance programme
@@ -835,7 +837,7 @@ function renderLog(){
 
   var entriesHTML = state.sessions.slice().reverse().map(function(s, i){
     var num = total - i;
-    var blocksDesc = s.blocks
+    var blocksDesc = (s.newBlocks || s.blocks)
       .filter(function(b){ return !b.isInserted || (b.blockId&&(b.blockId.indexOf('warmup')===0||b.blockId.indexOf('finish')===0)); })
       .map(function(b){
         var tickedN = (b.exercises||[]).filter(function(e){ return e.ticked; }).length;
