@@ -495,23 +495,41 @@ function getCurrentBlocksFromProg(progSession){
   }));
 }
 
+function getTickedNamesSinceLastCompleted(progType){
+  // Find the last completed session (pct===100) of this type, then combine
+  // ticked exercise names from every session of this type since then.
+  var lastCompletedIdx = -1;
+  for(var i=state.sessions.length-1;i>=0;i--){
+    if(state.sessions[i].pct === 100 && state.sessions[i].progType === progType){
+      lastCompletedIdx = i;
+      break;
+    }
+  }
+  var tickedNames = {};
+  var isPartial = false;
+  for(var j=lastCompletedIdx+1;j<state.sessions.length;j++){
+    var s = state.sessions[j];
+    if(s.progType === progType){
+      isPartial = true;
+      s.blocks.forEach(function(b){
+        (b.exercises||[]).forEach(function(e){ if(e.ticked) tickedNames[e.name] = true; });
+      });
+    }
+  }
+  return {tickedNames: tickedNames, isPartial: isPartial};
+}
+
 // ── TODAY: CURRENT SESSION MANAGEMENT ─────────────────────
 function startNewActualSession(){
   var prog = getNextProgrammeSession();
   var progBlocks = getCurrentBlocksFromProg(prog);
 
-  // Check if last session was partial — if so, carry over remaining exercises
-  var lastSession = state.sessions.length > 0 ? state.sessions[state.sessions.length-1] : null;
+  // Check if there are partial sessions since the last completed one — if so, carry over remaining exercises
+  var since = getTickedNamesSinceLastCompleted(state.nextType);
   var completedSummary = null;
 
-  if(lastSession && lastSession.pct < 100 && lastSession.progType === state.nextType){
-    // Build set of ticked exercise names from last session
-    var tickedNames = {};
-    lastSession.blocks.forEach(function(b){
-      b.exercises.forEach(function(e){
-        if(e.ticked) tickedNames[e.name] = true;
-      });
-    });
+  if(since.isPartial){
+    var tickedNames = since.tickedNames;
 
     // Split progBlocks into done and remaining
     var doneItems = [];
@@ -688,14 +706,11 @@ function renderToday(){
         +'<div style="font-size:13px;color:var(--text2)">'+formatDate(lastSession.date)+' · Session '+lastSession.progType+' · '+lastSession.pct+'% complete</div>'
         +'</div>';
     }
-    // Build preview — show only remaining exercises if last session was partial
-    var tickedNames = {};
-    var isPartial = lastSession && lastSession.pct < 100 && lastSession.progType === next.type;
-    if(isPartial){
-      lastSession.blocks.forEach(function(b){
-        (b.exercises||[]).forEach(function(e){ if(e.ticked) tickedNames[e.name] = true; });
-      });
-    }
+    // Build preview — show only remaining exercises if sessions since the last
+    // completed one of this type are partial
+    var since = getTickedNamesSinceLastCompleted(next.type);
+    var tickedNames = since.tickedNames;
+    var isPartial = since.isPartial;
     var previewHTML = '';
     if(isPartial){
       previewHTML += '<div style="font-size:11px;color:var(--green);font-weight:600;margin-bottom:8px">Continuing from last session — remaining exercises only:</div>';
